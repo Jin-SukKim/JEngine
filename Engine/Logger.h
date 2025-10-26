@@ -7,10 +7,16 @@
 #include <sstream>
 #include <string>
 #include <format>
+#include <source_location>  // C++20
 
 namespace JEngine {
 
-enum class LogLevel { INFO, WARNING, ERROR, DEBUG };
+enum class LogLevel { 
+    Info, 
+    Warning, 
+    Error,    
+    Debug 
+};
 
 // Singleton-based logging system that writes to both console and log.txt file.
 // Supports type-safe logging using C++20 std::format.
@@ -90,13 +96,13 @@ class Logger
 
     std::string getLogLevelString(LogLevel level) {
         switch (level) {
-        case LogLevel::INFO:
+        case LogLevel::Info:
             return "[INFO]";
-        case LogLevel::WARNING:
+        case LogLevel::Warning:
             return "[WARNING]";
-        case LogLevel::ERROR:
+        case LogLevel::Error:
             return "[ERROR]";
-        case LogLevel::DEBUG:
+        case LogLevel::Debug:
             return "[DEBUG]";
         default:
             return "[UNKNOWN]";
@@ -120,7 +126,7 @@ class Logger
     }
 
     // Writes a log message to console and file.
-    static void printLog(const std::string& message, LogLevel level = LogLevel::INFO) {
+    static void PrintLog(const std::string& message, LogLevel level = LogLevel::Info) {
         auto& logger = getInstance();
 
         std::string levelStr = logger.getLogLevelString(level);
@@ -140,7 +146,7 @@ class Logger
 
     // Logs variadic arguments using formatToStream.
     template <typename... Args>
-    static void log(LogLevel level, Args&&... args) { 
+    static void Log(LogLevel level, Args&&... args) { 
         auto& logger = getInstance();
 
         // Concatenate multiple arguments into a single string
@@ -172,7 +178,7 @@ class Logger
 template <typename... Args>
 void LogInfo(std::format_string<Args...> fmt, Args&&... args) {
     std::string message = std::format(fmt, std::forward<Args>(args)...);
-    Logger::printLog(message, LogLevel::INFO);
+    Logger::PrintLog(message, LogLevel::Info);
 }
 
 // Logs a WARNING-level message using std::format.
@@ -180,7 +186,7 @@ void LogInfo(std::format_string<Args...> fmt, Args&&... args) {
 template <typename... Args>
 void LogWarning(std::format_string<Args...> fmt, Args&&... args) {
     std::string message = std::format(fmt, std::forward<Args>(args)...);
-    Logger::printLog(message, LogLevel::WARNING);
+    Logger::PrintLog(message, LogLevel::Warning);
 }
 
 // Logs an ERROR-level message using std::format.
@@ -188,7 +194,7 @@ void LogWarning(std::format_string<Args...> fmt, Args&&... args) {
 template <typename... Args>
 void LogError(std::format_string<Args...> fmt, Args&&... args) {
     std::string message = std::format(fmt, std::forward<Args>(args)...);
-    Logger::printLog(message, LogLevel::ERROR);
+    Logger::PrintLog(message, LogLevel::Error);
 }
 
 // Logs a DEBUG-level message using std::format.
@@ -196,7 +202,7 @@ void LogError(std::format_string<Args...> fmt, Args&&... args) {
 template <typename... Args>
 void LogDebug(std::format_string<Args...> fmt, Args&&... args) {
     std::string message = std::format(fmt, std::forward<Args>(args)...);
-    Logger::printLog(message, LogLevel::DEBUG);
+    Logger::PrintLog(message, LogLevel::Debug);
 }
 
 // Logs multiple arguments separated by spaces using formatToStream.
@@ -204,7 +210,7 @@ void LogDebug(std::format_string<Args...> fmt, Args&&... args) {
 // Example: LogMultiple(LogLevel::INFO, "Entity", entityId, "HP", hp, "Mana", mana);
 template <typename... Args>
 void LogMultiple(LogLevel level, Args&&... args) {
-    Logger::log(level, std::forward<Args>(args)...);
+    Logger::Log(level, std::forward<Args>(args)...);
 }
 
 // Logs an error message and terminates the program.
@@ -213,9 +219,33 @@ void LogMultiple(LogLevel level, Args&&... args) {
 template <typename... Args>
 void ExitWithMessage(std::format_string<Args...> fmt, Args&&... args) {
     std::string message = std::format(fmt, std::forward<Args>(args)...);
-    Logger::printLog(message, LogLevel::ERROR);
+    Logger::PrintLog(message, LogLevel::Error);
     assert(false);
     std::exit(EXIT_FAILURE);
+}
+
+// DirectX HRESULT error handling with C++20 std::source_location
+// Automatically captures file, line, and function information
+// Example: ThrowIfFailed(D3D12CreateDevice(...));
+inline void ThrowIfFailed(
+    HRESULT hr, 
+    const std::source_location& location = std::source_location::current()
+) {
+    if (FAILED(hr)) {
+        std::string errorMsg = std::format(
+            "DirectX Error\n"
+            "  File: {}\n"
+            "  Line: {}\n"
+            "  Function: {}\n"
+            "  HRESULT: 0x{:08X}",
+            location.file_name(), 
+            location.line(),
+            location.function_name(),
+            static_cast<unsigned>(hr)
+        );
+        LogError("{}", errorMsg);
+        throw std::runtime_error(errorMsg);
+    }
 }
 
 } // namespace JEngine
