@@ -14,6 +14,8 @@ Timer::Timer()
     
     // Tick per duration (1 / Frequency)
     secondsPerCount_ = 1.0 / static_cast<double>(countsPerSec.QuadPart);
+
+    LogInfo("Timer Initialized.");
 }
 
 float Timer::TotalTime() const {
@@ -52,6 +54,8 @@ void Timer::Reset() {
     stopTime_ = 0;
     pausedTime_ = 0;
     stopped_ = false;
+
+    LogInfo("Timer reset.");
 }
 
 void Timer::Start() {
@@ -76,7 +80,10 @@ void Timer::Start() {
         // 정지 시점 초기화 및 플래그 해제
         stopTime_ = 0;
         stopped_ = false;
-    }
+
+        LogInfo("Timer resumed.");
+    } else
+        LogInfo("Timer started.");
 }
 
 void Timer::Stop() {
@@ -87,6 +94,7 @@ void Timer::Stop() {
         stopTime_ = stopTime.QuadPart;
         
         stopped_ = true;
+        LogInfo("Timer stopped.");
     }
 }
 
