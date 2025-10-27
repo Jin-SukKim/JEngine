@@ -9,6 +9,7 @@ class Timer
 
     float TotalTime() const; // in seconds
     float DeltaTime() const; // in seconds
+    float FrameRate() const;
 
     // Call before message loop
     void Reset(); 
@@ -30,6 +31,10 @@ class Timer
     __int64 curTime_;
 
     bool stopped_;
+
+    int frameCount_;
+    float timeElapsed_;
+    float fps_;
 };
 
 } // namespace JEngine

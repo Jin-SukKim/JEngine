@@ -1,0 +1,113 @@
+[INFO] Timer Initialized.
+[INFO] Context instance created.
+[INFO] === Initializing Context ===
+[INFO] === Initializing Direct3D 12 Device ===
+[INFO] D3D12 Debug Layer enabled for Debug build.
+[INFO] Creating DXGI Factory...
+[INFO] DXGI Factory created successfully.
+[INFO] Attempting to create hardware device...
+[INFO] Hardware device created successfully.
+[INFO] Fence created for CPU-GPU synchronization.
+[INFO] Descriptor sizes - RTV: 32, DSV: 8, CBV/SRV/UAV: 32
+[INFO] === Direct3D 12 Device Initialization Complete ===
+
+[INFO] === Creating Command Objects ===
+[INFO] Command Queue created.
+[INFO] Command Allocator created.
+[INFO] Graphics Command List created.
+[INFO] Command List closed and ready for recording commands.
+[INFO] === Command Objects Creation Complete ===
+
+[INFO] === Creating Swap Chain ===
+[INFO] Configuring Swap Chain (1280x720, Buffers: 2)...
+[INFO] Swap Chain created successfully.
+[INFO] === Swap Chain Creation Complete ===
+
+[INFO] === Creating Descriptor Heaps ===
+[INFO] Render Target View Descriptor Heap created with 2 descriptors.
+[INFO] Depth Stencil View Descriptor Heap created.
+[INFO] === Descriptor Heaps Creation Complete ===
+
+[INFO] Command List reset for resizing. Ready to record commands.
+[INFO] Swap Chain buffers resized to 1280x720.
+[INFO] === Creating Render Target Views ===
+[INFO] Render Target Views created for all back buffers.
+[INFO] === Render Target Views Creation Complete ===
+
+[INFO] === Creating Depth Stencil Buffer & View ===
+[INFO] Depth Stencil Buffer created.
+[INFO] Depth Stencil View created.
+[INFO] === Depth Stencil Buffer & View Creation Complete ===
+
+[INFO] Transitioning Depth Stencil Buffer state (COMMON ¡æ DEPTH_WRITE)...
+[INFO] Depth Stencil Buffer transitioned to DEPTH_WRITE state.
+[INFO] Command Record is closed and executed for resize operations.
+[INFO] Setting Viewport and Scissor Rect (1280x720)...
+[INFO] Viewport and Scissor Rect configured successfully.
+[INFO] Viewport and Scissor Rect updated for new window size.
+[INFO] Resize handling complete.
+[INFO] Viewport set after resize.
+[INFO] === Context Initialization Complete ===
+
+[INFO] Timer reset.
+[INFO] === Entering Main Message Loop ===
+[INFO] Command List reset for resizing. Ready to record commands.
+[INFO] Swap Chain buffers resized to 1280x720.
+[INFO] === Creating Render Target Views ===
+[INFO] Render Target Views created for all back buffers.
+[INFO] === Render Target Views Creation Complete ===
+
+[INFO] === Creating Depth Stencil Buffer & View ===
+[INFO] Depth Stencil Buffer created.
+[INFO] Depth Stencil View created.
+[INFO] === Depth Stencil Buffer & View Creation Complete ===
+
+[INFO] Transitioning Depth Stencil Buffer state (COMMON ¡æ DEPTH_WRITE)...
+[INFO] Depth Stencil Buffer transitioned to DEPTH_WRITE state.
+[INFO] Command Record is closed and executed for resize operations.
+[INFO] Setting Viewport and Scissor Rect (1280x720)...
+[INFO] Viewport and Scissor Rect configured successfully.
+[INFO] Viewport and Scissor Rect updated for new window size.
+[INFO] Resize handling complete.
+[INFO] Viewport set after resize.
+[INFO] Command List reset for resizing. Ready to record commands.
+[INFO] Swap Chain buffers resized to 1280x720.
+[INFO] === Creating Render Target Views ===
+[INFO] Render Target Views created for all back buffers.
+[INFO] === Render Target Views Creation Complete ===
+
+[INFO] === Creating Depth Stencil Buffer & View ===
+[INFO] Depth Stencil Buffer created.
+[INFO] Depth Stencil View created.
+[INFO] === Depth Stencil Buffer & View Creation Complete ===
+
+[INFO] Transitioning Depth Stencil Buffer state (COMMON ¡æ DEPTH_WRITE)...
+[INFO] Depth Stencil Buffer transitioned to DEPTH_WRITE state.
+[INFO] Command Record is closed and executed for resize operations.
+[INFO] Setting Viewport and Scissor Rect (1280x720)...
+[INFO] Viewport and Scissor Rect configured successfully.
+[INFO] Viewport and Scissor Rect updated for new window size.
+[INFO] Resize handling complete.
+[INFO] Viewport set after resize.
+[INFO] Command List reset for resizing. Ready to record commands.
+[INFO] Swap Chain buffers resized to 1280x720.
+[INFO] === Creating Render Target Views ===
+[INFO] Render Target Views created for all back buffers.
+[INFO] === Render Target Views Creation Complete ===
+
+[INFO] === Creating Depth Stencil Buffer & View ===
+[INFO] Depth Stencil Buffer created.
+[INFO] Depth Stencil View created.
+[INFO] === Depth Stencil Buffer & View Creation Complete ===
+
+[INFO] Transitioning Depth Stencil Buffer state (COMMON ¡æ DEPTH_WRITE)...
+[INFO] Depth Stencil Buffer transitioned to DEPTH_WRITE state.
+[INFO] Command Record is closed and executed for resize operations.
+[INFO] Setting Viewport and Scissor Rect (1280x720)...
+[INFO] Viewport and Scissor Rect configured successfully.
+[INFO] Viewport and Scissor Rect updated for new window size.
+[INFO] Resize handling complete.
+[INFO] Viewport set after resize.
+
+=== Logging Session Ended ===
+Total messages processed: 97

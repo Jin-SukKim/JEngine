@@ -4,10 +4,12 @@
     <ClInclude Include="pch.h" />
     <ClInclude Include="Logger.h" />
     <ClInclude Include="Context.h" />
+    <ClInclude Include="Timer.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp" />
     <ClCompile Include="Logger.cpp" />
     <ClCompile Include="Context.cpp" />
+    <ClCompile Include="Timer.cpp" />
   </ItemGroup>
 </Project>

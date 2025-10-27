@@ -1,7 +1,43 @@
 #include "pch.h"
 #include "Context.h"
 
+
+LRESULT CALLBACK MainWndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam) {
+    return JEngine::Context::GetApp()->MsgProc(hwnd, msg, wParam, lParam);
+}
+
 namespace JEngine {
+
+Context* Context::app_ = nullptr;
+Context* Context::GetApp() {
+    return app_;
+}
+Context::Context(HINSTANCE hInstance) : appInst_(hInstance) {
+    // 1개의 Context 인스턴스만 존재하도록 설정
+    if (app_ != nullptr) {
+        ExitWithMessage("Context instance already exists!");
+    }
+    app_ = this;
+    LogInfo("Context instance created.");
+}
+
+Context::~Context() {
+    if (device_) 
+        FlushCommandQueue();
+}
+
+void Context::Initialize() {
+    InitWindow();
+
+    LogInfo("=== Initializing Context ===");
+    createDevice();
+    createCommandObjects();
+    createSwapChain();
+    createDescriptorHeaps();
+    OnResize();
+    LogInfo("=== Context Initialization Complete ===\n");
+}
+
 
 void Context::createDevice() {
     UINT dxgiFactoryFlags = 0;
@@ -76,23 +112,6 @@ void Context::createDevice() {
     LogInfo("Descriptor sizes - RTV: {}, DSV: {}, CBV/SRV/UAV: {}", 
         rtvDescriptorSize_, dsvDescriptorSize_, cbvSrvUavDescriptorSize_);
 
-    // 4x MSAA 품질 레벨 지원 확인
-    // - MSAA = Multi-Sample Anti-Aliasing (계단 현상 제거)
-    D3D12_FEATURE_DATA_MULTISAMPLE_QUALITY_LEVELS msaaQualityLevels;
-    msaaQualityLevels.Format = backBufferFormat_;
-    msaaQualityLevels.SampleCount = 4;              // 4x MSAA
-    msaaQualityLevels.Flags = D3D12_MULTISAMPLE_QUALITY_LEVELS_FLAG_NONE;  
-    msaaQualityLevels.NumQualityLevels = 0;
-    ThrowIfFailed(device_->CheckFeatureSupport(
-        D3D12_FEATURE_MULTISAMPLE_QUALITY_LEVELS,
-        &msaaQualityLevels, sizeof(msaaQualityLevels)));
-
-    m4xMsaaQuality_ = msaaQualityLevels.NumQualityLevels;
-    if (m4xMsaaQuality_ == 0) 
-        ExitWithMessage("4x MSAA is not supported for the back buffer format!");
-    
-    LogInfo("4x MSAA Quality Levels supported: {}", m4xMsaaQuality_);
-    
     LogInfo("=== Direct3D 12 Device Initialization Complete ===\n");
 }
 
@@ -149,13 +168,9 @@ void Context::createSwapChain() {
     sd.Height = screenHeight_;
     sd.Format = backBufferFormat_;
     sd.Stereo = FALSE;                              // VR/3D 안경 모드 비활성화
-    // Multi-sampling 설정
-    sd.SampleDesc.Count = m4xMsaaQuality_ > 0 ? 4 : 1;
-    sd.SampleDesc.Quality = m4xMsaaQuality_ > 0 ? m4xMsaaQuality_ - 1 : 0;
-    
-    if (m4xMsaaQuality_ > 0) {
-        LogInfo("MSAA enabled: 4x");
-    }
+    // Multi-sampling 비활성화
+    sd.SampleDesc.Count = 1;
+    sd.SampleDesc.Quality = 0;
     
     sd.BufferUsage = DXGI_USAGE_RENDER_TARGET_OUTPUT;
     sd.BufferCount = bufferCount_;                  // Double Buffering (2개)
@@ -256,8 +271,8 @@ void Context::createDepthStencilView() {
     depthStencilDesc.MipLevels = 1;                                   // Mipmap 없음
     // TYPELESS 포맷 사용 = 나중에 DSV, SRV 등으로 다양하게 해석 가능
     depthStencilDesc.Format = DXGI_FORMAT_R24G8_TYPELESS;
-    depthStencilDesc.SampleDesc.Count = m4xMsaaQuality_ > 0 ? 4 : 1;
-    depthStencilDesc.SampleDesc.Quality = m4xMsaaQuality_ > 0 ? m4xMsaaQuality_ - 1 : 0;
+    depthStencilDesc.SampleDesc.Count = 1;
+    depthStencilDesc.SampleDesc.Quality = 0;
     depthStencilDesc.Layout = D3D12_TEXTURE_LAYOUT_UNKNOWN;
     depthStencilDesc.Flags = D3D12_RESOURCE_FLAG_ALLOW_DEPTH_STENCIL; // Depth Stencil 사용 플래그
 
@@ -323,6 +338,25 @@ void Context::TransitionDepthStencilState() {
     LogInfo("Depth Stencil Buffer transitioned to DEPTH_WRITE state.");
 }
 
+void Context::FlushCommandQueue() {
+    // 새로운 Fence 지점 설정
+    ++currentFence_;
+
+    // 새 Fence 값으로 Command Queue에 Signal 전송
+    ThrowIfFailed(commandQueue_->Signal(fence_.Get(), currentFence_));
+
+    // GPU가 해당 Fence 값에 도달할 때까지 대기
+    if (fence_->GetCompletedValue() < currentFence_) {
+        HANDLE eventHandle = CreateEventEx(nullptr, nullptr, 0, EVENT_ALL_ACCESS);
+        // Fence 값이 도달할 때 이벤트 신호 발생
+        ThrowIfFailed(fence_->SetEventOnCompletion(currentFence_, eventHandle));
+
+        // 이벤트 대기
+        ::WaitForSingleObject(eventHandle, INFINITE);
+        ::CloseHandle(eventHandle);
+    }
+}
+
 D3D12_CPU_DESCRIPTOR_HANDLE Context::GetCurrentBackBufferView() const {
     // Descriptor Heap에서 현재 Back Buffer의 RTV 핸들 계산
     
@@ -347,7 +381,7 @@ ID3D12Resource* Context::GetCurrentBackBuffer() const {
     return backBuffers_[curBackBufferIdx_].Get();
 }
 
-void Context::SetViewport() {
+void Context::SetViewportConfig() {
     LogInfo("Setting Viewport and Scissor Rect ({}x{})...", screenWidth_, screenHeight_);
 
     // Viewport 설정 (렌더링 영역)
@@ -363,11 +397,278 @@ void Context::SetViewport() {
     // - Viewport 밖의 픽셀은 폐기
     scissorRect_ = {0, 0, static_cast<LONG>(screenWidth_), static_cast<LONG>(screenHeight_)};
 
+    LogInfo("Viewport and Scissor Rect configured successfully.");
+}
+
+void Context::SetViewport() {
     // Command List에 Viewport와 Scissor Rect 설정
     commandList_->RSSetViewports(1, &screenViewport_);
     commandList_->RSSetScissorRects(1, &scissorRect_);
+}
 
-    LogInfo("Viewport and Scissor Rect configured successfully.");
+void Context::OnResize() {
+    if (!device_) {
+        ExitWithMessage("Device is not initialized!");
+        return;
+    }
+    if (!swapChain_) {
+        ExitWithMessage("Swap Chain is not initialized!");
+        return;
+    }
+    if (!commandAllocator_) {
+        ExitWithMessage("Command Allocator is not initialized!");
+        return;
+    }
+
+    // Resource에 변화를 주기 전에 GPU가 모든 작업을 완료하도록 대기
+    FlushCommandQueue();
+
+    ThrowIfFailed(commandList_->Reset(commandAllocator_.Get(), nullptr));
+    LogInfo("Command List reset for resizing. Ready to record commands.");
+
+    // 기존 Buffer 해제
+    for (int i = 0; i < bufferCount_; ++i)
+        backBuffers_[i].Reset();
+    depthStencilBuffer_.Reset();
+
+    // Swap Chain 크기 조정
+    ThrowIfFailed(swapChain_->ResizeBuffers(
+        bufferCount_,
+        screenWidth_,
+        screenHeight_,
+        backBufferFormat_,
+        DXGI_SWAP_CHAIN_FLAG_ALLOW_MODE_SWITCH));
+
+    curBackBufferIdx_ = 0;
+    LogInfo("Swap Chain buffers resized to {}x{}.", screenWidth_, screenHeight_);
+
+    // Render Target View 재생성
+    createRenderTargetViews();
+
+    // Depth Stencil View 재생성
+    createDepthStencilView();
+    // Depth Stencil 버퍼 상태 전환
+    TransitionDepthStencilState();
+
+    ThrowIfFailed(commandList_->Close());
+    ID3D12CommandList* cmdsLists[] = {commandList_.Get()};
+    commandQueue_->ExecuteCommandLists(_countof(cmdsLists), cmdsLists);
+    LogInfo("Command Record is closed and executed for resize operations.");
+
+    // Viewport 및 Scissor Rect 재설정
+    SetViewportConfig();
+    LogInfo("Viewport and Scissor Rect updated for new window size.");
+
+    FlushCommandQueue();
+    LogInfo("Resize handling complete.");
+    SetViewport();
+    LogInfo("Viewport set after resize.");
+}
+
+void Context::Update(const Timer& timer) {
+}
+
+void Context::Draw() {
+    // 1. Command List 및 Allocator 리셋
+    ThrowIfFailed(commandAllocator_->Reset());
+    ThrowIfFailed(commandList_->Reset(commandAllocator_.Get(), nullptr));
+
+    // 2. Viewport 및 Scissor Rect 설정
+    SetViewport();
+
+    // 3. Back Buffer를 PRESENT → RENDER_TARGET 상태로 전환
+    D3D12_RESOURCE_BARRIER barrier = {};
+    barrier.Type = D3D12_RESOURCE_BARRIER_TYPE_TRANSITION;
+    barrier.Flags = D3D12_RESOURCE_BARRIER_FLAG_NONE;
+    barrier.Transition.pResource = GetCurrentBackBuffer();
+    barrier.Transition.Subresource = D3D12_RESOURCE_BARRIER_ALL_SUBRESOURCES;
+    barrier.Transition.StateBefore = D3D12_RESOURCE_STATE_PRESENT;
+    barrier.Transition.StateAfter = D3D12_RESOURCE_STATE_RENDER_TARGET;
+    commandList_->ResourceBarrier(1, &barrier);
+
+    // 4. Render Target 및 Depth Stencil 설정
+    D3D12_CPU_DESCRIPTOR_HANDLE rtvHandle = GetCurrentBackBufferView();
+    D3D12_CPU_DESCRIPTOR_HANDLE dsvHandle = GetDepthStencilView();
+    commandList_->OMSetRenderTargets(1, &rtvHandle, FALSE, &dsvHandle);
+
+    // 5. 화면 클리어 (파란색 배경)
+    const float clearColor[] = { 0.0f, 0.2f, 0.4f, 1.0f }; // RGBA: 진한 파란색
+    commandList_->ClearRenderTargetView(rtvHandle, clearColor, 0, nullptr);
+    commandList_->ClearDepthStencilView(dsvHandle, 
+        D3D12_CLEAR_FLAG_DEPTH | D3D12_CLEAR_FLAG_STENCIL, 
+        1.0f, 0, 0, nullptr);
+
+    // 6. Back Buffer를 RENDER_TARGET → PRESENT 상태로 전환
+    barrier.Transition.StateBefore = D3D12_RESOURCE_STATE_RENDER_TARGET;
+    barrier.Transition.StateAfter = D3D12_RESOURCE_STATE_PRESENT;
+    commandList_->ResourceBarrier(1, &barrier);
+
+    // 7. Command List 닫기
+    ThrowIfFailed(commandList_->Close());
+
+    // 8. Command Queue에 제출
+    ID3D12CommandList* cmdsLists[] = { commandList_.Get() };
+    commandQueue_->ExecuteCommandLists(_countof(cmdsLists), cmdsLists);
+
+    // 9. 화면에 표시 (Swap Chain Present)
+    ThrowIfFailed(swapChain_->Present(0, 0)); // VSync OFF (0), Flags: 0
+    curBackBufferIdx_ = swapChain_->GetCurrentBackBufferIndex();
+
+    // 10. GPU 작업 완료 대기
+    FlushCommandQueue();
+}
+
+int Context::Run() {
+    MSG msg = {0};
+
+    timer.Reset();
+
+    LogInfo("=== Entering Main Message Loop ===");
+    while (msg.message != WM_QUIT) {
+        // 메시지 처리
+        if (PeekMessage(&msg, 0, 0, 0, PM_REMOVE)) {
+            TranslateMessage(&msg);
+            DispatchMessage(&msg);
+        } else {
+            timer.Tick();
+
+            // 애플리케이션이 활성 상태일 때만 업데이트 및 렌더링
+            if (!appPaused_) {
+                Update(timer);
+                Draw();
+            } else {
+                Sleep(100); // 비활성 상태에서는 CPU 사용량 감소를 위해 잠시 대기
+                // TODO: GUI 추가되면 GUI 사용
+            }
+        }
+    }
+
+    return (int)msg.wParam;
+}
+
+void Context::InitWindow() {
+    WNDCLASS wc;
+    wc.style = CS_HREDRAW | CS_VREDRAW;
+    wc.lpfnWndProc = ::MainWndProc;
+    wc.cbClsExtra = 0;
+    wc.cbWndExtra = 0;
+    wc.hInstance = appInst_;
+    wc.hIcon = LoadIcon(0, IDI_APPLICATION);
+    wc.hCursor = LoadCursor(0, IDC_ARROW);
+    wc.hbrBackground = (HBRUSH)::GetStockObject(NULL_BRUSH);
+    wc.lpszMenuName = 0;
+    wc.lpszClassName = L"MainWnd";
+
+    if (!RegisterClass(&wc)) {
+        ExitWithMessage("RegisterClass Failed.");
+        return;
+    }
+
+    // Compute window rectangle dimensions based on requested client area dimensions.
+    RECT R = {0, 0, static_cast<LONG>(screenWidth_), static_cast<LONG>(screenHeight_)};
+    ::AdjustWindowRect(&R, WS_OVERLAPPEDWINDOW, false);
+    int width = R.right - R.left;
+    int height = R.bottom - R.top;
+
+    mainWnd_ = ::CreateWindow(L"MainWnd", mainWndCaption_.c_str(), WS_OVERLAPPEDWINDOW,
+                             CW_USEDEFAULT, CW_USEDEFAULT, width, height, 0, 0, appInst_, 0);
+    if (!mainWnd_) {
+        ExitWithMessage("CreateWindow Failed.");
+        return;
+    }
+
+    ::ShowWindow(mainWnd_, SW_SHOW);
+    ::UpdateWindow(mainWnd_);
+}
+
+LRESULT Context::MsgProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam) {
+    switch (msg) {
+    
+    case WM_ACTIVATE:
+        if (LOWORD(wParam) == WA_INACTIVE) {
+            appPaused_ = true;
+            //mTimer.Stop();
+        } else {
+            appPaused_ = false;
+            //mTimer.Start();
+        }
+        return 0;
+    case WM_SIZE:
+        screenWidth_ = LOWORD(lParam);
+        screenHeight_ = HIWORD(lParam);
+        if (device_) {
+            if (wParam == SIZE_MINIMIZED) {
+                appPaused_ = true;
+                minimized_ = true;
+                maximized_ = false;
+            } else if (wParam == SIZE_MAXIMIZED) {
+                appPaused_ = false;
+                minimized_ = false;
+                maximized_ = true;
+                OnResize();
+            } else if (wParam == SIZE_RESTORED) {
+
+                // Restoring from minimized state?
+                if (minimized_) {
+                    appPaused_ = false;
+                    minimized_ = false;
+                    OnResize();
+                }
+
+                // Restoring from maximized state?
+                else if (maximized_) {
+                    appPaused_ = false;
+                    maximized_ = false;
+                    OnResize();
+                } else if (resizing_) {
+                    // Resizing by the user. Wait until the user is done resizing.
+                    // WM_ENTERSIZEMOVE와 WM_EXITSIZEMOVE에서 처리.
+                } else 
+                {
+                    // Window being resized, Start Graphics Resize
+                    OnResize();
+                }
+            }
+        }
+        return 0;
+
+    // WM_EXITSIZEMOVE is sent when the user grabs the resize bars.
+    case WM_ENTERSIZEMOVE:
+        appPaused_ = true;
+        resizing_ = true;
+        //mTimer.Stop();
+        return 0;
+
+    // WM_EXITSIZEMOVE is sent when the user releases the resize bars.
+    // Here we reset everything based on the new window dimensions.
+    case WM_EXITSIZEMOVE:
+        appPaused_ = false;
+        resizing_ = false;
+        //mTimer.Start();
+        OnResize();
+        return 0;
+
+    // WM_DESTROY is sent when the window is being destroyed.
+    case WM_DESTROY:
+        PostQuitMessage(0);
+        return 0;
+
+    case WM_KEYUP:
+        if (wParam == VK_ESCAPE) 
+            PostQuitMessage(0);
+
+        return 0;
+    }
+
+    return DefWindowProc(hwnd, msg, wParam, lParam);
+}
+
+float Context::AspectRatio() const {
+    return static_cast<float>(screenWidth_) / screenHeight_;
+}
+
+HWND Context::MainWnd() const {
+    return mainWnd_;
 }
 
 } // namespace JEngine

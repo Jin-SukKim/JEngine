@@ -3,6 +3,7 @@
 #include <memory>
 #include <Windows.h>
 #include <wrl/client.h>
+#include <string>
 
 // DirectX 12 Çì´õ
 #include <d3d12.h>

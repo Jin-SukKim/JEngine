@@ -4,9 +4,9 @@
 namespace JEngine {
 
 Timer::Timer() 
-    : secondsPerCount_(0.0), deltaTime_(-1.0), baseTime_(0), 
+    : secondsPerCount_(0.0), deltaTime_(0.0), baseTime_(0), 
     pausedTime_(0), stopTime_(0), prevTime_(0), 
-    curTime_(0), stopped_(false) {
+    curTime_(0), stopped_(false), frameCount_(0), timeElapsed_(0.f), fps_(0.f) {
 
     LARGE_INTEGER countsPerSec;
     // Get Frequency of Performance Counter
@@ -43,6 +43,10 @@ float Timer::DeltaTime() const {
     return static_cast<float>(deltaTime_);
 }
 
+float Timer::FrameRate() const {
+    return fps_;
+}
+
 void Timer::Reset() {
     LARGE_INTEGER curTime;
     // 현재 성능 카운터 값을 가져옵니다
@@ -54,6 +58,9 @@ void Timer::Reset() {
     stopTime_ = 0;
     pausedTime_ = 0;
     stopped_ = false;
+    frameCount_ = 0;
+    timeElapsed_ = 0.0f;
+    fps_ = 0.0f;
 
     LogInfo("Timer reset.");
 }
@@ -113,11 +120,21 @@ void Timer::Tick() {
     
     // 다음 프레임을 위해 현재 시간을 저장
     prevTime_ = curTime_;
-    
+
     // 예외 상황 처리:
     // GPU 전원 절약 모드로 인한 DeltaTime 음수 방지
     if (deltaTime_ < 0.0) {
         deltaTime_ = 0.0;
+    }
+
+    // FPS 계산
+    ++frameCount_;
+    timeElapsed_ += static_cast<float>(deltaTime_);
+
+    if (timeElapsed_ >= 1.0f) {
+        fps_ = static_cast<float>(frameCount_) / timeElapsed_;
+        frameCount_ = 0;
+        timeElapsed_ = 0.f;
     }
 }
 
