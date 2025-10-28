@@ -1,5 +1,5 @@
 #include <Windows.h>
-#include "Engine/Context.h"
+#include "Engine/Application.h"
 
 int main() {
     try {
@@ -7,7 +7,7 @@ int main() {
         HINSTANCE hInstance = GetModuleHandle(nullptr);
 
         // 2. Context 인스턴스 생성 (Singleton 패턴)
-        JEngine::Context app(hInstance);
+        JEngine::Application app(hInstance, L"JEngine");
 
         // 3. DirectX 12 및 윈도우 초기화
         app.Initialize();

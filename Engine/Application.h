@@ -1,0 +1,26 @@
+#pragma once
+
+#include "Window.h"
+#include "Context.h"
+#include "Timer.h"
+#include "SwapChain.h"
+#include "Renderer.h"
+
+namespace JEngine {
+class Application
+{
+  public:
+    Application(HINSTANCE hinstance, std::wstring name);
+    void Initialize();
+    int Run();
+
+    void OnResize();
+
+  private:
+    Window window_;
+    Context context_;
+    Timer timer_;
+    SwapChain swapChain_;
+    Renderer renderer_;
+};
+} // namespace JEngine

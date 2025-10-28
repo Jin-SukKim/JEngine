@@ -1,0 +1,125 @@
+﻿#include "pch.h"
+#include "SwapChain.h"
+#include "Context.h"
+#include "Window.h"
+
+namespace JEngine {
+
+SwapChain::SwapChain(Context& context) : context_(context) {
+
+}
+
+void SwapChain::Initialize() {
+    // Back Buffer 이미지 객체들 초기화
+    backBuffers_.resize(bufferCount_, Image2D(context_));
+    create();
+    createRTV();
+}
+
+Image2D& SwapChain::GetCurrentBackBuffer() {
+    // 현재 Back Buffer 리소스 반환 구현
+    return backBuffers_[curBackBufferIdx_];
+}
+
+void SwapChain::create() {
+    LogInfo("=== Creating Swap Chain ===");
+
+    // 기존 Swap Chain 해제 (창 크기 변경 등으로 재생성 시 필요)
+    swapChain_.Reset();
+
+    // DXGI 1.2+ Flip Model 사용 (현대적 방식)
+    // - Legacy BitBlt Model보다 성능 우수
+    LogInfo("Configuring Swap Chain ({}x{}, Buffers: {})...", context_.GetWindow().GetWidth(),
+            context_.GetWindow().GetHeight(), bufferCount_);
+
+    DXGI_SWAP_CHAIN_DESC1 sd = {};
+    sd.Width = context_.GetWindow().GetWidth();
+    sd.Height = context_.GetWindow().GetHeight();
+    sd.Format = backBufferFormat_;
+    sd.Stereo = FALSE; // VR/3D 안경 모드 비활성화
+    // Multi-sampling 비활성화
+    sd.SampleDesc.Count = 1;
+    sd.SampleDesc.Quality = 0;
+
+    sd.BufferUsage = DXGI_USAGE_RENDER_TARGET_OUTPUT;
+    sd.BufferCount = bufferCount_; // Double Buffering (2개)
+    sd.Scaling = DXGI_SCALING_STRETCH;
+    sd.SwapEffect = DXGI_SWAP_EFFECT_FLIP_DISCARD; // Flip Model (최고 성능)
+    sd.AlphaMode = DXGI_ALPHA_MODE_UNSPECIFIED;    // 투명 윈도우 아님
+    sd.Flags = DXGI_SWAP_CHAIN_FLAG_ALLOW_MODE_SWITCH;
+
+    // Fullscreen/Windowed 설정
+    DXGI_SWAP_CHAIN_FULLSCREEN_DESC fsDesc = {};
+    fsDesc.RefreshRate.Numerator = 60;
+    fsDesc.RefreshRate.Denominator = 1; // 60 Hz
+    fsDesc.ScanlineOrdering = DXGI_MODE_SCANLINE_ORDER_UNSPECIFIED;
+    fsDesc.Scaling = DXGI_MODE_SCALING_UNSPECIFIED;
+    fsDesc.Windowed = TRUE;
+
+    // CreateSwapChainForHwnd 사용 (DXGI 1.2+ 표준)
+    // - Legacy CreateSwapChain()보다 Flip Model에 최적화
+    ComPtr<IDXGISwapChain1> tempSwapChain;
+    ThrowIfFailed(context_.GetDXGIFactory()->CreateSwapChainForHwnd(
+        context_.GetCommandQueue().Get(), context_.GetWindow().GetHwnd(), &sd, &fsDesc,
+        nullptr, // Output 제한 없음 (모든 모니터 허용)
+        tempSwapChain.GetAddressOf()));
+
+    // IDXGISwapChain1 → IDXGISwapChain4로 업그레이드
+    // - GetCurrentBackBufferIndex() 등 D3D12 필수 메서드 사용 가능
+    ThrowIfFailed(tempSwapChain.As(&swapChain_));
+    LogInfo("Swap Chain created successfully.");
+
+    LogInfo("=== Swap Chain Creation Complete ===\n");
+}
+
+void SwapChain::createRTV() {
+    LogInfo("=== Creating Render Target Views ===");
+
+    // 각 Back Buffer에 대한 RTV 생성
+    for (UINT i = 0; i < bufferCount_; ++i) {
+        ComPtr<ID3D12Resource> buffer;  // 임시 변수 생성
+        // Swap Chain으로부터 Back Buffer 리소스 가져오기
+        ThrowIfFailed(swapChain_->GetBuffer(i, IID_PPV_ARGS(&buffer)));
+        
+        D3D12_CPU_DESCRIPTOR_HANDLE rtvHandle = context_.GetDescriptorHeaps().AllocateRTV();
+        
+        // CreateBackBufferRTV 호출 전에 buffer를 Image2D에 설정
+        backBuffers_[i].GetBuffer() = buffer;
+        backBuffers_[i].CreateBackBufferRTV(backBufferFormat_, rtvHandle);
+        
+        // Heap의 해당 위치에 RTV 생성
+        context_.GetDevice()->CreateRenderTargetView(backBuffers_[i].GetBufferPtr(), nullptr,
+                                                     rtvHandle);
+    }
+    LogInfo("Render Target Views created for all back buffers.");
+
+    LogInfo("=== Render Target Views Creation Complete ===\n");
+}
+
+void SwapChain::BufferReset() {
+    for (int i = 0; i < bufferCount_; ++i)
+        backBuffers_[i].Reset();
+} // namespace JEngine
+
+void SwapChain::Resize() {
+    LogInfo("=== Resizing Swap Chain Buffers ===");
+    // 기존 Resource 해제
+    BufferReset();
+
+    // Swap Chain 크기 조정
+    ThrowIfFailed(swapChain_->ResizeBuffers(bufferCount_, context_.GetWindow().GetWidth(),
+                                            context_.GetWindow().GetHeight(), backBufferFormat_,
+                                            DXGI_SWAP_CHAIN_FLAG_ALLOW_MODE_SWITCH));
+    curBackBufferIdx_ = 0;
+    context_.GetDescriptorHeaps().ResetRTVCount();
+
+    // Render Target View 재생성
+    createRTV();
+}
+
+void SwapChain::Present() {
+    ThrowIfFailed(swapChain_->Present(0, 0));
+    curBackBufferIdx_ = (curBackBufferIdx_ + 1) % bufferCount_;
+}
+
+} // namespace JEngine

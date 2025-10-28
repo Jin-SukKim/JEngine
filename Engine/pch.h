@@ -4,6 +4,8 @@
 #include <Windows.h>
 #include <wrl/client.h>
 #include <string>
+#include <vector>
+#include <memory>
 
 // DirectX 12 Çì´õ
 #include <d3d12.h>
