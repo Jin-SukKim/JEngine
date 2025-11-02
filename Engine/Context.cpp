@@ -5,12 +5,13 @@
 namespace JEngine {
 
 Context::Context(Window& window) : window_(window), descriptorHeaps_(device_) {
-    Initialize();
 }
 
 Context::~Context() {
-    if (device_) 
-        FlushCommandQueue();
+    if (device_)
+        WaitForFence();
+    //if (device_) 
+    //    FlushCommandQueue();
 }
 
 void Context::Initialize() {
@@ -98,41 +99,11 @@ void Context::createCommandObjects() {
     queueDesc.Flags = D3D12_COMMAND_QUEUE_FLAG_NONE;
     ThrowIfFailed(device_->CreateCommandQueue(&queueDesc, IID_PPV_ARGS(&commandQueue_)));
     LogInfo("Command Queue created.");
-
-    // Command Allocator 생성 (Command List의 메모리 관리자)
-    // - Command List에 기록된 명령들을 저장하는 메모리 공간
-    // - 프레임마다 Reset하여 재사용
-    ThrowIfFailed(device_->CreateCommandAllocator(
-        D3D12_COMMAND_LIST_TYPE_DIRECT,
-        IID_PPV_ARGS(commandAllocator_.GetAddressOf())));
-    LogInfo("Command Allocator created.");
-
-    // Command List 생성 (렌더링 명령 기록용)
-    // - CPU에서 명령을 기록하고, GPU에서 실행
-    // - Vulkan의 VkCommandBuffer와 유사
-    ThrowIfFailed(device_->CreateCommandList(
-        0,                              // Single GPU
-        D3D12_COMMAND_LIST_TYPE_DIRECT,
-        commandAllocator_.Get(),
-        nullptr,                        // 초기 Pipeline State 없음
-        IID_PPV_ARGS(commandList_.GetAddressOf())));
-    LogInfo("Graphics Command List created.");
-
-    // Command List를 닫은 상태로 초기화
-    // - 명령 기록 전에 반드시 Reset() 호출 필요
-    commandList_->Close();
-    LogInfo("Command List closed and ready for recording commands.");
     
     LogInfo("=== Command Objects Creation Complete ===\n");
 }
 
-void Context::FlushCommandQueue() {
-    // 새로운 Fence 지점 설정
-    ++currentFence_;
-
-    // 새 Fence 값으로 Command Queue에 Signal 전송
-    ThrowIfFailed(commandQueue_->Signal(fence_.Get(), currentFence_));
-
+void Context::WaitForFence() {
     // GPU가 해당 Fence 값에 도달할 때까지 대기
     if (fence_->GetCompletedValue() < currentFence_) {
         HANDLE eventHandle = CreateEventEx(nullptr, nullptr, 0, EVENT_ALL_ACCESS);
@@ -145,18 +116,18 @@ void Context::FlushCommandQueue() {
     }
 }
 
-
-void Context::ResetCommands() {
-    ThrowIfFailed(commandList_->Reset(commandAllocator_.Get(), nullptr));
-}
-
-void Context::CloseCommands() {
-    ThrowIfFailed(commandList_->Close());
-}
-
-void Context::ExecuteCommands() {
-    ID3D12CommandList* cmdsLists[] = {commandList_.Get()};
+void Context::ExecuteCommands(ID3D12GraphicsCommandList* cmd) {
+    LogInfo("ExecuteCommands called - current fence: {}", currentFence_);
+    
+    ID3D12CommandList* cmdsLists[] = {cmd};
     commandQueue_->ExecuteCommandLists(_countof(cmdsLists), cmdsLists);
+    
+    ++currentFence_;
+    ThrowIfFailed(commandQueue_->Signal(fence_.Get(), currentFence_));
+    
+    LogInfo("ExecuteCommands completed - new fence: {}", currentFence_);
+
+    WaitForFence();
 }
 
 ComPtr<IDXGIFactory6> Context::GetDXGIFactory() const {
@@ -169,14 +140,6 @@ ComPtr<ID3D12Device> Context::GetDevice() const {
 
 ComPtr<ID3D12CommandQueue> Context::GetCommandQueue() const {
     return commandQueue_;
-}
-
-ComPtr<ID3D12GraphicsCommandList> Context::GetCommandList() const {
-    return commandList_;
-}
-
-ComPtr<ID3D12CommandAllocator> Context::GetCommandAllocator() const {
-    return commandAllocator_;
 }
 
 Window& Context::GetWindow() {
@@ -206,9 +169,42 @@ void Context::SetViewportConfig() {
     LogInfo("Viewport and Scissor Rect configured successfully.");
 }
 
-void Context::SetViewport() {
-    commandList_->RSSetViewports(1, &screenViewport_);
-    commandList_->RSSetScissorRects(1, &scissorRect_);
+void Context::SetViewport(ID3D12GraphicsCommandList* cmd) {
+    cmd->RSSetViewports(1, &screenViewport_);
+    cmd->RSSetScissorRects(1, &scissorRect_);
+}
+
+std::vector<CommandBuffer> Context::CreateGraphicsCommandBuffers(uint32_t numBuffers) {
+    std::vector<CommandBuffer> buffers;
+    buffers.reserve(numBuffers);
+
+    for (uint32_t i = 0; i < numBuffers; ++i) {
+        buffers.emplace_back(CommandBuffer(device_));
+    }
+
+    return buffers;
+}
+
+CommandBuffer Context::CreateGraphicsCommandBuffer() {
+    return CommandBuffer(device_);
+}
+
+void Context::WaitForGPUIdle() {
+    LogInfo("Waiting for GPU to become idle...");
+    
+    // 새로운 fence 값 신호
+    ++currentFence_;
+    ThrowIfFailed(commandQueue_->Signal(fence_.Get(), currentFence_));
+    
+    // GPU가 해당 값에 도달할 때까지 대기
+    if (fence_->GetCompletedValue() < currentFence_) {
+        HANDLE eventHandle = CreateEventEx(nullptr, nullptr, 0, EVENT_ALL_ACCESS);
+        ThrowIfFailed(fence_->SetEventOnCompletion(currentFence_, eventHandle));
+        ::WaitForSingleObject(eventHandle, INFINITE);
+        ::CloseHandle(eventHandle);
+    }
+    
+    LogInfo("GPU is now idle.");
 }
 
 } // namespace JEngine

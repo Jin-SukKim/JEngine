@@ -78,6 +78,10 @@ void Image2D::Reset() {
 void Image2D::TransitionTo() {
     // === Resource State Transition (리소스 상태 전환) ===
 
+    // 임시 CommandBuffer로 리사이즈 명령 실행
+    auto cmd = context_.CreateGraphicsCommandBuffer();
+    auto* cmdList = cmd.BeginRecording();
+
     // COMMON → DEPTH_WRITE 상태로 전환
     // - D3D12에서는 리소스 사용 전에 명시적으로 상태 전환 필요
     // - Vulkan의 Image Layout Transition과 동일한 개념
@@ -89,7 +93,10 @@ void Image2D::TransitionTo() {
     barrier.Transition.Subresource = D3D12_RESOURCE_BARRIER_ALL_SUBRESOURCES;
     barrier.Transition.StateBefore = D3D12_RESOURCE_STATE_COMMON;
     barrier.Transition.StateAfter = D3D12_RESOURCE_STATE_DEPTH_WRITE;
-    context_.GetCommandList()->ResourceBarrier(1, &barrier);
+    cmdList->ResourceBarrier(1, &barrier);
     LogInfo("Depth Stencil Buffer transitioned to DEPTH_WRITE state.");
+
+    cmd.EndRecording();
+    context_.ExecuteCommands(cmdList);
 }
 } // namespace JEngine

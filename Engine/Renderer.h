@@ -12,7 +12,7 @@ class Renderer
 
     void Initialize();
     void Update(const Timer& timer);
-    void Draw(Image2D& backBuffer);
+    void Draw(ID3D12GraphicsCommandList* cmdList, Image2D& backBuffer);
     void Resize();
   private:
     Context& context_;

@@ -7,13 +7,16 @@ class SwapChain
 {
   public:
     SwapChain(Context& context);
-
+    ~SwapChain();
     void Initialize();
 
     Image2D& GetCurrentBackBuffer();
+    int GetCurrentBackBufferIndex() const;
     void BufferReset();
     void Resize();
     void Present();
+
+    uint32_t GetBufferCount() const;
   private:
     void create();
     void createRTV();

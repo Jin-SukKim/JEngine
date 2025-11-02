@@ -9,6 +9,13 @@ SwapChain::SwapChain(Context& context) : context_(context) {
 
 }
 
+SwapChain::~SwapChain() {
+    BufferReset();
+    if (swapChain_) {
+        swapChain_.Reset();
+    }
+}
+
 void SwapChain::Initialize() {
     // Back Buffer 이미지 객체들 초기화
     backBuffers_.resize(bufferCount_, Image2D(context_));
@@ -19,6 +26,10 @@ void SwapChain::Initialize() {
 Image2D& SwapChain::GetCurrentBackBuffer() {
     // 현재 Back Buffer 리소스 반환 구현
     return backBuffers_[curBackBufferIdx_];
+}
+
+int SwapChain::GetCurrentBackBufferIndex() const {
+    return curBackBufferIdx_;
 }
 
 void SwapChain::create() {
@@ -97,7 +108,7 @@ void SwapChain::createRTV() {
 }
 
 void SwapChain::BufferReset() {
-    for (int i = 0; i < bufferCount_; ++i)
+    for (UINT i = 0; i < bufferCount_; ++i)
         backBuffers_[i].Reset();
 } // namespace JEngine
 
@@ -118,8 +129,16 @@ void SwapChain::Resize() {
 }
 
 void SwapChain::Present() {
+    LogInfo("Present called - current buffer index: {}", curBackBufferIdx_);
+    
     ThrowIfFailed(swapChain_->Present(0, 0));
     curBackBufferIdx_ = (curBackBufferIdx_ + 1) % bufferCount_;
+    
+    LogInfo("Present completed - next buffer index: {}", curBackBufferIdx_);
+}
+
+uint32_t SwapChain::GetBufferCount() const {
+    return bufferCount_;
 }
 
 } // namespace JEngine

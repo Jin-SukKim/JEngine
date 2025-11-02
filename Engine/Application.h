@@ -11,6 +11,7 @@ class Application
 {
   public:
     Application(HINSTANCE hinstance, std::wstring name);
+    ~Application();
     void Initialize();
     int Run();
 
@@ -22,5 +23,7 @@ class Application
     Timer timer_;
     SwapChain swapChain_;
     Renderer renderer_;
+
+    std::vector<CommandBuffer> commandBuffers_;
 };
 } // namespace JEngine

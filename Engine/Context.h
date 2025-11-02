@@ -2,6 +2,7 @@
 
 #include "pch.h" // ComPtr 등이 정의된 pch.h 포함
 #include "DescriptorHeap.h"
+#include "CommandBuffer.h"
 
 namespace JEngine {
 
@@ -18,25 +19,23 @@ class Context
     void createDevice();              // D3D12 Device 및 Factory 생성
     void createCommandObjects();      // Command Queue, Allocator, List 생성
 
-    void FlushCommandQueue();
-
-    void ResetCommands();
-    void CloseCommands();
-    void ExecuteCommands();
+    void WaitForFence();
+    void WaitForGPUIdle();
+    void ExecuteCommands(ID3D12GraphicsCommandList* cmd);
 
     // === Getter 함수들 ===
     ComPtr<IDXGIFactory6> GetDXGIFactory() const;
     ComPtr<ID3D12Device> GetDevice() const;
     ComPtr<ID3D12CommandQueue> GetCommandQueue() const;
-    ComPtr<ID3D12GraphicsCommandList> GetCommandList() const;
-    ComPtr<ID3D12CommandAllocator> GetCommandAllocator() const;
     Window& GetWindow();
     DescriptorHeap& GetDescriptorHeaps();
 
     // === 렌더링 설정 ===
     void SetViewportConfig();  // Viewport 및 Scissor Rect 설정
-    void SetViewport();
+    void SetViewport(ID3D12GraphicsCommandList* cmd);
 
+    std::vector<CommandBuffer> CreateGraphicsCommandBuffers(uint32_t numBuffers);
+    CommandBuffer CreateGraphicsCommandBuffer();
   private:
     Window& window_;
     // === Core D3D12 Objects ===
@@ -49,8 +48,6 @@ class Context
 
     // === Command Objects (명령 기록 및 실행) ===
     ComPtr<ID3D12CommandQueue> commandQueue_;         // GPU에 명령 제출용 큐
-    ComPtr<ID3D12CommandAllocator> commandAllocator_; // Command List 메모리 할당자
-    ComPtr<ID3D12GraphicsCommandList> commandList_;   // 렌더링 명령 기록용 리스트
 
     // === Viewport and Scissor Rect ===
     D3D12_VIEWPORT screenViewport_;             // 렌더링 영역 (화면 전체)
