@@ -20,6 +20,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Application.h" />
+    <ClInclude Include="BarrierHelper.h" />
     <ClInclude Include="CommandBuffer.h" />
     <ClInclude Include="Context.h" />
     <ClInclude Include="DescriptorHeap.h" />
@@ -33,6 +34,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Application.cpp" />
+    <ClCompile Include="BarrierHelper.cpp" />
     <ClCompile Include="CommandBuffer.cpp" />
     <ClCompile Include="Context.cpp" />
     <ClCompile Include="DescriptorHeap.cpp" />

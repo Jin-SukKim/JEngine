@@ -129,12 +129,8 @@ void SwapChain::Resize() {
 }
 
 void SwapChain::Present() {
-    LogInfo("Present called - current buffer index: {}", curBackBufferIdx_);
-    
     ThrowIfFailed(swapChain_->Present(0, 0));
     curBackBufferIdx_ = (curBackBufferIdx_ + 1) % bufferCount_;
-    
-    LogInfo("Present completed - next buffer index: {}", curBackBufferIdx_);
 }
 
 uint32_t SwapChain::GetBufferCount() const {

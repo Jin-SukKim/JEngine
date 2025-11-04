@@ -13,7 +13,7 @@ class Renderer
     void Initialize();
     void Update(const Timer& timer);
     void Draw(ID3D12GraphicsCommandList* cmdList, Image2D& backBuffer);
-    void Resize();
+    void Resize(ID3D12GraphicsCommandList* cmdList);
   private:
     Context& context_;
     std::unique_ptr<Image2D> depthStencil_;

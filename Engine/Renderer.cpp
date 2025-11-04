@@ -23,14 +23,7 @@ void Renderer::Update(const Timer& timer) {
 
 void Renderer::Draw(ID3D12GraphicsCommandList* cmdList, Image2D& backBuffer) {
     // 1. Back Buffer를 PRESENT → RENDER_TARGET 상태로 전환
-    D3D12_RESOURCE_BARRIER barrier = {};
-    barrier.Type = D3D12_RESOURCE_BARRIER_TYPE_TRANSITION;
-    barrier.Flags = D3D12_RESOURCE_BARRIER_FLAG_NONE;
-    barrier.Transition.pResource = backBuffer.GetBufferPtr();
-    barrier.Transition.Subresource = D3D12_RESOURCE_BARRIER_ALL_SUBRESOURCES;
-    barrier.Transition.StateBefore = D3D12_RESOURCE_STATE_PRESENT;
-    barrier.Transition.StateAfter = D3D12_RESOURCE_STATE_RENDER_TARGET;
-    cmdList->ResourceBarrier(1, &barrier);
+    backBuffer.TransitionTo(cmdList, D3D12_RESOURCE_STATE_RENDER_TARGET);
 
     // 2. Render Target 및 Depth Stencil 설정
     D3D12_CPU_DESCRIPTOR_HANDLE rtvHandle = backBuffer.GetView();
@@ -44,12 +37,10 @@ void Renderer::Draw(ID3D12GraphicsCommandList* cmdList, Image2D& backBuffer) {
                                        1.0f, 0, 0, nullptr);
 
     // 4. Back Buffer를 RENDER_TARGET → PRESENT 상태로 전환
-    barrier.Transition.StateBefore = D3D12_RESOURCE_STATE_RENDER_TARGET;
-    barrier.Transition.StateAfter = D3D12_RESOURCE_STATE_PRESENT;
-    cmdList->ResourceBarrier(1, &barrier);
+    backBuffer.TransitionTo(cmdList, D3D12_RESOURCE_STATE_PRESENT);
 }
 
-void Renderer::Resize() {
+void Renderer::Resize(ID3D12GraphicsCommandList* cmdList) {
     depthStencil_->Reset();
     context_.GetDescriptorHeaps().ResetDSVCount();
     // Depth Stencil 버퍼 재생성
@@ -58,6 +49,6 @@ void Renderer::Resize() {
                                       context_.GetDescriptorHeaps().AllocateDSV());
 
     // Depth Stencil 버퍼 상태 전환
-    depthStencil_->TransitionTo();
+    depthStencil_->TransitionTo(cmdList, D3D12_RESOURCE_STATE_DEPTH_WRITE);
 }
 } // namespace JEngine

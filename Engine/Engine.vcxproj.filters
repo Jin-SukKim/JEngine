@@ -12,6 +12,7 @@
     <ClInclude Include="Image2D.h" />
     <ClInclude Include="SwapChain.h" />
     <ClInclude Include="CommandBuffer.h" />
+    <ClInclude Include="BarrierHelper.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp" />
@@ -25,5 +26,6 @@
     <ClCompile Include="Image2D.cpp" />
     <ClCompile Include="SwapChain.cpp" />
     <ClCompile Include="CommandBuffer.cpp" />
+    <ClCompile Include="BarrierHelper.cpp" />
   </ItemGroup>
 </Project>

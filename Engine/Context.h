@@ -20,7 +20,6 @@ class Context
     void createCommandObjects();      // Command Queue, Allocator, List 생성
 
     void WaitForFence();
-    void WaitForGPUIdle();
     void ExecuteCommands(ID3D12GraphicsCommandList* cmd);
 
     // === Getter 함수들 ===

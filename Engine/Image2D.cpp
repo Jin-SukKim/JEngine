@@ -10,6 +10,7 @@ void Image2D::CreateBackBufferRTV(DXGI_FORMAT format, D3D12_CPU_DESCRIPTOR_HANDL
     format_ = format;
     context_.GetDevice()->CreateRenderTargetView(resource_.Get(), nullptr, viewHandle);
     viewHandle_ = viewHandle;
+    barrierHelper_.SetInitialState(D3D12_RESOURCE_STATE_PRESENT);
     LogInfo("Created Back Buffer with format {}", static_cast<int>(format));
 }
 
@@ -47,7 +48,7 @@ void Image2D::CreateDepthStencil(UINT width, UINT height, D3D12_CPU_DESCRIPTOR_H
     // Committed Resource 생성 (Resource + Heap 동시 생성)
     ThrowIfFailed(
         context_.GetDevice()->CreateCommittedResource(&heapProps, D3D12_HEAP_FLAG_NONE, &depthStencilDesc,
-                                         D3D12_RESOURCE_STATE_COMMON, // 초기 상태 (아직 사용 전)
+                                         barrierHelper_.GetState(), // 초기 상태 (아직 사용 전)
                                          &optClear, IID_PPV_ARGS(resource_.GetAddressOf())));
 
     LogInfo("Depth Stencil Buffer created.");
@@ -71,32 +72,12 @@ void Image2D::Reset() {
     resource_.Reset();
     format_ = DXGI_FORMAT_UNKNOWN;
     viewHandle_.ptr = 0;
+    barrierHelper_.SetInitialState(D3D12_RESOURCE_STATE_COMMON);
     LogInfo("Image2D resource have been reset.");
+}
 
-} // namespace JEngine
-
-void Image2D::TransitionTo() {
+void Image2D::TransitionTo(ID3D12GraphicsCommandList* cmdList, D3D12_RESOURCE_STATES newState) {
     // === Resource State Transition (리소스 상태 전환) ===
-
-    // 임시 CommandBuffer로 리사이즈 명령 실행
-    auto cmd = context_.CreateGraphicsCommandBuffer();
-    auto* cmdList = cmd.BeginRecording();
-
-    // COMMON → DEPTH_WRITE 상태로 전환
-    // - D3D12에서는 리소스 사용 전에 명시적으로 상태 전환 필요
-    // - Vulkan의 Image Layout Transition과 동일한 개념
-    LogInfo("Transitioning Depth Stencil Buffer state (COMMON → DEPTH_WRITE)...");
-    D3D12_RESOURCE_BARRIER barrier = {};
-    barrier.Type = D3D12_RESOURCE_BARRIER_TYPE_TRANSITION;
-    barrier.Flags = D3D12_RESOURCE_BARRIER_FLAG_NONE;
-    barrier.Transition.pResource = resource_.Get();
-    barrier.Transition.Subresource = D3D12_RESOURCE_BARRIER_ALL_SUBRESOURCES;
-    barrier.Transition.StateBefore = D3D12_RESOURCE_STATE_COMMON;
-    barrier.Transition.StateAfter = D3D12_RESOURCE_STATE_DEPTH_WRITE;
-    cmdList->ResourceBarrier(1, &barrier);
-    LogInfo("Depth Stencil Buffer transitioned to DEPTH_WRITE state.");
-
-    cmd.EndRecording();
-    context_.ExecuteCommands(cmdList);
+    barrierHelper_.Transition(cmdList, resource_.Get(), newState);
 }
 } // namespace JEngine

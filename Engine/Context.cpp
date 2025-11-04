@@ -104,6 +104,9 @@ void Context::createCommandObjects() {
 }
 
 void Context::WaitForFence() {
+    ++currentFence_;
+    ThrowIfFailed(commandQueue_->Signal(fence_.Get(), currentFence_));
+
     // GPU가 해당 Fence 값에 도달할 때까지 대기
     if (fence_->GetCompletedValue() < currentFence_) {
         HANDLE eventHandle = CreateEventEx(nullptr, nullptr, 0, EVENT_ALL_ACCESS);
@@ -117,16 +120,9 @@ void Context::WaitForFence() {
 }
 
 void Context::ExecuteCommands(ID3D12GraphicsCommandList* cmd) {
-    LogInfo("ExecuteCommands called - current fence: {}", currentFence_);
-    
     ID3D12CommandList* cmdsLists[] = {cmd};
     commandQueue_->ExecuteCommandLists(_countof(cmdsLists), cmdsLists);
     
-    ++currentFence_;
-    ThrowIfFailed(commandQueue_->Signal(fence_.Get(), currentFence_));
-    
-    LogInfo("ExecuteCommands completed - new fence: {}", currentFence_);
-
     WaitForFence();
 }
 
@@ -187,24 +183,6 @@ std::vector<CommandBuffer> Context::CreateGraphicsCommandBuffers(uint32_t numBuf
 
 CommandBuffer Context::CreateGraphicsCommandBuffer() {
     return CommandBuffer(device_);
-}
-
-void Context::WaitForGPUIdle() {
-    LogInfo("Waiting for GPU to become idle...");
-    
-    // 새로운 fence 값 신호
-    ++currentFence_;
-    ThrowIfFailed(commandQueue_->Signal(fence_.Get(), currentFence_));
-    
-    // GPU가 해당 값에 도달할 때까지 대기
-    if (fence_->GetCompletedValue() < currentFence_) {
-        HANDLE eventHandle = CreateEventEx(nullptr, nullptr, 0, EVENT_ALL_ACCESS);
-        ThrowIfFailed(fence_->SetEventOnCompletion(currentFence_, eventHandle));
-        ::WaitForSingleObject(eventHandle, INFINITE);
-        ::CloseHandle(eventHandle);
-    }
-    
-    LogInfo("GPU is now idle.");
 }
 
 } // namespace JEngine

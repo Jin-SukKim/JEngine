@@ -36,22 +36,13 @@ CommandBuffer::~CommandBuffer() {
 }
 
 ID3D12GraphicsCommandList* CommandBuffer::BeginRecording() {
-    LogInfo("BeginRecording - Allocator: {:p}, CommandList: {:p}", 
-            (void*)commandAllocator_.Get(), (void*)commandList_.Get());
-    
     ThrowIfFailed(commandAllocator_->Reset());
-    LogInfo("Command Allocator reset successfully.");
-    
     ThrowIfFailed(commandList_->Reset(commandAllocator_.Get(), nullptr));
-    LogInfo("Command List reset successfully.");
-    
     return commandList_.Get();
 }
 
 void CommandBuffer::EndRecording() {
-    LogInfo("EndRecording - CommandList: {:p}", (void*)commandList_.Get());
     ThrowIfFailed(commandList_->Close());
-    LogInfo("Command List closed successfully.");
 }
 
 ID3D12GraphicsCommandList* CommandBuffer::GetCommandList() {

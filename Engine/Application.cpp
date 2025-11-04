@@ -7,7 +7,7 @@ Application::Application(HINSTANCE hinstance, std::wstring name)
 }
 
 Application::~Application() {
-    context_.WaitForGPUIdle();
+    context_.WaitForFence();
     LogInfo("Application destructor - GPU is idle, cleaning up resources.");
 }
 
@@ -71,7 +71,13 @@ void Application::OnResize() {
 
     swapChain_.Resize();
 
-    renderer_.Resize();
+    int frameIdx = swapChain_.GetCurrentBackBufferIndex();
+
+    auto& cmdBuffer = commandBuffers_[frameIdx];
+    auto* cmdList = cmdBuffer.BeginRecording();
+    renderer_.Resize(cmdList);
+    cmdBuffer.EndRecording();
+    context_.ExecuteCommands(cmdList);
 
     // Viewport 및 Scissor Rect 재설정
     context_.SetViewportConfig();
