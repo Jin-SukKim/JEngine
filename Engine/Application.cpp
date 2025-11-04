@@ -7,7 +7,6 @@ Application::Application(HINSTANCE hinstance, std::wstring name)
 }
 
 Application::~Application() {
-    context_.WaitForFence();
     LogInfo("Application destructor - GPU is idle, cleaning up resources.");
 }
 
@@ -18,6 +17,9 @@ void Application::Initialize() {
     renderer_.Initialize();
 
     commandBuffers_ = context_.CreateGraphicsCommandBuffers(swapChain_.GetBufferCount());
+    frameFence_.reserve(swapChain_.GetBufferCount());
+    for (uint32_t i = 0; i < swapChain_.GetBufferCount(); ++i)
+        frameFence_.emplace_back(Fence(context_.GetDevice(), context_.GetCommandQueue()));
 
     OnResize();
 }
@@ -40,6 +42,8 @@ int Application::Run() {
             if (!window_.IsPaused()) {
                 int frameIdx = swapChain_.GetCurrentBackBufferIndex();
 
+                frameFence_[frameIdx].WaitForGPU();
+
                 auto& cmdBuffer = commandBuffers_[frameIdx];
                 auto* cmdList = cmdBuffer.BeginRecording();
 
@@ -55,6 +59,8 @@ int Application::Run() {
 
                 // 화면에 표시 (Swap Chain Present)
                 swapChain_.Present();
+
+                frameFence_[frameIdx].Signal();
             } else {
                 Sleep(100); // 비활성 상태에서는 CPU 사용량 감소를 위해 잠시 대기
                 // TODO: GUI 추가되면 GUI 사용
@@ -67,17 +73,19 @@ int Application::Run() {
 
 void Application::OnResize() {
     // Resource에 변화를 주기 전에 GPU가 모든 작업을 완료하도록 대기
-    context_.WaitForFence();
-
     swapChain_.Resize();
 
-    int frameIdx = swapChain_.GetCurrentBackBufferIndex();
+    for (Fence& fence : frameFence_)
+        fence.WaitForGPU();
 
+    int frameIdx = swapChain_.GetCurrentBackBufferIndex();
     auto& cmdBuffer = commandBuffers_[frameIdx];
     auto* cmdList = cmdBuffer.BeginRecording();
     renderer_.Resize(cmdList);
     cmdBuffer.EndRecording();
     context_.ExecuteCommands(cmdList);
+    frameFence_[frameIdx].Signal();
+    frameFence_[frameIdx].WaitForGPU();
 
     // Viewport 및 Scissor Rect 재설정
     context_.SetViewportConfig();

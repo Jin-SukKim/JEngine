@@ -19,13 +19,15 @@ class Context
     void createDevice();              // D3D12 Device 및 Factory 생성
     void createCommandObjects();      // Command Queue, Allocator, List 생성
 
-    void WaitForFence();
     void ExecuteCommands(ID3D12GraphicsCommandList* cmd);
 
     // === Getter 함수들 ===
     ComPtr<IDXGIFactory6> GetDXGIFactory() const;
+
     ComPtr<ID3D12Device> GetDevice() const;
     ComPtr<ID3D12CommandQueue> GetCommandQueue() const;
+    ComPtr<ID3D12Device>& GetDevice();
+    ComPtr<ID3D12CommandQueue>& GetCommandQueue();
     Window& GetWindow();
     DescriptorHeap& GetDescriptorHeaps();
 
@@ -40,10 +42,6 @@ class Context
     // === Core D3D12 Objects ===
     ComPtr<IDXGIFactory6> dxgiFactory_;         // DXGI Factory (Adapter, Swap Chain 생성용)
     ComPtr<ID3D12Device> device_;               // D3D12 Device (리소스 생성 및 관리)
-   
-    // === Synchronization ===
-    ComPtr<ID3D12Fence> fence_;                 // CPU-GPU 동기화용 Fence
-    UINT currentFence_ = 0;   // 현재 Fence 값 추적
 
     // === Command Objects (명령 기록 및 실행) ===
     ComPtr<ID3D12CommandQueue> commandQueue_;         // GPU에 명령 제출용 큐

@@ -13,6 +13,7 @@
     <ClInclude Include="SwapChain.h" />
     <ClInclude Include="CommandBuffer.h" />
     <ClInclude Include="BarrierHelper.h" />
+    <ClInclude Include="Fence.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp" />
@@ -27,5 +28,6 @@
     <ClCompile Include="SwapChain.cpp" />
     <ClCompile Include="CommandBuffer.cpp" />
     <ClCompile Include="BarrierHelper.cpp" />
+    <ClCompile Include="Fence.cpp" />
   </ItemGroup>
 </Project>

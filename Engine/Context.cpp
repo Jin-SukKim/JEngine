@@ -4,12 +4,11 @@
 
 namespace JEngine {
 
-Context::Context(Window& window) : window_(window), descriptorHeaps_(device_) {
+Context::Context(Window& window)
+    : window_(window), descriptorHeaps_(device_), screenViewport_{}, scissorRect_{} {
 }
 
 Context::~Context() {
-    if (device_)
-        WaitForFence();
     //if (device_) 
     //    FlushCommandQueue();
 }
@@ -81,11 +80,6 @@ void Context::createDevice() {
         LogInfo("Hardware device created successfully.");
     }
 
-    // Fence 생성 (CPU-GPU 동기화용)
-    // - GPU 작업 완료를 CPU에서 확인하기 위한 동기화 객체
-    ThrowIfFailed(device_->CreateFence(0, D3D12_FENCE_FLAG_NONE, IID_PPV_ARGS(&fence_)));
-    LogInfo("Fence created for CPU-GPU synchronization.");
-
     LogInfo("=== Direct3D 12 Device Initialization Complete ===\n");
 }
 
@@ -103,27 +97,9 @@ void Context::createCommandObjects() {
     LogInfo("=== Command Objects Creation Complete ===\n");
 }
 
-void Context::WaitForFence() {
-    ++currentFence_;
-    ThrowIfFailed(commandQueue_->Signal(fence_.Get(), currentFence_));
-
-    // GPU가 해당 Fence 값에 도달할 때까지 대기
-    if (fence_->GetCompletedValue() < currentFence_) {
-        HANDLE eventHandle = CreateEventEx(nullptr, nullptr, 0, EVENT_ALL_ACCESS);
-        // Fence 값이 도달할 때 이벤트 신호 발생
-        ThrowIfFailed(fence_->SetEventOnCompletion(currentFence_, eventHandle));
-
-        // 이벤트 대기
-        ::WaitForSingleObject(eventHandle, INFINITE);
-        ::CloseHandle(eventHandle);
-    }
-}
-
 void Context::ExecuteCommands(ID3D12GraphicsCommandList* cmd) {
     ID3D12CommandList* cmdsLists[] = {cmd};
     commandQueue_->ExecuteCommandLists(_countof(cmdsLists), cmdsLists);
-    
-    WaitForFence();
 }
 
 ComPtr<IDXGIFactory6> Context::GetDXGIFactory() const {
@@ -135,6 +111,14 @@ ComPtr<ID3D12Device> Context::GetDevice() const {
 }
 
 ComPtr<ID3D12CommandQueue> Context::GetCommandQueue() const {
+    return commandQueue_;
+}
+
+ComPtr<ID3D12Device>& Context::GetDevice() {
+    return device_;
+}
+
+ComPtr<ID3D12CommandQueue>& Context::GetCommandQueue() {
     return commandQueue_;
 }
 

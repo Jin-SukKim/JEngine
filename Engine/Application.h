@@ -5,6 +5,7 @@
 #include "Timer.h"
 #include "SwapChain.h"
 #include "Renderer.h"
+#include "Fence.h"
 
 namespace JEngine {
 class Application
@@ -25,5 +26,6 @@ class Application
     Renderer renderer_;
 
     std::vector<CommandBuffer> commandBuffers_;
+    std::vector<Fence> frameFence_;
 };
 } // namespace JEngine

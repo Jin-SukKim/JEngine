@@ -7,7 +7,6 @@
 [INFO] DXGI Factory created successfully.
 [INFO] Attempting to create hardware device...
 [INFO] Hardware device created successfully.
-[INFO] Fence created for CPU-GPU synchronization.
 [INFO] === Direct3D 12 Device Initialization Complete ===
 
 [INFO] === Creating Command Objects ===
@@ -38,16 +37,20 @@
 [INFO] Get new DSV Descriptor Handle
 [INFO] Depth Stencil Buffer created.
 [INFO] Depth Stencil View created.
-[INFO] Command Allocator created: 0x2bd335241b0
-[INFO] Graphics Command List created: 0x2bd39c8f2e0
+[INFO] Command Allocator created: 0x223dbbb2db0
+[INFO] Graphics Command List created: 0x223e20f4820
 [INFO] Command List closed and ready for recording commands.
-[INFO] CommandBuffer destructor - releasing CommandList: 0x2bd39c8f2e0
-[INFO] CommandBuffer destructor - releasing CommandAllocator: 0x2bd335241b0
-[INFO] Command Allocator created: 0x2bd39d05d60
-[INFO] Graphics Command List created: 0x2bd39d06830
+[INFO] CommandBuffer destructor - releasing CommandList: 0x223e20f4820
+[INFO] CommandBuffer destructor - releasing CommandAllocator: 0x223dbbb2db0
+[INFO] Command Allocator created: 0x223e21657a0
+[INFO] Graphics Command List created: 0x223e2166270
 [INFO] Command List closed and ready for recording commands.
-[INFO] CommandBuffer destructor - releasing CommandList: 0x2bd39d06830
-[INFO] CommandBuffer destructor - releasing CommandAllocator: 0x2bd39d05d60
+[INFO] CommandBuffer destructor - releasing CommandList: 0x223e2166270
+[INFO] CommandBuffer destructor - releasing CommandAllocator: 0x223e21657a0
+[INFO] Fence created for CPU-GPU synchronization.
+[INFO] Fence destroyed.
+[INFO] Fence created for CPU-GPU synchronization.
+[INFO] Fence destroyed.
 [INFO] === Resizing Swap Chain Buffers ===
 [INFO] Image2D resource have been reset.
 [INFO] Image2D resource have been reset.
@@ -72,12 +75,14 @@
 [INFO] Timer reset.
 [INFO] === Entering Main Message Loop ===
 [INFO] Application destructor - GPU is idle, cleaning up resources.
-[INFO] CommandBuffer destructor - releasing CommandList: 0x2bd39c8f2e0
-[INFO] CommandBuffer destructor - releasing CommandAllocator: 0x2bd335241b0
-[INFO] CommandBuffer destructor - releasing CommandList: 0x2bd39d06830
-[INFO] CommandBuffer destructor - releasing CommandAllocator: 0x2bd39d05d60
+[INFO] Fence destroyed.
+[INFO] Fence destroyed.
+[INFO] CommandBuffer destructor - releasing CommandList: 0x223e20f4820
+[INFO] CommandBuffer destructor - releasing CommandAllocator: 0x223dbbb2db0
+[INFO] CommandBuffer destructor - releasing CommandList: 0x223e2166270
+[INFO] CommandBuffer destructor - releasing CommandAllocator: 0x223e21657a0
 [INFO] Image2D resource have been reset.
 [INFO] Image2D resource have been reset.
 
 === Logging Session Ended ===
-Total messages processed: 73
+Total messages processed: 78

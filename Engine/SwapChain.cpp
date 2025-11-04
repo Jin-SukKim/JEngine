@@ -25,11 +25,11 @@ void SwapChain::Initialize() {
 
 Image2D& SwapChain::GetCurrentBackBuffer() {
     // 현재 Back Buffer 리소스 반환 구현
-    return backBuffers_[curBackBufferIdx_];
+    return backBuffers_[GetCurrentBackBufferIndex()];
 }
 
 int SwapChain::GetCurrentBackBufferIndex() const {
-    return curBackBufferIdx_;
+    return swapChain_->GetCurrentBackBufferIndex();
 }
 
 void SwapChain::create() {
@@ -121,7 +121,6 @@ void SwapChain::Resize() {
     ThrowIfFailed(swapChain_->ResizeBuffers(bufferCount_, context_.GetWindow().GetWidth(),
                                             context_.GetWindow().GetHeight(), backBufferFormat_,
                                             DXGI_SWAP_CHAIN_FLAG_ALLOW_MODE_SWITCH));
-    curBackBufferIdx_ = 0;
     context_.GetDescriptorHeaps().ResetRTVCount();
 
     // Render Target View 재생성
@@ -130,7 +129,6 @@ void SwapChain::Resize() {
 
 void SwapChain::Present() {
     ThrowIfFailed(swapChain_->Present(0, 0));
-    curBackBufferIdx_ = (curBackBufferIdx_ + 1) % bufferCount_;
 }
 
 uint32_t SwapChain::GetBufferCount() const {
