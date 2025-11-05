@@ -12,10 +12,10 @@
 namespace JEngine {
 
 enum class LogLevel { 
+    Debug, 
     Info, 
     Warning, 
-    Error,    
-    Debug 
+    Error    
 };
 
 // Singleton-based logging system that writes to both console and log.txt file.

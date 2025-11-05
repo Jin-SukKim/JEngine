@@ -12,7 +12,8 @@ class Fence
     Fence(const Fence&) = delete;
     Fence& operator=(const Fence&) = delete;
 
-    Fence(Fence&& other) noexcept;
+    
+    Fence(Fence&& other) noexcept; // C++ 컨테이너에서 크기를 바꿀때 copy말고 move가 사용되도록 noexcept 설정
     Fence& operator=(Fence&& other) noexcept = delete; // Referece member 변수가 있기 때문에 비활성화
 
     void Signal();

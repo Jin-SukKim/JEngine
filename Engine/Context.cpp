@@ -5,7 +5,7 @@
 namespace JEngine {
 
 Context::Context(Window& window)
-    : window_(window), descriptorHeaps_(device_), screenViewport_{}, scissorRect_{} {
+    : window_(window), screenViewport_{}, scissorRect_{} {
 }
 
 Context::~Context() {
@@ -17,7 +17,7 @@ void Context::Initialize() {
     LogInfo("=== Initializing Context ===");
     createDevice();
     createCommandObjects();
-    descriptorHeaps_.Initialize();
+    descriptorPool_ = std::make_unique<DescriptorPool>(device_);
     LogInfo("=== Context Initialization Complete ===\n");
 }
 
@@ -126,8 +126,8 @@ Window& Context::GetWindow() {
     return window_;
 }
 
-DescriptorHeap& Context::GetDescriptorHeaps() {
-    return descriptorHeaps_;
+std::unique_ptr<DescriptorPool>& Context::GetDescriptorPool() {
+    return descriptorPool_;
 }
 
 void Context::SetViewportConfig() {

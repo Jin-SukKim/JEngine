@@ -1,7 +1,7 @@
 #pragma once
 
 #include "pch.h" // ComPtr 등이 정의된 pch.h 포함
-#include "DescriptorHeap.h"
+#include "DescriptorPool.h"
 #include "CommandBuffer.h"
 
 namespace JEngine {
@@ -29,7 +29,7 @@ class Context
     ComPtr<ID3D12Device>& GetDevice();
     ComPtr<ID3D12CommandQueue>& GetCommandQueue();
     Window& GetWindow();
-    DescriptorHeap& GetDescriptorHeaps();
+    std::unique_ptr<DescriptorPool>& GetDescriptorPool();
 
     // === 렌더링 설정 ===
     void SetViewportConfig();  // Viewport 및 Scissor Rect 설정
@@ -50,7 +50,7 @@ class Context
     D3D12_VIEWPORT screenViewport_;             // 렌더링 영역 (화면 전체)
     D3D12_RECT scissorRect_;                    // 잘라낼 영역 (일반적으로 화면 전체)
 
-    DescriptorHeap descriptorHeaps_;
+    std::unique_ptr<DescriptorPool> descriptorPool_;
 };
 
 } // namespace JEngine

@@ -92,15 +92,11 @@ void SwapChain::createRTV() {
         // Swap Chain으로부터 Back Buffer 리소스 가져오기
         ThrowIfFailed(swapChain_->GetBuffer(i, IID_PPV_ARGS(&buffer)));
         
-        D3D12_CPU_DESCRIPTOR_HANDLE rtvHandle = context_.GetDescriptorHeaps().AllocateRTV();
+        D3D12_CPU_DESCRIPTOR_HANDLE rtvHandle = context_.GetDescriptorPool()->AllocateRTV();
         
-        // CreateBackBufferRTV 호출 전에 buffer를 Image2D에 설정
-        backBuffers_[i].GetBuffer() = buffer;
+        // CreateRTV 호출 전에 buffer를 Image2D에 설정
+        backBuffers_[i].SetResource(buffer);
         backBuffers_[i].CreateBackBufferRTV(backBufferFormat_, rtvHandle);
-        
-        // Heap의 해당 위치에 RTV 생성
-        context_.GetDevice()->CreateRenderTargetView(backBuffers_[i].GetBufferPtr(), nullptr,
-                                                     rtvHandle);
     }
     LogInfo("Render Target Views created for all back buffers.");
 
@@ -121,7 +117,7 @@ void SwapChain::Resize() {
     ThrowIfFailed(swapChain_->ResizeBuffers(bufferCount_, context_.GetWindow().GetWidth(),
                                             context_.GetWindow().GetHeight(), backBufferFormat_,
                                             DXGI_SWAP_CHAIN_FLAG_ALLOW_MODE_SWITCH));
-    context_.GetDescriptorHeaps().ResetRTVCount();
+    context_.GetDescriptorPool()->ResetRTV();
 
     // Render Target View 재생성
     createRTV();

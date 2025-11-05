@@ -8,21 +8,15 @@ class Image2D
   public:
     Image2D(Context& ctx);
 
-    ComPtr<ID3D12Resource>& GetBuffer() {
-        return resource_;
-    }
-    ID3D12Resource* GetBufferPtr() {
-        return resource_.Get();
-    }
+    ComPtr<ID3D12Resource>& GetBuffer();
+    ID3D12Resource* GetResourcePtr();
+    void SetResource(ComPtr<ID3D12Resource>& res);
 
-    DXGI_FORMAT GetFormat() const {
-        return format_;
-    }
+    DXGI_FORMAT GetFormat() const;
 
-    D3D12_CPU_DESCRIPTOR_HANDLE GetView() {
-        return viewHandle_;
-    }
+    D3D12_CPU_DESCRIPTOR_HANDLE GetView();
 
+    void CreateRTV(DXGI_FORMAT format, D3D12_CPU_DESCRIPTOR_HANDLE viewHandle);
     void CreateBackBufferRTV(DXGI_FORMAT format, D3D12_CPU_DESCRIPTOR_HANDLE viewHandle);
 
     void CreateDepthStencil(UINT width, UINT height, D3D12_CPU_DESCRIPTOR_HANDLE viewHandle);

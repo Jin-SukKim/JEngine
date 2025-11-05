@@ -13,12 +13,9 @@
 [INFO] Command Queue created.
 [INFO] === Command Objects Creation Complete ===
 
-[INFO] Descriptor sizes - RTV: 32, DSV: 8, CBV/SRV/UAV: 32
-[INFO] === Creating Descriptor Heaps ===
-[INFO] Render Target View Descriptor Heap created with 2 descriptors.
-[INFO] Depth Stencil View Descriptor Heap created with 1 descriptors.
-[INFO] === Descriptor Heaps Creation Complete ===
-
+[INFO] Descriptor Heap created - Type: 2, NumDescriptors: 2, DescriptorSize: 32
+[INFO] Descriptor Heap created - Type: 3, NumDescriptors: 1, DescriptorSize: 8
+[INFO] Descriptor Pool created.
 [INFO] === Context Initialization Complete ===
 
 [INFO] === Creating Swap Chain ===
@@ -27,26 +24,26 @@
 [INFO] === Swap Chain Creation Complete ===
 
 [INFO] === Creating Render Target Views ===
-[INFO] Get new RTV Descriptor Handle
-[INFO] Created Back Buffer with format 28
-[INFO] Get new RTV Descriptor Handle
-[INFO] Created Back Buffer with format 28
+[INFO] Get new Descriptor Handle - Current Index: 1, Max Size: 2
+[INFO] Created RTV with format 28
+[INFO] Get new Descriptor Handle - Current Index: 2, Max Size: 2
+[INFO] Created RTV with format 28
 [INFO] Render Target Views created for all back buffers.
 [INFO] === Render Target Views Creation Complete ===
 
-[INFO] Get new DSV Descriptor Handle
+[INFO] Get new Descriptor Handle - Current Index: 1, Max Size: 1
 [INFO] Depth Stencil Buffer created.
 [INFO] Depth Stencil View created.
-[INFO] Command Allocator created: 0x223dbbb2db0
-[INFO] Graphics Command List created: 0x223e20f4820
+[INFO] Command Allocator created: 0x24247192770
+[INFO] Graphics Command List created: 0x2424d6e3e70
 [INFO] Command List closed and ready for recording commands.
-[INFO] CommandBuffer destructor - releasing CommandList: 0x223e20f4820
-[INFO] CommandBuffer destructor - releasing CommandAllocator: 0x223dbbb2db0
-[INFO] Command Allocator created: 0x223e21657a0
-[INFO] Graphics Command List created: 0x223e2166270
+[INFO] CommandBuffer destructor - releasing CommandList: 0x2424d6e3e70
+[INFO] CommandBuffer destructor - releasing CommandAllocator: 0x24247192770
+[INFO] Command Allocator created: 0x2424d763410
+[INFO] Graphics Command List created: 0x2424d763ee0
 [INFO] Command List closed and ready for recording commands.
-[INFO] CommandBuffer destructor - releasing CommandList: 0x223e2166270
-[INFO] CommandBuffer destructor - releasing CommandAllocator: 0x223e21657a0
+[INFO] CommandBuffer destructor - releasing CommandList: 0x2424d763ee0
+[INFO] CommandBuffer destructor - releasing CommandAllocator: 0x2424d763410
 [INFO] Fence created for CPU-GPU synchronization.
 [INFO] Fence destroyed.
 [INFO] Fence created for CPU-GPU synchronization.
@@ -54,18 +51,18 @@
 [INFO] === Resizing Swap Chain Buffers ===
 [INFO] Image2D resource have been reset.
 [INFO] Image2D resource have been reset.
-[INFO] RTV Descriptor count reset to 0.
+[INFO] Descriptor Heap reset - Current Index set to 0
 [INFO] === Creating Render Target Views ===
-[INFO] Get new RTV Descriptor Handle
-[INFO] Created Back Buffer with format 28
-[INFO] Get new RTV Descriptor Handle
-[INFO] Created Back Buffer with format 28
+[INFO] Get new Descriptor Handle - Current Index: 1, Max Size: 2
+[INFO] Created RTV with format 28
+[INFO] Get new Descriptor Handle - Current Index: 2, Max Size: 2
+[INFO] Created RTV with format 28
 [INFO] Render Target Views created for all back buffers.
 [INFO] === Render Target Views Creation Complete ===
 
 [INFO] Image2D resource have been reset.
-[INFO] DSV Descriptor count reset to 0.
-[INFO] Get new DSV Descriptor Handle
+[INFO] Descriptor Heap reset - Current Index set to 0
+[INFO] Get new Descriptor Handle - Current Index: 1, Max Size: 1
 [INFO] Depth Stencil Buffer created.
 [INFO] Depth Stencil View created.
 [INFO] Setting Viewport and Scissor Rect (1280x720)...
@@ -77,12 +74,12 @@
 [INFO] Application destructor - GPU is idle, cleaning up resources.
 [INFO] Fence destroyed.
 [INFO] Fence destroyed.
-[INFO] CommandBuffer destructor - releasing CommandList: 0x223e20f4820
-[INFO] CommandBuffer destructor - releasing CommandAllocator: 0x223dbbb2db0
-[INFO] CommandBuffer destructor - releasing CommandList: 0x223e2166270
-[INFO] CommandBuffer destructor - releasing CommandAllocator: 0x223e21657a0
+[INFO] CommandBuffer destructor - releasing CommandList: 0x2424d6e3e70
+[INFO] CommandBuffer destructor - releasing CommandAllocator: 0x24247192770
+[INFO] CommandBuffer destructor - releasing CommandList: 0x2424d763ee0
+[INFO] CommandBuffer destructor - releasing CommandAllocator: 0x2424d763410
 [INFO] Image2D resource have been reset.
 [INFO] Image2D resource have been reset.
 
 === Logging Session Ended ===
-Total messages processed: 78
+Total messages processed: 76

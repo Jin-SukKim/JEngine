@@ -14,6 +14,7 @@
     <ClInclude Include="CommandBuffer.h" />
     <ClInclude Include="BarrierHelper.h" />
     <ClInclude Include="Fence.h" />
+    <ClInclude Include="DescriptorPool.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp" />
@@ -29,5 +30,6 @@
     <ClCompile Include="CommandBuffer.cpp" />
     <ClCompile Include="BarrierHelper.cpp" />
     <ClCompile Include="Fence.cpp" />
+    <ClCompile Include="DescriptorPool.cpp" />
   </ItemGroup>
 </Project>

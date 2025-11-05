@@ -15,7 +15,7 @@ void Renderer::Initialize() {
     // Depth Stencil 버퍼 생성
     depthStencil_->CreateDepthStencil(context_.GetWindow().GetWidth(),
                                       context_.GetWindow().GetHeight(),
-                                      context_.GetDescriptorHeaps().AllocateDSV());
+                                      context_.GetDescriptorPool()->AllocateDSV());
 }
 
 void Renderer::Update(const Timer& timer) {
@@ -42,11 +42,11 @@ void Renderer::Draw(ID3D12GraphicsCommandList* cmdList, Image2D& backBuffer) {
 
 void Renderer::Resize(ID3D12GraphicsCommandList* cmdList) {
     depthStencil_->Reset();
-    context_.GetDescriptorHeaps().ResetDSVCount();
+    context_.GetDescriptorPool()->ResetDSV();
     // Depth Stencil 버퍼 재생성
     depthStencil_->CreateDepthStencil(context_.GetWindow().GetWidth(),
                                       context_.GetWindow().GetHeight(),
-                                      context_.GetDescriptorHeaps().AllocateDSV());
+                                      context_.GetDescriptorPool()->AllocateDSV());
 
     // Depth Stencil 버퍼 상태 전환
     depthStencil_->TransitionTo(cmdList, D3D12_RESOURCE_STATE_DEPTH_WRITE);

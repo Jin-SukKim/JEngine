@@ -6,12 +6,37 @@ namespace JEngine {
 Image2D::Image2D(Context& ctx) : context_(ctx) {
 }
 
+ComPtr<ID3D12Resource>& Image2D::GetBuffer() {
+    return resource_;
+}
+
+ID3D12Resource* Image2D::GetResourcePtr() {
+    return resource_.Get();
+}
+
+void Image2D::SetResource(ComPtr<ID3D12Resource>& res) {
+    resource_ = res;    
+}
+
+DXGI_FORMAT Image2D::GetFormat() const {
+    return format_;
+}
+
+D3D12_CPU_DESCRIPTOR_HANDLE Image2D::GetView() {
+    return viewHandle_;
+}
+
 void Image2D::CreateBackBufferRTV(DXGI_FORMAT format, D3D12_CPU_DESCRIPTOR_HANDLE viewHandle) {
+    CreateRTV(format, viewHandle);
+    barrierHelper_.SetInitialState(D3D12_RESOURCE_STATE_PRESENT);
+}
+
+void Image2D::CreateRTV(DXGI_FORMAT format, D3D12_CPU_DESCRIPTOR_HANDLE viewHandle) {
     format_ = format;
     context_.GetDevice()->CreateRenderTargetView(resource_.Get(), nullptr, viewHandle);
     viewHandle_ = viewHandle;
-    barrierHelper_.SetInitialState(D3D12_RESOURCE_STATE_PRESENT);
-    LogInfo("Created Back Buffer with format {}", static_cast<int>(format));
+
+    LogInfo("Created RTV with format {}", static_cast<int>(format));
 }
 
 void Image2D::CreateDepthStencil(UINT width, UINT height, D3D12_CPU_DESCRIPTOR_HANDLE viewHandle) {

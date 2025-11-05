@@ -24,6 +24,7 @@
     <ClInclude Include="CommandBuffer.h" />
     <ClInclude Include="Context.h" />
     <ClInclude Include="DescriptorHeap.h" />
+    <ClInclude Include="DescriptorPool.h" />
     <ClInclude Include="Fence.h" />
     <ClInclude Include="Image2D.h" />
     <ClInclude Include="Logger.h" />
@@ -39,6 +40,7 @@
     <ClCompile Include="CommandBuffer.cpp" />
     <ClCompile Include="Context.cpp" />
     <ClCompile Include="DescriptorHeap.cpp" />
+    <ClCompile Include="DescriptorPool.cpp" />
     <ClCompile Include="Fence.cpp" />
     <ClCompile Include="Image2D.cpp" />
     <ClCompile Include="Logger.cpp" />
