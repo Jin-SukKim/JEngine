@@ -9,12 +9,12 @@
     <ClInclude Include="DescriptorHeap.h" />
     <ClInclude Include="Renderer.h" />
     <ClInclude Include="Application.h" />
-    <ClInclude Include="Image2D.h" />
     <ClInclude Include="SwapChain.h" />
     <ClInclude Include="CommandBuffer.h" />
     <ClInclude Include="BarrierHelper.h" />
     <ClInclude Include="Fence.h" />
     <ClInclude Include="DescriptorPool.h" />
+    <ClInclude Include="Resource.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp" />
@@ -25,11 +25,11 @@
     <ClCompile Include="DescriptorHeap.cpp" />
     <ClCompile Include="Renderer.cpp" />
     <ClCompile Include="Application.cpp" />
-    <ClCompile Include="Image2D.cpp" />
     <ClCompile Include="SwapChain.cpp" />
     <ClCompile Include="CommandBuffer.cpp" />
     <ClCompile Include="BarrierHelper.cpp" />
     <ClCompile Include="Fence.cpp" />
     <ClCompile Include="DescriptorPool.cpp" />
+    <ClCompile Include="Resource.cpp" />
   </ItemGroup>
 </Project>

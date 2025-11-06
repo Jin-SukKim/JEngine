@@ -2,7 +2,7 @@
 
 namespace JEngine {
 class Timer;
-class Image2D;
+class Resource;
 class Context;
 
 class Renderer
@@ -12,11 +12,11 @@ class Renderer
 
     void Initialize();
     void Update(const Timer& timer);
-    void Draw(ID3D12GraphicsCommandList* cmdList, Image2D& backBuffer);
+    void Draw(ID3D12GraphicsCommandList* cmdList, Resource& backBuffer);
     void Resize(ID3D12GraphicsCommandList* cmdList);
   private:
     Context& context_;
-    std::unique_ptr<Image2D> depthStencil_;
+    std::unique_ptr<Resource> depthStencil_;
 };
 
 } // namespace JEngine

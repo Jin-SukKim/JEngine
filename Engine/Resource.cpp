@@ -1,37 +1,37 @@
 #include "pch.h"
-#include "Image2D.h"
+#include "Resource.h"
 #include "Context.h"
 
 namespace JEngine {
-Image2D::Image2D(Context& ctx) : context_(ctx) {
+Resource::Resource(Context& ctx) : context_(ctx) {
 }
 
-ComPtr<ID3D12Resource>& Image2D::GetBuffer() {
+ComPtr<ID3D12Resource>& Resource::GetBuffer() {
     return resource_;
 }
 
-ID3D12Resource* Image2D::GetResourcePtr() {
+ID3D12Resource* Resource::GetResourcePtr() {
     return resource_.Get();
 }
 
-void Image2D::SetResource(ComPtr<ID3D12Resource>& res) {
-    resource_ = res;    
+void Resource::SetResource(ComPtr<ID3D12Resource>& res) {
+    resource_ = res;
 }
 
-DXGI_FORMAT Image2D::GetFormat() const {
+DXGI_FORMAT Resource::GetFormat() const {
     return format_;
 }
 
-D3D12_CPU_DESCRIPTOR_HANDLE Image2D::GetView() {
+D3D12_CPU_DESCRIPTOR_HANDLE Resource::GetView() {
     return viewHandle_;
 }
 
-void Image2D::CreateBackBufferRTV(DXGI_FORMAT format, D3D12_CPU_DESCRIPTOR_HANDLE viewHandle) {
+void Resource::CreateBackBufferRTV(DXGI_FORMAT format, D3D12_CPU_DESCRIPTOR_HANDLE viewHandle) {
     CreateRTV(format, viewHandle);
     barrierHelper_.SetInitialState(D3D12_RESOURCE_STATE_PRESENT);
 }
 
-void Image2D::CreateRTV(DXGI_FORMAT format, D3D12_CPU_DESCRIPTOR_HANDLE viewHandle) {
+void Resource::CreateRTV(DXGI_FORMAT format, D3D12_CPU_DESCRIPTOR_HANDLE viewHandle) {
     format_ = format;
     context_.GetDevice()->CreateRenderTargetView(resource_.Get(), nullptr, viewHandle);
     viewHandle_ = viewHandle;
@@ -39,7 +39,7 @@ void Image2D::CreateRTV(DXGI_FORMAT format, D3D12_CPU_DESCRIPTOR_HANDLE viewHand
     LogInfo("Created RTV with format {}", static_cast<int>(format));
 }
 
-void Image2D::CreateDepthStencil(UINT width, UINT height, D3D12_CPU_DESCRIPTOR_HANDLE viewHandle) {
+void Resource::CreateDepthStencil(UINT width, UINT height, D3D12_CPU_DESCRIPTOR_HANDLE viewHandle) {
     // Resource Description 설정
     D3D12_RESOURCE_DESC depthStencilDesc = {};
     depthStencilDesc.Dimension = D3D12_RESOURCE_DIMENSION_TEXTURE2D; // 2D 텍스처
@@ -71,10 +71,10 @@ void Image2D::CreateDepthStencil(UINT width, UINT height, D3D12_CPU_DESCRIPTOR_H
     heapProps.VisibleNodeMask = 1;
 
     // Committed Resource 생성 (Resource + Heap 동시 생성)
-    ThrowIfFailed(
-        context_.GetDevice()->CreateCommittedResource(&heapProps, D3D12_HEAP_FLAG_NONE, &depthStencilDesc,
-                                         barrierHelper_.GetState(), // 초기 상태 (아직 사용 전)
-                                         &optClear, IID_PPV_ARGS(resource_.GetAddressOf())));
+    ThrowIfFailed(context_.GetDevice()->CreateCommittedResource(
+        &heapProps, D3D12_HEAP_FLAG_NONE, &depthStencilDesc,
+        barrierHelper_.GetState(), // 초기 상태 (아직 사용 전)
+        &optClear, IID_PPV_ARGS(resource_.GetAddressOf())));
 
     LogInfo("Depth Stencil Buffer created.");
 
@@ -93,16 +93,18 @@ void Image2D::CreateDepthStencil(UINT width, UINT height, D3D12_CPU_DESCRIPTOR_H
     LogInfo("Depth Stencil View created.");
 }
 
-void Image2D::Reset() {
+void Resource::Reset() {
     resource_.Reset();
     format_ = DXGI_FORMAT_UNKNOWN;
     viewHandle_.ptr = 0;
     barrierHelper_.SetInitialState(D3D12_RESOURCE_STATE_COMMON);
-    LogInfo("Image2D resource have been reset.");
+    LogInfo("Resource resource have been reset.");
 }
 
-void Image2D::TransitionTo(ID3D12GraphicsCommandList* cmdList, D3D12_RESOURCE_STATES newState) {
+void Resource::TransitionTo(ID3D12GraphicsCommandList* cmdList, D3D12_RESOURCE_STATES newState) {
     // === Resource State Transition (리소스 상태 전환) ===
     barrierHelper_.Transition(cmdList, resource_.Get(), newState);
 }
-} // namespace JEngine
+
+
+}

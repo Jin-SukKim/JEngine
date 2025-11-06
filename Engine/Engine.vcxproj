@@ -26,10 +26,10 @@
     <ClInclude Include="DescriptorHeap.h" />
     <ClInclude Include="DescriptorPool.h" />
     <ClInclude Include="Fence.h" />
-    <ClInclude Include="Image2D.h" />
     <ClInclude Include="Logger.h" />
     <ClInclude Include="pch.h" />
     <ClInclude Include="Renderer.h" />
+    <ClInclude Include="Resource.h" />
     <ClInclude Include="SwapChain.h" />
     <ClInclude Include="Timer.h" />
     <ClInclude Include="Window.h" />
@@ -42,7 +42,6 @@
     <ClCompile Include="DescriptorHeap.cpp" />
     <ClCompile Include="DescriptorPool.cpp" />
     <ClCompile Include="Fence.cpp" />
-    <ClCompile Include="Image2D.cpp" />
     <ClCompile Include="Logger.cpp" />
     <ClCompile Include="pch.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
@@ -51,6 +50,7 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="Renderer.cpp" />
+    <ClCompile Include="Resource.cpp" />
     <ClCompile Include="SwapChain.cpp" />
     <ClCompile Include="Timer.cpp" />
     <ClCompile Include="Window.cpp" />

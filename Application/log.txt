@@ -34,23 +34,23 @@
 [INFO] Get new Descriptor Handle - Current Index: 1, Max Size: 1
 [INFO] Depth Stencil Buffer created.
 [INFO] Depth Stencil View created.
-[INFO] Command Allocator created: 0x24247192770
-[INFO] Graphics Command List created: 0x2424d6e3e70
+[INFO] Command Allocator created: 0x1f8c5c97230
+[INFO] Graphics Command List created: 0x1f8cc3b08a0
 [INFO] Command List closed and ready for recording commands.
-[INFO] CommandBuffer destructor - releasing CommandList: 0x2424d6e3e70
-[INFO] CommandBuffer destructor - releasing CommandAllocator: 0x24247192770
-[INFO] Command Allocator created: 0x2424d763410
-[INFO] Graphics Command List created: 0x2424d763ee0
+[INFO] CommandBuffer destructor - releasing CommandList: 0x1f8cc3b08a0
+[INFO] CommandBuffer destructor - releasing CommandAllocator: 0x1f8c5c97230
+[INFO] Command Allocator created: 0x1f8cc4177f0
+[INFO] Graphics Command List created: 0x1f8cc4182c0
 [INFO] Command List closed and ready for recording commands.
-[INFO] CommandBuffer destructor - releasing CommandList: 0x2424d763ee0
-[INFO] CommandBuffer destructor - releasing CommandAllocator: 0x2424d763410
+[INFO] CommandBuffer destructor - releasing CommandList: 0x1f8cc4182c0
+[INFO] CommandBuffer destructor - releasing CommandAllocator: 0x1f8cc4177f0
 [INFO] Fence created for CPU-GPU synchronization.
 [INFO] Fence destroyed.
 [INFO] Fence created for CPU-GPU synchronization.
 [INFO] Fence destroyed.
 [INFO] === Resizing Swap Chain Buffers ===
-[INFO] Image2D resource have been reset.
-[INFO] Image2D resource have been reset.
+[INFO] Resource resource have been reset.
+[INFO] Resource resource have been reset.
 [INFO] Descriptor Heap reset - Current Index set to 0
 [INFO] === Creating Render Target Views ===
 [INFO] Get new Descriptor Handle - Current Index: 1, Max Size: 2
@@ -60,26 +60,25 @@
 [INFO] Render Target Views created for all back buffers.
 [INFO] === Render Target Views Creation Complete ===
 
-[INFO] Image2D resource have been reset.
+[INFO] Resource resource have been reset.
 [INFO] Descriptor Heap reset - Current Index set to 0
 [INFO] Get new Descriptor Handle - Current Index: 1, Max Size: 1
 [INFO] Depth Stencil Buffer created.
 [INFO] Depth Stencil View created.
 [INFO] Setting Viewport and Scissor Rect (1280x720)...
 [INFO] Viewport and Scissor Rect configured successfully.
-[INFO] Viewport and Scissor Rect updated for new window size.
-[INFO] Resize handling complete.
+[INFO] Resize complete.
 [INFO] Timer reset.
 [INFO] === Entering Main Message Loop ===
 [INFO] Application destructor - GPU is idle, cleaning up resources.
 [INFO] Fence destroyed.
 [INFO] Fence destroyed.
-[INFO] CommandBuffer destructor - releasing CommandList: 0x2424d6e3e70
-[INFO] CommandBuffer destructor - releasing CommandAllocator: 0x24247192770
-[INFO] CommandBuffer destructor - releasing CommandList: 0x2424d763ee0
-[INFO] CommandBuffer destructor - releasing CommandAllocator: 0x2424d763410
-[INFO] Image2D resource have been reset.
-[INFO] Image2D resource have been reset.
+[INFO] CommandBuffer destructor - releasing CommandList: 0x1f8cc3b08a0
+[INFO] CommandBuffer destructor - releasing CommandAllocator: 0x1f8c5c97230
+[INFO] CommandBuffer destructor - releasing CommandList: 0x1f8cc4182c0
+[INFO] CommandBuffer destructor - releasing CommandAllocator: 0x1f8cc4177f0
+[INFO] Resource resource have been reset.
+[INFO] Resource resource have been reset.
 
 === Logging Session Ended ===
-Total messages processed: 76
+Total messages processed: 75

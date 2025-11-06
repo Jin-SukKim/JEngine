@@ -73,24 +73,26 @@ int Application::Run() {
 
 void Application::OnResize() {
     // Resource에 변화를 주기 전에 GPU가 모든 작업을 완료하도록 대기
-    swapChain_.Resize();
-
     for (Fence& fence : frameFence_)
         fence.WaitForGPU();
+    
+    swapChain_.Resize();
 
     int frameIdx = swapChain_.GetCurrentBackBufferIndex();
     auto& cmdBuffer = commandBuffers_[frameIdx];
     auto* cmdList = cmdBuffer.BeginRecording();
+
     renderer_.Resize(cmdList);
+
     cmdBuffer.EndRecording();
     context_.ExecuteCommands(cmdList);
+
     frameFence_[frameIdx].Signal();
     frameFence_[frameIdx].WaitForGPU();
 
     // Viewport 및 Scissor Rect 재설정
     context_.SetViewportConfig();
-    LogInfo("Viewport and Scissor Rect updated for new window size.");
 
-    LogInfo("Resize handling complete.");
+    LogInfo("Resize complete.");
 }
 } // namespace JEngine

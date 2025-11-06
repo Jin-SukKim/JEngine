@@ -1,6 +1,6 @@
 #pragma once
 #include "pch.h"
-#include "Image2D.h"
+#include "Resource.h"
 
 namespace JEngine {
 class SwapChain
@@ -10,7 +10,7 @@ class SwapChain
     ~SwapChain();
     void Initialize();
 
-    Image2D& GetCurrentBackBuffer();
+    Resource& GetCurrentBackBuffer();
     int GetCurrentBackBufferIndex() const;
     void BufferReset();
     void Resize();
@@ -18,7 +18,7 @@ class SwapChain
 
     uint32_t GetBufferCount() const;
   private:
-    void create();
+    void createSwapChain();
     void createRTV();
 
   private:
@@ -27,6 +27,6 @@ class SwapChain
     const UINT bufferCount_ = 2; // Swap Chain Buffer 개수 (Double Buffering)
 
     DXGI_FORMAT backBufferFormat_ = DXGI_FORMAT_R8G8B8A8_UNORM;
-    std::vector<Image2D> backBuffers_; // Swap Chain의 Back Buffer들
+    std::vector<Resource> backBuffers_; // Swap Chain의 Back Buffer들
 };
 } // namespace JEngine

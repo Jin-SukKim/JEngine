@@ -1,12 +1,13 @@
 #pragma once
 #include "BarrierHelper.h"
+
 namespace JEngine {
 
 class Context;
-class Image2D
+class Resource
 {
   public:
-    Image2D(Context& ctx);
+    Resource(Context& ctx);
 
     ComPtr<ID3D12Resource>& GetBuffer();
     ID3D12Resource* GetResourcePtr();
@@ -23,6 +24,7 @@ class Image2D
 
     void Reset();
     void TransitionTo(ID3D12GraphicsCommandList* cmdList, D3D12_RESOURCE_STATES newState);
+
   private:
     Context& context_;
     ComPtr<ID3D12Resource> resource_ = nullptr;

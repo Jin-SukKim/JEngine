@@ -18,12 +18,12 @@ SwapChain::~SwapChain() {
 
 void SwapChain::Initialize() {
     // Back Buffer 이미지 객체들 초기화
-    backBuffers_.resize(bufferCount_, Image2D(context_));
-    create();
+    backBuffers_.resize(bufferCount_, Resource(context_));
+    createSwapChain();
     createRTV();
 }
 
-Image2D& SwapChain::GetCurrentBackBuffer() {
+Resource& SwapChain::GetCurrentBackBuffer() {
     // 현재 Back Buffer 리소스 반환 구현
     return backBuffers_[GetCurrentBackBufferIndex()];
 }
@@ -32,7 +32,7 @@ int SwapChain::GetCurrentBackBufferIndex() const {
     return swapChain_->GetCurrentBackBufferIndex();
 }
 
-void SwapChain::create() {
+void SwapChain::createSwapChain() {
     LogInfo("=== Creating Swap Chain ===");
 
     // 기존 Swap Chain 해제 (창 크기 변경 등으로 재생성 시 필요)
@@ -94,7 +94,7 @@ void SwapChain::createRTV() {
         
         D3D12_CPU_DESCRIPTOR_HANDLE rtvHandle = context_.GetDescriptorPool()->AllocateRTV();
         
-        // CreateRTV 호출 전에 buffer를 Image2D에 설정
+        // CreateRTV 호출 전에 buffer를 Resource에 설정
         backBuffers_[i].SetResource(buffer);
         backBuffers_[i].CreateBackBufferRTV(backBufferFormat_, rtvHandle);
     }

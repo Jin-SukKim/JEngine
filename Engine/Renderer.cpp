@@ -1,7 +1,7 @@
 #include "pch.h"
 #include "Renderer.h"
 #include "Context.h"
-#include "Image2D.h"
+#include "Resource.h"
 #include "Window.h"
 #include "DescriptorHeap.h"
 
@@ -11,7 +11,7 @@ Renderer::Renderer(Context& ctx) : context_(ctx) {
 
 void Renderer::Initialize() {
     // Depth Stencil 이미지 객체 생성
-    depthStencil_ = std::make_unique<Image2D>(context_);
+    depthStencil_ = std::make_unique<Resource>(context_);
     // Depth Stencil 버퍼 생성
     depthStencil_->CreateDepthStencil(context_.GetWindow().GetWidth(),
                                       context_.GetWindow().GetHeight(),
@@ -21,7 +21,7 @@ void Renderer::Initialize() {
 void Renderer::Update(const Timer& timer) {
 }
 
-void Renderer::Draw(ID3D12GraphicsCommandList* cmdList, Image2D& backBuffer) {
+void Renderer::Draw(ID3D12GraphicsCommandList* cmdList, Resource& backBuffer) {
     // 1. Back Buffer를 PRESENT → RENDER_TARGET 상태로 전환
     backBuffer.TransitionTo(cmdList, D3D12_RESOURCE_STATE_RENDER_TARGET);
 
