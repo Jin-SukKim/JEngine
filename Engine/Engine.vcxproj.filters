@@ -15,6 +15,8 @@
     <ClInclude Include="Fence.h" />
     <ClInclude Include="DescriptorPool.h" />
     <ClInclude Include="Resource.h" />
+    <ClInclude Include="Vertex.h" />
+    <ClInclude Include="UploadBuffer.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp" />
@@ -31,5 +33,7 @@
     <ClCompile Include="Fence.cpp" />
     <ClCompile Include="DescriptorPool.cpp" />
     <ClCompile Include="Resource.cpp" />
+    <ClCompile Include="Vertex.cpp" />
+    <ClCompile Include="UploadBuffer.cpp" />
   </ItemGroup>
 </Project>

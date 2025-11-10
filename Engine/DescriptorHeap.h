@@ -4,14 +4,16 @@ namespace JEngine {
 class DescriptorHeap
 {
   public:
-    DescriptorHeap(ComPtr<ID3D12Device>& device, D3D12_DESCRIPTOR_HEAP_TYPE type,
-                   UINT maxDescriptorNum);
+    DescriptorHeap(ComPtr<ID3D12Device>& device, UINT maxDescriptorNum,
+                   D3D12_DESCRIPTOR_HEAP_TYPE type,
+                   D3D12_DESCRIPTOR_HEAP_FLAGS flag = D3D12_DESCRIPTOR_HEAP_FLAG_NONE);
 
     auto AllocateView() -> D3D12_CPU_DESCRIPTOR_HANDLE;
     void Reset();
-
+    auto GetHeap() -> ID3D12DescriptorHeap*;
   private:
-    void createHeap(D3D12_DESCRIPTOR_HEAP_TYPE type, UINT maxDescriptorNum);
+    void createHeap(UINT maxDescriptorNum, D3D12_DESCRIPTOR_HEAP_TYPE type,
+                    D3D12_DESCRIPTOR_HEAP_FLAGS flag = D3D12_DESCRIPTOR_HEAP_FLAG_NONE);
   private:
     // === Descriptor Heaps (View들을 담는 배열 컨테이너) ===
     // Descriptor Heap = View(Descriptor)들을 저장하는 "배열" 또는 "상자"

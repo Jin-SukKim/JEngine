@@ -17,6 +17,7 @@ class SwapChain
     void Present();
 
     uint32_t GetBufferCount() const;
+    DXGI_FORMAT GetBackBufferFormat() const;
   private:
     void createSwapChain();
     void createRTV();

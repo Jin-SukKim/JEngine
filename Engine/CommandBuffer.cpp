@@ -35,18 +35,13 @@ CommandBuffer::~CommandBuffer() {
     }
 }
 
-ID3D12GraphicsCommandList* CommandBuffer::BeginRecording() {
+ID3D12GraphicsCommandList* CommandBuffer::BeginRecording(ID3D12PipelineState* pso) {
     ThrowIfFailed(commandAllocator_->Reset());
-    ThrowIfFailed(commandList_->Reset(commandAllocator_.Get(), nullptr));
+    ThrowIfFailed(commandList_->Reset(commandAllocator_.Get(), pso));
     return commandList_.Get();
 }
 
 void CommandBuffer::EndRecording() {
     ThrowIfFailed(commandList_->Close());
 }
-
-ID3D12GraphicsCommandList* CommandBuffer::GetCommandList() {
-    return commandList_.Get();
-}
-
 } // namespace JEngine

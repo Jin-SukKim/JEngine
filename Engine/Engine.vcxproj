@@ -32,6 +32,8 @@
     <ClInclude Include="Resource.h" />
     <ClInclude Include="SwapChain.h" />
     <ClInclude Include="Timer.h" />
+    <ClInclude Include="UploadBuffer.h" />
+    <ClInclude Include="Vertex.h" />
     <ClInclude Include="Window.h" />
   </ItemGroup>
   <ItemGroup>
@@ -53,6 +55,8 @@
     <ClCompile Include="Resource.cpp" />
     <ClCompile Include="SwapChain.cpp" />
     <ClCompile Include="Timer.cpp" />
+    <ClCompile Include="UploadBuffer.cpp" />
+    <ClCompile Include="Vertex.cpp" />
     <ClCompile Include="Window.cpp" />
   </ItemGroup>
   <PropertyGroup Label="Globals">

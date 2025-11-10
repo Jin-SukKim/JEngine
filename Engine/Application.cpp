@@ -22,6 +22,24 @@ void Application::Initialize() {
         frameFence_.emplace_back(Fence(context_.GetDevice(), context_.GetCommandQueue()));
 
     OnResize();
+
+    int frameIdx = swapChain_.GetCurrentBackBufferIndex();
+    auto& cmdBuffer = commandBuffers_[frameIdx];
+    auto* cmdList = cmdBuffer.BeginRecording();
+
+    renderer_.CreateConstantBuffer();
+    renderer_.CreateRootSignature();
+    renderer_.BuildShaders();
+    renderer_.SetInputLayout();
+    renderer_.InitBox(cmdList);
+    renderer_.CreatePSO(swapChain_.GetBackBufferFormat());
+
+    cmdBuffer.EndRecording();
+    context_.ExecuteCommands(cmdList);
+
+    frameFence_[frameIdx].Signal();
+    frameFence_[frameIdx].WaitForGPU();
+
 }
 
 int Application::Run() {
@@ -45,7 +63,7 @@ int Application::Run() {
                 frameFence_[frameIdx].WaitForGPU();
 
                 auto& cmdBuffer = commandBuffers_[frameIdx];
-                auto* cmdList = cmdBuffer.BeginRecording();
+                auto* cmdList = cmdBuffer.BeginRecording(renderer_.GetPSO());
 
                 context_.SetViewport(cmdList);
 
@@ -77,18 +95,7 @@ void Application::OnResize() {
         fence.WaitForGPU();
     
     swapChain_.Resize();
-
-    int frameIdx = swapChain_.GetCurrentBackBufferIndex();
-    auto& cmdBuffer = commandBuffers_[frameIdx];
-    auto* cmdList = cmdBuffer.BeginRecording();
-
-    renderer_.Resize(cmdList);
-
-    cmdBuffer.EndRecording();
-    context_.ExecuteCommands(cmdList);
-
-    frameFence_[frameIdx].Signal();
-    frameFence_[frameIdx].WaitForGPU();
+    renderer_.Resize();
 
     // Viewport 및 Scissor Rect 재설정
     context_.SetViewportConfig();

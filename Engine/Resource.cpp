@@ -41,19 +41,9 @@ void Resource::CreateRTV(DXGI_FORMAT format, D3D12_CPU_DESCRIPTOR_HANDLE viewHan
 
 void Resource::CreateDepthStencil(UINT width, UINT height, D3D12_CPU_DESCRIPTOR_HANDLE viewHandle) {
     // Resource Description 설정
-    D3D12_RESOURCE_DESC depthStencilDesc = {};
-    depthStencilDesc.Dimension = D3D12_RESOURCE_DIMENSION_TEXTURE2D; // 2D 텍스처
-    depthStencilDesc.Alignment = 0;                                  // 기본 정렬
-    depthStencilDesc.Width = width;
-    depthStencilDesc.Height = height;
-    depthStencilDesc.DepthOrArraySize = 1; // 단일 텍스처
-    depthStencilDesc.MipLevels = 1;        // Mipmap 없음
-    // TYPELESS 포맷 사용 = 나중에 DSV, SRV 등으로 다양하게 해석 가능
-    depthStencilDesc.Format = DXGI_FORMAT_R24G8_TYPELESS;
-    depthStencilDesc.SampleDesc.Count = 1;
-    depthStencilDesc.SampleDesc.Quality = 0;
-    depthStencilDesc.Layout = D3D12_TEXTURE_LAYOUT_UNKNOWN;
-    depthStencilDesc.Flags = D3D12_RESOURCE_FLAG_ALLOW_DEPTH_STENCIL; // Depth Stencil 사용 플래그
+    D3D12_RESOURCE_DESC depthStencilDesc = SetResourceDesc(
+        D3D12_RESOURCE_DIMENSION_TEXTURE2D, width, height, DXGI_FORMAT_R24G8_TYPELESS,
+        D3D12_TEXTURE_LAYOUT_UNKNOWN, D3D12_RESOURCE_FLAG_ALLOW_DEPTH_STENCIL);
 
     // Optimized Clear Value 설정 (성능 최적화)
     // - GPU가 Clear 작업을 빠르게 수행하도록 힌트 제공
@@ -63,12 +53,9 @@ void Resource::CreateDepthStencil(UINT width, UINT height, D3D12_CPU_DESCRIPTOR_
     optClear.DepthStencil.Stencil = 0;
 
     // Heap Properties 설정 (CD3DX12_HEAP_PROPERTIES 헬퍼 없이)
-    D3D12_HEAP_PROPERTIES heapProps = {};
-    heapProps.Type = D3D12_HEAP_TYPE_DEFAULT; // GPU 전용 메모리 (가장 빠름)
-    heapProps.CPUPageProperty = D3D12_CPU_PAGE_PROPERTY_UNKNOWN;
-    heapProps.MemoryPoolPreference = D3D12_MEMORY_POOL_UNKNOWN;
-    heapProps.CreationNodeMask = 1; // Single GPU
-    heapProps.VisibleNodeMask = 1;
+    D3D12_HEAP_PROPERTIES heapProps = SetHeapProperties(D3D12_HEAP_TYPE_DEFAULT);
+    
+    barrierHelper_.SetInitialState(D3D12_RESOURCE_STATE_DEPTH_WRITE);
 
     // Committed Resource 생성 (Resource + Heap 동시 생성)
     ThrowIfFailed(context_.GetDevice()->CreateCommittedResource(
@@ -93,6 +80,22 @@ void Resource::CreateDepthStencil(UINT width, UINT height, D3D12_CPU_DESCRIPTOR_
     LogInfo("Depth Stencil View created.");
 }
 
+void Resource::CreateBuffer(UINT sizeInBytes) {
+    // Heap Properties 설정 (CD3DX12_HEAP_PROPERTIES 헬퍼 없이)
+    D3D12_HEAP_PROPERTIES heapProps = SetHeapProperties(D3D12_HEAP_TYPE_DEFAULT);
+
+    D3D12_RESOURCE_DESC vertexBufferDesc =
+        SetResourceDesc(D3D12_RESOURCE_DIMENSION_BUFFER, sizeInBytes, 1, DXGI_FORMAT_UNKNOWN,
+                        D3D12_TEXTURE_LAYOUT_ROW_MAJOR, D3D12_RESOURCE_FLAG_NONE);
+    // Committed Resource 생성 (Resource + Heap 동시 생성)
+    ThrowIfFailed(context_.GetDevice()->CreateCommittedResource(
+        &heapProps, D3D12_HEAP_FLAG_NONE, &vertexBufferDesc,
+        barrierHelper_.GetState(), // 초기 상태 (아직 사용 전)
+        nullptr, IID_PPV_ARGS(resource_.GetAddressOf())));
+
+    LogInfo("Buffer created.");
+}
+
 void Resource::Reset() {
     resource_.Reset();
     format_ = DXGI_FORMAT_UNKNOWN;
@@ -106,5 +109,37 @@ void Resource::TransitionTo(ID3D12GraphicsCommandList* cmdList, D3D12_RESOURCE_S
     barrierHelper_.Transition(cmdList, resource_.Get(), newState);
 }
 
-
+D3D12_HEAP_PROPERTIES Resource::SetHeapProperties(D3D12_HEAP_TYPE type) {
+    // Heap Properties 설정 (CD3DX12_HEAP_PROPERTIES 헬퍼 없이)
+    D3D12_HEAP_PROPERTIES heapProps = {};
+    heapProps.Type = type;
+    heapProps.CPUPageProperty = D3D12_CPU_PAGE_PROPERTY_UNKNOWN;
+    heapProps.MemoryPoolPreference = D3D12_MEMORY_POOL_UNKNOWN;
+    heapProps.CreationNodeMask = 1; // Single GPU
+    heapProps.VisibleNodeMask = 1;
+    return heapProps;
 }
+
+D3D12_RESOURCE_DESC Resource::SetResourceDesc(D3D12_RESOURCE_DIMENSION dimension, UINT width,
+                                              UINT height, DXGI_FORMAT format,
+                                              D3D12_TEXTURE_LAYOUT layout,
+                                              D3D12_RESOURCE_FLAGS flag) {
+    format_ = format;
+
+    // Resource Description 설정
+    D3D12_RESOURCE_DESC desc = {};
+    desc.Dimension = dimension;
+    desc.Alignment = 0; // 기본 정렬
+    desc.Width = width;
+    desc.Height = height;
+    desc.DepthOrArraySize = 1; // 단일 텍스처
+    desc.MipLevels = 1;        // Mipmap 없음
+    desc.Format = format;
+    desc.SampleDesc.Count = 1;
+    desc.SampleDesc.Quality = 0;
+    desc.Layout = layout;
+    desc.Flags = flag;
+    return desc;
+}
+
+} // namespace JEngine

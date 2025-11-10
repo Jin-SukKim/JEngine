@@ -131,4 +131,8 @@ uint32_t SwapChain::GetBufferCount() const {
     return bufferCount_;
 }
 
+DXGI_FORMAT SwapChain::GetBackBufferFormat() const {
+    return backBufferFormat_;
+}
+
 } // namespace JEngine

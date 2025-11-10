@@ -15,6 +15,7 @@
 
 [INFO] Descriptor Heap created - Type: 2, NumDescriptors: 2, DescriptorSize: 32
 [INFO] Descriptor Heap created - Type: 3, NumDescriptors: 1, DescriptorSize: 8
+[INFO] Descriptor Heap created - Type: 0, NumDescriptors: 1, DescriptorSize: 32
 [INFO] Descriptor Pool created.
 [INFO] === Context Initialization Complete ===
 
@@ -34,16 +35,12 @@
 [INFO] Get new Descriptor Handle - Current Index: 1, Max Size: 1
 [INFO] Depth Stencil Buffer created.
 [INFO] Depth Stencil View created.
-[INFO] Command Allocator created: 0x1f8c5c97230
-[INFO] Graphics Command List created: 0x1f8cc3b08a0
+[INFO] Command Allocator created: 0x1bed98d8ad0
+[INFO] Graphics Command List created: 0x1bee01b7e10
 [INFO] Command List closed and ready for recording commands.
-[INFO] CommandBuffer destructor - releasing CommandList: 0x1f8cc3b08a0
-[INFO] CommandBuffer destructor - releasing CommandAllocator: 0x1f8c5c97230
-[INFO] Command Allocator created: 0x1f8cc4177f0
-[INFO] Graphics Command List created: 0x1f8cc4182c0
+[INFO] Command Allocator created: 0x1bee0220d70
+[INFO] Graphics Command List created: 0x1bee0221840
 [INFO] Command List closed and ready for recording commands.
-[INFO] CommandBuffer destructor - releasing CommandList: 0x1f8cc4182c0
-[INFO] CommandBuffer destructor - releasing CommandAllocator: 0x1f8cc4177f0
 [INFO] Fence created for CPU-GPU synchronization.
 [INFO] Fence destroyed.
 [INFO] Fence created for CPU-GPU synchronization.
@@ -68,17 +65,24 @@
 [INFO] Setting Viewport and Scissor Rect (1280x720)...
 [INFO] Viewport and Scissor Rect configured successfully.
 [INFO] Resize complete.
+[INFO] Get new Descriptor Handle - Current Index: 1, Max Size: 1
+[INFO] Constant Buffer created successfully.
+[INFO] Root Signature created successfully.
+[INFO] Shaders compiled successfully.
+[INFO] Buffer created.
+[INFO] Buffer created.
+[INFO] Pipeline State Object created successfully.
 [INFO] Timer reset.
 [INFO] === Entering Main Message Loop ===
 [INFO] Application destructor - GPU is idle, cleaning up resources.
 [INFO] Fence destroyed.
 [INFO] Fence destroyed.
-[INFO] CommandBuffer destructor - releasing CommandList: 0x1f8cc3b08a0
-[INFO] CommandBuffer destructor - releasing CommandAllocator: 0x1f8c5c97230
-[INFO] CommandBuffer destructor - releasing CommandList: 0x1f8cc4182c0
-[INFO] CommandBuffer destructor - releasing CommandAllocator: 0x1f8cc4177f0
+[INFO] CommandBuffer destructor - releasing CommandList: 0x1bee01b7e10
+[INFO] CommandBuffer destructor - releasing CommandAllocator: 0x1bed98d8ad0
+[INFO] CommandBuffer destructor - releasing CommandList: 0x1bee0221840
+[INFO] CommandBuffer destructor - releasing CommandAllocator: 0x1bee0220d70
 [INFO] Resource resource have been reset.
 [INFO] Resource resource have been reset.
 
 === Logging Session Ended ===
-Total messages processed: 75
+Total messages processed: 79
