@@ -38,6 +38,7 @@ class Window
     UINT GetHeight() const {
         return screenHeight_;
     }
+    float GetAspectRatio() const;
 
   private:
     static Window* window_;

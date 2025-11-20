@@ -8,7 +8,7 @@
 #include "Timer.h"
 
 namespace JEngine {
-Renderer::Renderer(Context& ctx) : context_(ctx) {
+Renderer::Renderer(Context& ctx) : context_(ctx), camera_(Camera::CameraType::LOOK_AT) {
 }
 
 void Renderer::Initialize() {
@@ -19,28 +19,13 @@ void Renderer::Initialize() {
                                       context_.GetWindow().GetHeight(),
                                       context_.GetDescriptorPool()->AllocateDSV());
 
-    view_ = Identity4x4();
     world_ = Identity4x4();
-    proj_ = Identity4x4();
 }
 
 void Renderer::Update(const Timer& timer) {
     using namespace DirectX;
-    static float theta = 1.5f * XM_PI;
-    static float phi = XM_PIDIV4;
-    static float radius = 5.0f;
 
-    float x = radius * std::sinf(phi) * std::cosf(theta);
-    float y = radius * std::sinf(phi) * std::sinf(theta);
-    float z = radius * std::cosf(phi);
-
-    // View Matrix
-    XMVECTOR pos = XMVectorSet(x, y, z, 1.f);
-    XMVECTOR target = XMVectorZero();
-    XMVECTOR up = XMVectorSet(0.f, 0.f, 1.f, 0.f);
-
-    XMMATRIX view = XMMatrixLookAtLH(pos, target, up);
-    XMStoreFloat4x4(&view_, view);
+    camera_.UpdateViewMatrix();
 
     // ⭐ World Matrix - 박스를 제자리에서 회전시킴
     // 경과 시간에 따라 회전 각도 계산 (라디안 단위)
@@ -54,9 +39,7 @@ void Renderer::Update(const Timer& timer) {
 
     // 두 회전을 결합
     XMMATRIX world = rotationZ * rotationY;
-
-    XMMATRIX proj = XMLoadFloat4x4(&proj_);
-    XMMATRIX worldViewProj = world * view * proj;
+    XMMATRIX worldViewProj = world * camera_.GetViewProjMatrix();
 
     XMStoreFloat4x4(&meshConst_.worldViewProj, XMMatrixTranspose(worldViewProj));
     constantBuffer_->UpdateData(0, meshConst_);
@@ -108,17 +91,7 @@ void Renderer::Resize() {
                                       context_.GetWindow().GetHeight(),
                                       context_.GetDescriptorPool()->AllocateDSV());
 
-    // ⭐ 창 크기 변경 시 투영 행렬 재계산
-    using namespace DirectX;
-    float aspectRatio = static_cast<float>(context_.GetWindow().GetWidth()) / 
-                       static_cast<float>(context_.GetWindow().GetHeight());
-    XMMATRIX proj = XMMatrixPerspectiveFovLH(
-        XM_PIDIV4,      // 45도 시야각
-        aspectRatio,    // 새로운 종횡비
-        0.1f,           // Near plane
-        100.0f          // Far plane
-    );
-    XMStoreFloat4x4(&proj_, proj);
+    camera_.SetPerspective(45.f, context_.GetWindow().GetAspectRatio(), 0.1f, 100.0f);
 }
 
 void Renderer::CreateConstantBuffer() {

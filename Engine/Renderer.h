@@ -1,5 +1,6 @@
 #pragma once
 #include "UploadBuffer.h"
+#include "Camera.h"
 
 namespace JEngine {
 
@@ -71,12 +72,10 @@ class Renderer
     ComPtr<ID3D12PipelineState> mPSO = nullptr;
 
     std::wstring assetsPath_ = L"../../Assets/";
-    DirectX::XMFLOAT4X4 view_;
     DirectX::XMFLOAT4X4 world_;
-    DirectX::XMFLOAT4X4 proj_;
     MeshConst meshConst_;
 
-
+    Camera camera_;
 };
 
 } // namespace JEngine

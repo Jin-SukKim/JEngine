@@ -7,6 +7,7 @@
 #include <vector>
 #include <unordered_map>
 #include <array>
+#include <algorithm>
 
 // DirectX 12 Çì´õ
 #include <d3d12.h>

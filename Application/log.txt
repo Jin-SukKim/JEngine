@@ -1,5 +1,6 @@
 [INFO] Main Window instance created.
 [INFO] Timer Initialized.
+[INFO] Camera Created.
 [INFO] === Initializing Context ===
 [INFO] === Initializing Direct3D 12 Device ===
 [INFO] D3D12 Debug Layer enabled for Debug build.
@@ -35,11 +36,11 @@
 [INFO] Get new Descriptor Handle - Current Index: 1, Max Size: 1
 [INFO] Depth Stencil Buffer created.
 [INFO] Depth Stencil View created.
-[INFO] Command Allocator created: 0x1bed98d8ad0
-[INFO] Graphics Command List created: 0x1bee01b7e10
+[INFO] Command Allocator created: 0x22641c2b260
+[INFO] Graphics Command List created: 0x2264845cd20
 [INFO] Command List closed and ready for recording commands.
-[INFO] Command Allocator created: 0x1bee0220d70
-[INFO] Graphics Command List created: 0x1bee0221840
+[INFO] Command Allocator created: 0x226484cd950
+[INFO] Graphics Command List created: 0x226484ce420
 [INFO] Command List closed and ready for recording commands.
 [INFO] Fence created for CPU-GPU synchronization.
 [INFO] Fence destroyed.
@@ -77,12 +78,12 @@
 [INFO] Application destructor - GPU is idle, cleaning up resources.
 [INFO] Fence destroyed.
 [INFO] Fence destroyed.
-[INFO] CommandBuffer destructor - releasing CommandList: 0x1bee01b7e10
-[INFO] CommandBuffer destructor - releasing CommandAllocator: 0x1bed98d8ad0
-[INFO] CommandBuffer destructor - releasing CommandList: 0x1bee0221840
-[INFO] CommandBuffer destructor - releasing CommandAllocator: 0x1bee0220d70
+[INFO] CommandBuffer destructor - releasing CommandList: 0x2264845cd20
+[INFO] CommandBuffer destructor - releasing CommandAllocator: 0x22641c2b260
+[INFO] CommandBuffer destructor - releasing CommandList: 0x226484ce420
+[INFO] CommandBuffer destructor - releasing CommandAllocator: 0x226484cd950
 [INFO] Resource resource have been reset.
 [INFO] Resource resource have been reset.
 
 === Logging Session Ended ===
-Total messages processed: 79
+Total messages processed: 80

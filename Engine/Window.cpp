@@ -139,4 +139,7 @@ LRESULT Window::MsgProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam) {
 
     return DefWindowProc(hwnd, msg, wParam, lParam);
 }
+float Window::GetAspectRatio() const {
+    return static_cast<float>(screenWidth_) / static_cast<float>(screenHeight_);
+}
 } // namespace JEngine

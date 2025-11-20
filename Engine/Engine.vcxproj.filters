@@ -17,6 +17,7 @@
     <ClInclude Include="Resource.h" />
     <ClInclude Include="Vertex.h" />
     <ClInclude Include="UploadBuffer.h" />
+    <ClInclude Include="Camera.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp" />
@@ -35,5 +36,6 @@
     <ClCompile Include="Resource.cpp" />
     <ClCompile Include="Vertex.cpp" />
     <ClCompile Include="UploadBuffer.cpp" />
+    <ClCompile Include="Camera.cpp" />
   </ItemGroup>
 </Project>
