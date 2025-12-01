@@ -2,8 +2,40 @@
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
     <ClInclude Include="pch.h" />
+    <ClInclude Include="Logger.h" />
+    <ClInclude Include="Context.h" />
+    <ClInclude Include="Timer.h" />
+    <ClInclude Include="Window.h" />
+    <ClInclude Include="DescriptorHeap.h" />
+    <ClInclude Include="Renderer.h" />
+    <ClInclude Include="Application.h" />
+    <ClInclude Include="SwapChain.h" />
+    <ClInclude Include="CommandBuffer.h" />
+    <ClInclude Include="BarrierHelper.h" />
+    <ClInclude Include="Fence.h" />
+    <ClInclude Include="DescriptorPool.h" />
+    <ClInclude Include="Resource.h" />
+    <ClInclude Include="Vertex.h" />
+    <ClInclude Include="UploadBuffer.h" />
+    <ClInclude Include="Camera.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp" />
+    <ClCompile Include="Logger.cpp" />
+    <ClCompile Include="Context.cpp" />
+    <ClCompile Include="Timer.cpp" />
+    <ClCompile Include="Window.cpp" />
+    <ClCompile Include="DescriptorHeap.cpp" />
+    <ClCompile Include="Renderer.cpp" />
+    <ClCompile Include="Application.cpp" />
+    <ClCompile Include="SwapChain.cpp" />
+    <ClCompile Include="CommandBuffer.cpp" />
+    <ClCompile Include="BarrierHelper.cpp" />
+    <ClCompile Include="Fence.cpp" />
+    <ClCompile Include="DescriptorPool.cpp" />
+    <ClCompile Include="Resource.cpp" />
+    <ClCompile Include="Vertex.cpp" />
+    <ClCompile Include="UploadBuffer.cpp" />
+    <ClCompile Include="Camera.cpp" />
   </ItemGroup>
 </Project>

@@ -17,9 +17,9 @@ AlignTrailingComments: true
 
 BreakBeforeBraces: Custom
 BraceWrapping:
-    AfterFunction: true
+    AfterFunction: false
     AfterClass: true
-    AfterControlStatement: false
+    AfterControlStatement: Never
     AfterEnum: false
     AfterNamespace: false
     AfterStruct: true
