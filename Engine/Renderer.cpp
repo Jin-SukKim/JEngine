@@ -6,20 +6,37 @@
 #include "DescriptorHeap.h"
 #include "Vertex.h"
 #include "Timer.h"
+#include "UploadBuffer.h"
+#include "GPUBuffer.h"
+#include "Texture.h"
 
 namespace JEngine {
-Renderer::Renderer(Context& ctx) : context_(ctx), camera_(Camera::CameraType::LOOK_AT) {
+Renderer::Renderer(Context& ctx)
+    : context_(ctx), camera_(Camera::CameraType::LOOK_AT), world_(Identity4x4()) {
 }
+
+Renderer::~Renderer() = default;
 
 void Renderer::Initialize() {
     // Depth Stencil 이미지 객체 생성
-    depthStencil_ = std::make_unique<Resource>(context_);
-    // Depth Stencil 버퍼 생성
+    depthStencil_ = std::make_unique<Texture>(context_);
     depthStencil_->CreateDepthStencil(context_.GetWindow().GetWidth(),
                                       context_.GetWindow().GetHeight(),
                                       context_.GetDescriptorPool()->AllocateDSV());
 
     world_ = Identity4x4();
+
+    // 카메라 초기화
+    static float theta = 1.5f * DirectX::XM_PI;
+    static float phi = DirectX::XM_PIDIV4;
+    static float radius = 5.0f;
+
+    float x = radius * std::sinf(phi) * std::cosf(theta);
+    float y = radius * std::sinf(phi) * std::sinf(theta);
+    float z = radius * std::cosf(phi);
+
+    camera_.SetPosition(DirectX::XMFLOAT3(x, y, z));
+    camera_.SetPerspective(45.f, context_.GetWindow().GetAspectRatio(), 0.1f, 100.0f);
 }
 
 void Renderer::Update(const Timer& timer) {
@@ -42,39 +59,32 @@ void Renderer::Update(const Timer& timer) {
     XMMATRIX worldViewProj = world * camera_.GetViewProjMatrix();
 
     XMStoreFloat4x4(&meshConst_.worldViewProj, XMMatrixTranspose(worldViewProj));
-    constantBuffer_->UpdateData(0, meshConst_);
+    constantBuffer_->Update(0, meshConst_);
 }
 
-void Renderer::Draw(ID3D12GraphicsCommandList* cmdList, Resource& backBuffer) {
-    // Back Buffer를 PRESENT → RENDER_TARGET 상태로 전환
+void Renderer::Draw(ID3D12GraphicsCommandList* cmdList, Texture& backBuffer) {
     backBuffer.TransitionTo(cmdList, D3D12_RESOURCE_STATE_RENDER_TARGET);
 
-    // Render Target 및 Depth Stencil 설정
-    D3D12_CPU_DESCRIPTOR_HANDLE rtvHandle = backBuffer.GetView();
-    D3D12_CPU_DESCRIPTOR_HANDLE dsvHandle = depthStencil_->GetView();
+    D3D12_CPU_DESCRIPTOR_HANDLE rtvHandle = backBuffer.GetViewHandle();
+    D3D12_CPU_DESCRIPTOR_HANDLE dsvHandle = depthStencil_->GetViewHandle();
     cmdList->OMSetRenderTargets(1, &rtvHandle, FALSE, &dsvHandle);
 
-    // 화면 클리어 (파란색 배경)
     cmdList->ClearRenderTargetView(rtvHandle, DirectX::Colors::LightSteelBlue, 0, nullptr);
-    cmdList->ClearDepthStencilView(dsvHandle, D3D12_CLEAR_FLAG_DEPTH | D3D12_CLEAR_FLAG_STENCIL,
-                                   1.0f, 0, 0, nullptr);
+    cmdList->ClearDepthStencilView(
+        dsvHandle,
+        D3D12_CLEAR_FLAG_DEPTH | D3D12_CLEAR_FLAG_STENCIL,
+        1.0f, 0, 0, nullptr);
 
     ID3D12DescriptorHeap* cbvHeap =
         context_.GetDescriptorPool()->Get(D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV)->GetHeap();
     ID3D12DescriptorHeap* descriptorHeaps[] = {cbvHeap};
     cmdList->SetDescriptorHeaps(_countof(descriptorHeaps), descriptorHeaps);
 
-    //cmdList->SetPipelineState(mPSO.Get()); // Command List에서 Reset할때 설정해주고 있음
     cmdList->SetGraphicsRootSignature(rootSignature_.Get());
-
-    // Store the views in variables before taking their address
-    D3D12_VERTEX_BUFFER_VIEW vertexBufferView = 
-        vertexBufferGPU_->VertexBufferView(vertexByteStride_, vertexBufferByteSize_);
-    D3D12_INDEX_BUFFER_VIEW indexBufferView = 
-        indexBufferGPU_->IndexBufferView(indexFormat_, indexBufferByteSize_);
-
-    cmdList->IASetVertexBuffers(0, 1, &vertexBufferView);
-    cmdList->IASetIndexBuffer(&indexBufferView);
+    cmdList->SetPipelineState(mPSO.Get());
+    
+    cmdList->IASetVertexBuffers(0, 1, &vertexBufferView_);
+    cmdList->IASetIndexBuffer(&indexBufferView_);
     cmdList->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
     cmdList->SetGraphicsRootDescriptorTable(0, cbvHeap->GetGPUDescriptorHandleForHeapStart());
     cmdList->DrawIndexedInstanced(indexCount_, 1, 0, 0, 0);
@@ -96,10 +106,9 @@ void Renderer::Resize() {
 
 void Renderer::CreateConstantBuffer() {
     constantBuffer_ = std::make_unique<UploadBuffer>(context_);
-    constantBuffer_->CreateBufferView(
-        1, sizeof(MeshConst), true,
-        context_.GetDescriptorPool()->AllocateCBV()); // 상수 버퍼로 생성
-
+    constantBuffer_->CreateConstantBuffer(
+        1, sizeof(MeshConst),
+        context_.GetDescriptorPool()->AllocateCBV());
     LogInfo("Constant Buffer created successfully.");
 }
 
@@ -113,6 +122,7 @@ void Renderer::SetInputLayout() {
          D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0},
     };
 }
+
 ComPtr<ID3DBlob> Renderer::CompileShader(const std::wstring& filePath,
                                          const std::string& entryPoint, const std::string& target) {
     UINT compileFlags = 0;
@@ -128,16 +138,18 @@ ComPtr<ID3DBlob> Renderer::CompileShader(const std::wstring& filePath,
 
     return byteCode;
 }
+
 void Renderer::BuildShaders() {
-    // 예시: 정점 셰이더와 픽셀 셰이더 컴파일
     vertexShader_ = CompileShader(L"C:\\Study\\Project\\JEngine\\Assets\\Shaders\\Color.hlsl",
                                   "VSMain", "vs_5_0");
     pixelShader_ = CompileShader(L"C:\\Study\\Project\\JEngine\\Assets\\Shaders\\Color.hlsl",
                                  "PSMain", "ps_5_0");
     LogInfo("Shaders compiled successfully.");
 }
+
 void Renderer::InitBox(ID3D12GraphicsCommandList* cmdList) {
     using namespace DirectX;
+    
     std::array<Vertex, 8> vertices = {
         Vertex({XMFLOAT3(-1.0f, -1.0f, -1.0f), XMFLOAT4(Colors::White)}),
         Vertex({XMFLOAT3(-1.0f, +1.0f, -1.0f), XMFLOAT4(Colors::Black)}),
@@ -146,53 +158,43 @@ void Renderer::InitBox(ID3D12GraphicsCommandList* cmdList) {
         Vertex({XMFLOAT3(-1.0f, -1.0f, +1.0f), XMFLOAT4(Colors::Blue)}),
         Vertex({XMFLOAT3(-1.0f, +1.0f, +1.0f), XMFLOAT4(Colors::Yellow)}),
         Vertex({XMFLOAT3(+1.0f, +1.0f, +1.0f), XMFLOAT4(Colors::Cyan)}),
-        Vertex({XMFLOAT3(+1.0f, -1.0f, +1.0f), XMFLOAT4(Colors::Magenta)})};
+        Vertex({XMFLOAT3(+1.0f, -1.0f, +1.0f), XMFLOAT4(Colors::Magenta)})
+    };
 
-    std::array<std::uint16_t, 36> indices = {// front face
-                                             0, 1, 2, 0, 2, 3,
-                                             // back face
-                                             4, 6, 5, 4, 7, 6,
-                                             // left face
-                                             4, 5, 1, 4, 1, 0,
-                                             // right face
-                                             3, 2, 6, 3, 6, 7,
-                                             // top face
-                                             1, 5, 6, 1, 6, 2,
-                                             // bottom face
-                                             4, 0, 3, 4, 3, 7};
+    std::array<std::uint16_t, 36> indices = {
+        0, 1, 2, 0, 2, 3,
+        4, 6, 5, 4, 7, 6,
+        4, 5, 1, 4, 1, 0,
+        3, 2, 6, 3, 6, 7,
+        1, 5, 6, 1, 6, 2,
+        4, 0, 3, 4, 3, 7
+    };
 
-    const UINT vbByteSize = (UINT)vertices.size() * sizeof(Vertex);
-    const UINT ibByteSize = (UINT)indices.size() * sizeof(std::uint16_t);
+    // GPU 버퍼 생성
+    vertexBufferGPU_ = std::make_unique<GPUBuffer>(context_);
+    vertexBufferGPU_->CreateVertexBuffer(vertices.size(), sizeof(Vertex));
 
-    ThrowIfFailed(D3DCreateBlob(vbByteSize, vertexBufferCPU_.GetAddressOf()));
-    memcpy(vertexBufferCPU_->GetBufferPointer(), vertices.data(), vbByteSize);
+    indexBufferGPU_ = std::make_unique<GPUBuffer>(context_);
+    indexBufferGPU_->CreateIndexBuffer(indices.size(), sizeof(std::uint16_t));
 
-    ThrowIfFailed(D3DCreateBlob(ibByteSize, indexBufferCPU_.GetAddressOf()));
-    memcpy(indexBufferCPU_->GetBufferPointer(), indices.data(), ibByteSize);
-
-    vertexBufferGPU_ = std::make_unique<Resource>(context_);
+    // Staging Buffer를 통한 데이터 복사
     vertexUploadBuffer_ = std::make_unique<UploadBuffer>(context_);
-    vertexBufferGPU_->CreateBuffer(vbByteSize);
-    // 수정: 8개의 정점이므로 elementCount를 8로 설정
-    vertexUploadBuffer_->CreateBufferView(vertices.size(), sizeof(Vertex), false, {});
-    vertexUploadBuffer_->CopySubresourceData(cmdList, vertices.data(), vbByteSize, vbByteSize,
-                                             *vertexBufferGPU_);
+    vertexUploadBuffer_->CreateStagingBuffer(vertices.size(), sizeof(Vertex));
+    vertexUploadBuffer_->CopyDataToBuffer(cmdList, *vertexBufferGPU_, vertices.data());
 
-    indexBufferGPU_ = std::make_unique<Resource>(context_);
     indexUploadBuffer_ = std::make_unique<UploadBuffer>(context_);
-    indexBufferGPU_->CreateBuffer(ibByteSize);
-    // 수정: 36개의 인덱스이므로 elementCount를 36으로 설정
-    indexUploadBuffer_->CreateBufferView(indices.size(), sizeof(std::uint16_t), false, {});
-    indexUploadBuffer_->CopySubresourceData(cmdList, indices.data(), ibByteSize, ibByteSize,
-                                            *indexBufferGPU_);
+    indexUploadBuffer_->CreateStagingBuffer(indices.size(), sizeof(std::uint16_t));
+    indexUploadBuffer_->CopyDataToBuffer(cmdList, *indexBufferGPU_, indices.data());
+
+    // View 캐싱
+    vertexBufferView_ = vertexBufferGPU_->CreateVertexBufferView(sizeof(Vertex));
+    indexBufferView_ = indexBufferGPU_->CreateIndexBufferView(DXGI_FORMAT_R16_UINT);
 
     vertexByteStride_ = sizeof(Vertex);
-    vertexBufferByteSize_ = vbByteSize;
     indexFormat_ = DXGI_FORMAT_R16_UINT;
-    indexBufferByteSize_ = ibByteSize;
-    indexCount_ = (UINT)indices.size();
-    startIndexLocation_ = 0;
-    baseVertexLocation_ = 0;
+    indexCount_ = static_cast<UINT>(indices.size());
+    
+    LogInfo("Box geometry created: {} vertices, {} indices", vertices.size(), indices.size());
 }
 
 void Renderer::CreatePSO(DXGI_FORMAT backFormat) {
@@ -213,14 +215,9 @@ void Renderer::CreatePSO(DXGI_FORMAT backFormat) {
     blendDesc.AlphaToCoverageEnable = FALSE;
     blendDesc.IndependentBlendEnable = FALSE;
     const D3D12_RENDER_TARGET_BLEND_DESC defaultRenderTargetBlendDesc = {
-        FALSE,
-        FALSE,
-        D3D12_BLEND_ONE,
-        D3D12_BLEND_ZERO,
-        D3D12_BLEND_OP_ADD,
-        D3D12_BLEND_ONE,
-        D3D12_BLEND_ZERO,
-        D3D12_BLEND_OP_ADD,
+        FALSE, FALSE,
+        D3D12_BLEND_ONE, D3D12_BLEND_ZERO, D3D12_BLEND_OP_ADD,
+        D3D12_BLEND_ONE, D3D12_BLEND_ZERO, D3D12_BLEND_OP_ADD,
         D3D12_LOGIC_OP_NOOP,
         D3D12_COLOR_WRITE_ENABLE_ALL};
     for (UINT i = 0; i < D3D12_SIMULTANEOUS_RENDER_TARGET_COUNT; ++i) {
@@ -260,12 +257,12 @@ void Renderer::CreatePSO(DXGI_FORMAT backFormat) {
     psoDesc.SampleDesc.Quality = 0;
     psoDesc.DSVFormat = depthStencil_->GetFormat();
     ThrowIfFailed(context_.GetDevice()->CreateGraphicsPipelineState(&psoDesc, IID_PPV_ARGS(&mPSO)));
-    
+
     LogInfo("Pipeline State Object created successfully.");
 }
 
 void Renderer::CreateRootSignature() {
-    // Root Signature는 GPU와 CPU가 데이터를 주고받는 규칙(계약서)를 만드는 것
+    // Root Signature는 GPU와 CPU가 데이터를 주고받는 규칙(계약서)을 만드는 것
 
     // --- 1. 셰이더(GPU)가 받을 '슬롯' 정의 (Descriptor Range) ---
     // "셰이더가 데이터를 받을 슬롯(레지스터)은 이런 규칙을 가질 거야"

@@ -6,7 +6,6 @@
 namespace JEngine {
 
 SwapChain::SwapChain(Context& context) : context_(context) {
-
 }
 
 SwapChain::~SwapChain() {
@@ -18,13 +17,15 @@ SwapChain::~SwapChain() {
 
 void SwapChain::Initialize() {
     // Back Buffer 이미지 객체들 초기화
-    backBuffers_.resize(bufferCount_, Resource(context_));
+    backBuffers_.reserve(bufferCount_);
+    for (UINT i = 0; i < bufferCount_; ++i) 
+        backBuffers_.emplace_back(context_);
+    
     createSwapChain();
     createRTV();
 }
 
-Resource& SwapChain::GetCurrentBackBuffer() {
-    // 현재 Back Buffer 리소스 반환 구현
+Texture& SwapChain::GetCurrentBackBuffer() {
     return backBuffers_[GetCurrentBackBufferIndex()];
 }
 
@@ -35,11 +36,8 @@ int SwapChain::GetCurrentBackBufferIndex() const {
 void SwapChain::createSwapChain() {
     LogInfo("=== Creating Swap Chain ===");
 
-    // 기존 Swap Chain 해제 (창 크기 변경 등으로 재생성 시 필요)
     swapChain_.Reset();
 
-    // DXGI 1.2+ Flip Model 사용 (현대적 방식)
-    // - Legacy BitBlt Model보다 성능 우수
     LogInfo("Configuring Swap Chain ({}x{}, Buffers: {})...", context_.GetWindow().GetWidth(),
             context_.GetWindow().GetHeight(), bufferCount_);
 
@@ -47,8 +45,7 @@ void SwapChain::createSwapChain() {
     sd.Width = context_.GetWindow().GetWidth();
     sd.Height = context_.GetWindow().GetHeight();
     sd.Format = backBufferFormat_;
-    sd.Stereo = FALSE; // VR/3D 안경 모드 비활성화
-    // Multi-sampling 비활성화
+    sd.Stereo = FALSE;
     sd.SampleDesc.Count = 1;
     sd.SampleDesc.Quality = 0;
 
@@ -94,9 +91,9 @@ void SwapChain::createRTV() {
         
         D3D12_CPU_DESCRIPTOR_HANDLE rtvHandle = context_.GetDescriptorPool()->AllocateRTV();
         
-        // CreateRTV 호출 전에 buffer를 Resource에 설정
+        // ⭐ SetResource → WrapBackBuffer 사용
         backBuffers_[i].SetResource(buffer);
-        backBuffers_[i].CreateBackBufferRTV(backBufferFormat_, rtvHandle);
+        backBuffers_[i].WrapBackBuffer(backBufferFormat_, rtvHandle);
     }
     LogInfo("Render Target Views created for all back buffers.");
 
@@ -106,7 +103,7 @@ void SwapChain::createRTV() {
 void SwapChain::BufferReset() {
     for (UINT i = 0; i < bufferCount_; ++i)
         backBuffers_[i].Reset();
-} // namespace JEngine
+}
 
 void SwapChain::Resize() {
     LogInfo("=== Resizing Swap Chain Buffers ===");

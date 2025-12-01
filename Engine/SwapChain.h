@@ -1,6 +1,6 @@
-#pragma once
+Ôªø#pragma once
 #include "pch.h"
-#include "Resource.h"
+#include "Texture.h"
 
 namespace JEngine {
 class SwapChain
@@ -10,7 +10,7 @@ class SwapChain
     ~SwapChain();
     void Initialize();
 
-    Resource& GetCurrentBackBuffer();
+    Texture& GetCurrentBackBuffer();
     int GetCurrentBackBufferIndex() const;
     void BufferReset();
     void Resize();
@@ -25,9 +25,9 @@ class SwapChain
   private:
     Context& context_;
     ComPtr<IDXGISwapChain4> swapChain_ = nullptr;
-    const UINT bufferCount_ = 2; // Swap Chain Buffer ∞≥ºˆ (Double Buffering)
+    const UINT bufferCount_ = 2;
 
     DXGI_FORMAT backBufferFormat_ = DXGI_FORMAT_R8G8B8A8_UNORM;
-    std::vector<Resource> backBuffers_; // Swap Chain¿« Back BufferµÈ
+    std::vector<Texture> backBuffers_;  // ‚≠ê Resource ‚Üí Texture
 };
 } // namespace JEngine

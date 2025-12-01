@@ -1,5 +1,4 @@
-#pragma once
-#include "UploadBuffer.h"
+﻿#pragma once
 #include "Camera.h"
 
 namespace JEngine {
@@ -12,17 +11,20 @@ struct MeshConst
 };
 
 class Timer;
-class Resource;
+class GPUBuffer;
+class Texture;
+class UploadBuffer;
 class Context;
 
 class Renderer
 {
   public:
     Renderer(Context& ctx);
+    ~Renderer();
 
     void Initialize();
     void Update(const Timer& timer);
-    void Draw(ID3D12GraphicsCommandList* cmdList, Resource& backBuffer);
+    void Draw(ID3D12GraphicsCommandList* cmdList, Texture& backBuffer);
     void Resize();
 
     void CreateConstantBuffer();
@@ -37,15 +39,16 @@ class Renderer
     DirectX::XMFLOAT4X4 Identity4x4() {
         static DirectX::XMFLOAT4X4 I(1.0f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f, 0.0f, 0.0f,
                                      1.0f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f);
-
         return I;
     }
+
     ID3D12PipelineState* GetPSO() const {
         return mPSO.Get();
     }
+
   private:
     Context& context_;
-    std::unique_ptr<Resource> depthStencil_;
+    std::unique_ptr<Texture> depthStencil_;
 
     std::unique_ptr<UploadBuffer> constantBuffer_;
     std::vector<D3D12_INPUT_ELEMENT_DESC> inputLayout_;
@@ -54,20 +57,20 @@ class Renderer
     ComPtr<ID3DBlob> vertexShader_;
     ComPtr<ID3DBlob> pixelShader_;
 
-    ComPtr<ID3DBlob> vertexBufferCPU_;
-    ComPtr<ID3DBlob> indexBufferCPU_;
-    std::unique_ptr<Resource> vertexBufferGPU_;
-    std::unique_ptr<Resource> indexBufferGPU_;
+    std::unique_ptr<GPUBuffer> vertexBufferGPU_;
+    std::unique_ptr<GPUBuffer> indexBufferGPU_;
+
+    // ✅ 초기화 중에만 사용되는 업로드 버퍼 (GPU 작업 완료 후 해제)
     std::unique_ptr<UploadBuffer> vertexUploadBuffer_;
     std::unique_ptr<UploadBuffer> indexUploadBuffer_;
+
+    // View 캐싱용 멤버 변수
+    D3D12_VERTEX_BUFFER_VIEW vertexBufferView_{};
+    D3D12_INDEX_BUFFER_VIEW indexBufferView_{};
+
     UINT indexCount_ = 0;
     UINT vertexByteStride_ = 0;
-    UINT vertexBufferByteSize_ = 0;
-    UINT indexBufferByteSize_ = 0;
     DXGI_FORMAT indexFormat_ = DXGI_FORMAT_R16_UINT;
-    UINT indexByteSize_ = 0;
-    UINT startIndexLocation_ = 0;
-    INT baseVertexLocation_ = 0;
 
     ComPtr<ID3D12PipelineState> mPSO = nullptr;
 

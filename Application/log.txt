@@ -27,20 +27,22 @@
 
 [INFO] === Creating Render Target Views ===
 [INFO] Get new Descriptor Handle - Current Index: 1, Max Size: 2
-[INFO] Created RTV with format 28
+[INFO] Wrapped BackBuffer with format 28
 [INFO] Get new Descriptor Handle - Current Index: 2, Max Size: 2
-[INFO] Created RTV with format 28
+[INFO] Wrapped BackBuffer with format 28
 [INFO] Render Target Views created for all back buffers.
 [INFO] === Render Target Views Creation Complete ===
 
 [INFO] Get new Descriptor Handle - Current Index: 1, Max Size: 1
+[INFO] D3D12 resource created: GPU Address=0x0
 [INFO] Depth Stencil Buffer created.
 [INFO] Depth Stencil View created.
-[INFO] Command Allocator created: 0x22641c2b260
-[INFO] Graphics Command List created: 0x2264845cd20
+[INFO] Creating 2 command buffers...
+[INFO] Command Allocator created: 0x2b2b86e3820
+[INFO] Graphics Command List created: 0x2b2b86e6d40
 [INFO] Command List closed and ready for recording commands.
-[INFO] Command Allocator created: 0x226484cd950
-[INFO] Graphics Command List created: 0x226484ce420
+[INFO] Command Allocator created: 0x2b2b8758eb0
+[INFO] Graphics Command List created: 0x2b2b8759d90
 [INFO] Command List closed and ready for recording commands.
 [INFO] Fence created for CPU-GPU synchronization.
 [INFO] Fence destroyed.
@@ -52,38 +54,88 @@
 [INFO] Descriptor Heap reset - Current Index set to 0
 [INFO] === Creating Render Target Views ===
 [INFO] Get new Descriptor Handle - Current Index: 1, Max Size: 2
-[INFO] Created RTV with format 28
+[INFO] Wrapped BackBuffer with format 28
 [INFO] Get new Descriptor Handle - Current Index: 2, Max Size: 2
-[INFO] Created RTV with format 28
+[INFO] Wrapped BackBuffer with format 28
 [INFO] Render Target Views created for all back buffers.
 [INFO] === Render Target Views Creation Complete ===
 
 [INFO] Resource resource have been reset.
 [INFO] Descriptor Heap reset - Current Index set to 0
 [INFO] Get new Descriptor Handle - Current Index: 1, Max Size: 1
+[INFO] D3D12 resource created: GPU Address=0x0
 [INFO] Depth Stencil Buffer created.
 [INFO] Depth Stencil View created.
 [INFO] Setting Viewport and Scissor Rect (1280x720)...
 [INFO] Viewport and Scissor Rect configured successfully.
 [INFO] Resize complete.
 [INFO] Get new Descriptor Handle - Current Index: 1, Max Size: 1
+[INFO] D3D12 resource created: GPU Address=0x8862000
+[INFO] Buffer created: type=2, count=1, sizeOf=256, total=256 bytes
+[INFO] Buffer mapped: address=0x2B2B3AC0000
+[INFO] Constant buffer created: 1 elements x 256 bytes (aligned)
 [INFO] Constant Buffer created successfully.
 [INFO] Root Signature created successfully.
 [INFO] Shaders compiled successfully.
-[INFO] Buffer created.
-[INFO] Buffer created.
+[INFO] Creating vertex buffer: 8 vertices x 28 bytes
+[INFO] D3D12 resource created: GPU Address=0x8863000
+[INFO] Buffer created: type=0, count=8, sizeOf=28, total=224 bytes
+[INFO] Vertex buffer created at GPU address: 0x8863000
+[INFO] Creating index buffer: 36 indices x 2 bytes
+[INFO] D3D12 resource created: GPU Address=0x8864000
+[INFO] Buffer created: type=1, count=36, sizeOf=2, total=72 bytes
+[INFO] Index buffer created at GPU address: 0x8864000
+[INFO] D3D12 resource created: GPU Address=0x8865000
+[INFO] Buffer created: type=3, count=8, sizeOf=28, total=224 bytes
+[INFO] Staging buffer created and mapped: 8 elements x 28 bytes = 224 total bytes
+[INFO] Starting buffer copy: 224 bytes
+[INFO] Buffer mapped: address=0x2B2B3AC3000
+[INFO] Buffer unmapped
+[INFO] Buffer copy completed: 224 bytes to state 1
+[INFO] D3D12 resource created: GPU Address=0x8866000
+[INFO] Buffer created: type=3, count=36, sizeOf=2, total=72 bytes
+[INFO] Staging buffer created and mapped: 36 elements x 2 bytes = 72 total bytes
+[INFO] Starting buffer copy: 72 bytes
+[INFO] Buffer mapped: address=0x2B2B3AC4000
+[INFO] Buffer unmapped
+[INFO] Buffer copy completed: 72 bytes to state 2
+[INFO] Created VBV: Location=0x8863000, Stride=28, Size=224
+[INFO] Created IBV: Location=0x8864000, Format=57, Size=72
+[INFO] Box geometry created: 8 vertices, 36 indices
 [INFO] Pipeline State Object created successfully.
 [INFO] Timer reset.
 [INFO] === Entering Main Message Loop ===
 [INFO] Application destructor - GPU is idle, cleaning up resources.
 [INFO] Fence destroyed.
 [INFO] Fence destroyed.
-[INFO] CommandBuffer destructor - releasing CommandList: 0x2264845cd20
-[INFO] CommandBuffer destructor - releasing CommandAllocator: 0x22641c2b260
-[INFO] CommandBuffer destructor - releasing CommandList: 0x226484ce420
-[INFO] CommandBuffer destructor - releasing CommandAllocator: 0x226484cd950
+[INFO] CommandBuffer destructor - releasing CommandList: 0x2b2b86e6d40
+[INFO] CommandBuffer destructor - releasing CommandAllocator: 0x2b2b86e3820
+[INFO] CommandBuffer destructor - releasing CommandList: 0x2b2b8759d90
+[INFO] CommandBuffer destructor - releasing CommandAllocator: 0x2b2b8758eb0
+[INFO] Resource resource have been reset.
+[INFO] Resource resource have been reset.
+[INFO] Resource resource have been reset.
+[INFO] Resource resource have been reset.
+[INFO] Resource resource have been reset.
+[INFO] Resource resource have been reset.
+[INFO] Resource resource have been reset.
+[INFO] Resource resource have been reset.
+[INFO] Resource resource have been reset.
+[INFO] Resource resource have been reset.
+[INFO] Resource resource have been reset.
+[INFO] Resource resource have been reset.
+[INFO] Buffer unmapped
+[INFO] Resource resource have been reset.
+[INFO] Resource resource have been reset.
+[INFO] Resource resource have been reset.
+[INFO] Resource resource have been reset.
+[INFO] Resource resource have been reset.
+[INFO] Resource resource have been reset.
+[INFO] Resource resource have been reset.
+[INFO] Resource resource have been reset.
+[INFO] Resource resource have been reset.
 [INFO] Resource resource have been reset.
 [INFO] Resource resource have been reset.
 
 === Logging Session Ended ===
-Total messages processed: 80
+Total messages processed: 132

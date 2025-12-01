@@ -2,6 +2,17 @@
 #include "BarrierHelper.h"
 
 namespace JEngine {
+BarrierHelper::BarrierHelper(BarrierHelper&& other) noexcept : state_(other.state_) {
+    other.state_ = D3D12_RESOURCE_STATE_COMMON;
+}
+
+BarrierHelper& BarrierHelper::operator=(BarrierHelper&& other) noexcept {
+    if (this != &other) {
+        state_ = other.state_;
+        other.state_ = D3D12_RESOURCE_STATE_COMMON;
+    }
+    return *this;
+}
 
 void BarrierHelper::Transition(ID3D12GraphicsCommandList* cmdList, ID3D12Resource* resource,
                                D3D12_RESOURCE_STATES newState) {

@@ -16,10 +16,15 @@ void Application::Initialize() {
     swapChain_.Initialize();
     renderer_.Initialize();
 
-    commandBuffers_ = context_.CreateGraphicsCommandBuffers(swapChain_.GetBufferCount());
-    frameFence_.reserve(swapChain_.GetBufferCount());
-    for (uint32_t i = 0; i < swapChain_.GetBufferCount(); ++i)
+    uint32_t bufferCount = swapChain_.GetBufferCount();
+    LogInfo("Creating {} command buffers...", bufferCount);
+
+    commandBuffers_ = context_.CreateGraphicsCommandBuffers(bufferCount);
+    frameFence_.reserve(bufferCount);
+    
+    for (uint32_t i = 0; i < bufferCount; ++i) {
         frameFence_.emplace_back(Fence(context_.GetDevice(), context_.GetCommandQueue()));
+    }
 
     OnResize();
 
