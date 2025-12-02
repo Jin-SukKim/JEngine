@@ -9,10 +9,14 @@
 #include "UploadBuffer.h"
 #include "GPUBuffer.h"
 #include "Texture.h"
+#include "GeometryGenerator.h"
+#include "Model.h"
+#include "Mesh.h"
+#include "CommandBuffer.h"
 
 namespace JEngine {
 Renderer::Renderer(Context& ctx)
-    : context_(ctx), camera_(Camera::CameraType::LOOK_AT), world_(Identity4x4()) {
+    : context_(ctx), camera_(Camera::CameraType::LOOK_AT) {
 }
 
 Renderer::~Renderer() = default;
@@ -23,8 +27,6 @@ void Renderer::Initialize() {
     depthStencil_->CreateDepthStencil(context_.GetWindow().GetWidth(),
                                       context_.GetWindow().GetHeight(),
                                       context_.GetDescriptorPool()->AllocateDSV());
-
-    world_ = Identity4x4();
 
     // 카메라 초기화
     static float theta = 1.5f * DirectX::XM_PI;
@@ -39,7 +41,7 @@ void Renderer::Initialize() {
     camera_.SetPerspective(45.f, context_.GetWindow().GetAspectRatio(), 0.1f, 100.0f);
 }
 
-void Renderer::Update(const Timer& timer) {
+void Renderer::Update(const Timer& timer, Model& model) {
     using namespace DirectX;
 
     camera_.UpdateViewMatrix();
@@ -58,11 +60,10 @@ void Renderer::Update(const Timer& timer) {
     XMMATRIX world = rotationZ * rotationY;
     XMMATRIX worldViewProj = world * camera_.GetViewProjMatrix();
 
-    XMStoreFloat4x4(&meshConst_.worldViewProj, XMMatrixTranspose(worldViewProj));
-    constantBuffer_->Update(0, meshConst_);
+    model.UpdateWorldMatrix(worldViewProj);
 }
 
-void Renderer::Draw(ID3D12GraphicsCommandList* cmdList, Texture& backBuffer) {
+void Renderer::Draw(ID3D12GraphicsCommandList* cmdList, Texture& backBuffer, Model& model) {
     backBuffer.TransitionTo(cmdList, D3D12_RESOURCE_STATE_RENDER_TARGET);
 
     D3D12_CPU_DESCRIPTOR_HANDLE rtvHandle = backBuffer.GetViewHandle();
@@ -82,12 +83,12 @@ void Renderer::Draw(ID3D12GraphicsCommandList* cmdList, Texture& backBuffer) {
 
     cmdList->SetGraphicsRootSignature(rootSignature_.Get());
     cmdList->SetPipelineState(mPSO.Get());
-    
-    cmdList->IASetVertexBuffers(0, 1, &vertexBufferView_);
-    cmdList->IASetIndexBuffer(&indexBufferView_);
+
+    cmdList->IASetVertexBuffers(0, 1, model.GetMeshes()[0].GetVertexBufferView());
+    cmdList->IASetIndexBuffer(model.GetMeshes()[0].GetIndexBufferView());
     cmdList->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
     cmdList->SetGraphicsRootDescriptorTable(0, cbvHeap->GetGPUDescriptorHandleForHeapStart());
-    cmdList->DrawIndexedInstanced(indexCount_, 1, 0, 0, 0);
+    cmdList->DrawIndexedInstanced(model.GetMeshes()[0].GetIndexCount(), 1, 0, 0, 0);
 
     // Back Buffer를 RENDER_TARGET → PRESENT 상태로 전환
     backBuffer.TransitionTo(cmdList, D3D12_RESOURCE_STATE_PRESENT);
@@ -102,14 +103,6 @@ void Renderer::Resize() {
                                       context_.GetDescriptorPool()->AllocateDSV());
 
     camera_.SetPerspective(45.f, context_.GetWindow().GetAspectRatio(), 0.1f, 100.0f);
-}
-
-void Renderer::CreateConstantBuffer() {
-    constantBuffer_ = std::make_unique<UploadBuffer>(context_);
-    constantBuffer_->CreateConstantBuffer(
-        1, sizeof(MeshConst),
-        context_.GetDescriptorPool()->AllocateCBV());
-    LogInfo("Constant Buffer created successfully.");
 }
 
 void Renderer::SetInputLayout() {
@@ -145,56 +138,6 @@ void Renderer::BuildShaders() {
     pixelShader_ = CompileShader(L"C:\\Study\\Project\\JEngine\\Assets\\Shaders\\Color.hlsl",
                                  "PSMain", "ps_5_0");
     LogInfo("Shaders compiled successfully.");
-}
-
-void Renderer::InitBox(ID3D12GraphicsCommandList* cmdList) {
-    using namespace DirectX;
-    
-    std::array<Vertex, 8> vertices = {
-        Vertex({XMFLOAT3(-1.0f, -1.0f, -1.0f), XMFLOAT4(Colors::White)}),
-        Vertex({XMFLOAT3(-1.0f, +1.0f, -1.0f), XMFLOAT4(Colors::Black)}),
-        Vertex({XMFLOAT3(+1.0f, +1.0f, -1.0f), XMFLOAT4(Colors::Red)}),
-        Vertex({XMFLOAT3(+1.0f, -1.0f, -1.0f), XMFLOAT4(Colors::Green)}),
-        Vertex({XMFLOAT3(-1.0f, -1.0f, +1.0f), XMFLOAT4(Colors::Blue)}),
-        Vertex({XMFLOAT3(-1.0f, +1.0f, +1.0f), XMFLOAT4(Colors::Yellow)}),
-        Vertex({XMFLOAT3(+1.0f, +1.0f, +1.0f), XMFLOAT4(Colors::Cyan)}),
-        Vertex({XMFLOAT3(+1.0f, -1.0f, +1.0f), XMFLOAT4(Colors::Magenta)})
-    };
-
-    std::array<std::uint16_t, 36> indices = {
-        0, 1, 2, 0, 2, 3,
-        4, 6, 5, 4, 7, 6,
-        4, 5, 1, 4, 1, 0,
-        3, 2, 6, 3, 6, 7,
-        1, 5, 6, 1, 6, 2,
-        4, 0, 3, 4, 3, 7
-    };
-
-    // GPU 버퍼 생성
-    vertexBufferGPU_ = std::make_unique<GPUBuffer>(context_);
-    vertexBufferGPU_->CreateVertexBuffer(vertices.size(), sizeof(Vertex));
-
-    indexBufferGPU_ = std::make_unique<GPUBuffer>(context_);
-    indexBufferGPU_->CreateIndexBuffer(indices.size(), sizeof(std::uint16_t));
-
-    // Staging Buffer를 통한 데이터 복사
-    vertexUploadBuffer_ = std::make_unique<UploadBuffer>(context_);
-    vertexUploadBuffer_->CreateStagingBuffer(vertices.size(), sizeof(Vertex));
-    vertexUploadBuffer_->CopyDataToBuffer(cmdList, *vertexBufferGPU_, vertices.data());
-
-    indexUploadBuffer_ = std::make_unique<UploadBuffer>(context_);
-    indexUploadBuffer_->CreateStagingBuffer(indices.size(), sizeof(std::uint16_t));
-    indexUploadBuffer_->CopyDataToBuffer(cmdList, *indexBufferGPU_, indices.data());
-
-    // View 캐싱
-    vertexBufferView_ = vertexBufferGPU_->CreateVertexBufferView(sizeof(Vertex));
-    indexBufferView_ = indexBufferGPU_->CreateIndexBufferView(DXGI_FORMAT_R16_UINT);
-
-    vertexByteStride_ = sizeof(Vertex);
-    indexFormat_ = DXGI_FORMAT_R16_UINT;
-    indexCount_ = static_cast<UINT>(indices.size());
-    
-    LogInfo("Box geometry created: {} vertices, {} indices", vertices.size(), indices.size());
 }
 
 void Renderer::CreatePSO(DXGI_FORMAT backFormat) {

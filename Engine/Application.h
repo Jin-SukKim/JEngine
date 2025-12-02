@@ -8,13 +8,20 @@
 #include "Fence.h"
 
 namespace JEngine {
+
+class Model;
+
 class Application
 {
   public:
     Application(HINSTANCE hinstance, std::wstring name);
     ~Application();
     void Initialize();
+    void Update();
+    
     int Run();
+
+
 
     void OnResize();
 
@@ -27,5 +34,7 @@ class Application
 
     std::vector<CommandBuffer> commandBuffers_;
     std::vector<Fence> frameFence_;
+
+    std::unique_ptr<Model> model_;
 };
 } // namespace JEngine

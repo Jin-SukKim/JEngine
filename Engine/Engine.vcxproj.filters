@@ -18,6 +18,12 @@
     <ClInclude Include="Vertex.h" />
     <ClInclude Include="UploadBuffer.h" />
     <ClInclude Include="Camera.h" />
+    <ClInclude Include="Buffer.h" />
+    <ClInclude Include="GPUBuffer.h" />
+    <ClInclude Include="Texture.h" />
+    <ClInclude Include="GeometryGenerator.h" />
+    <ClInclude Include="Mesh.h" />
+    <ClInclude Include="Model.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp" />
@@ -37,5 +43,11 @@
     <ClCompile Include="Vertex.cpp" />
     <ClCompile Include="UploadBuffer.cpp" />
     <ClCompile Include="Camera.cpp" />
+    <ClCompile Include="Buffer.cpp" />
+    <ClCompile Include="GPUBuffer.cpp" />
+    <ClCompile Include="Texture.cpp" />
+    <ClCompile Include="GeometryGenerator.cpp" />
+    <ClCompile Include="Mesh.cpp" />
+    <ClCompile Include="Model.cpp" />
   </ItemGroup>
 </Project>

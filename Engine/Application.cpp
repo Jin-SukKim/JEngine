@@ -1,5 +1,9 @@
 #include "pch.h"
 #include "Application.h"
+#include "Vertex.h"
+#include "GeometryGenerator.h"
+#include "Mesh.h"
+#include "Model.h"
 
 namespace JEngine {
 Application::Application(HINSTANCE hinstance, std::wstring name)
@@ -32,11 +36,17 @@ void Application::Initialize() {
     auto& cmdBuffer = commandBuffers_[frameIdx];
     auto* cmdList = cmdBuffer.BeginRecording();
 
-    renderer_.CreateConstantBuffer();
+    std::vector<Vertex> vertices;
+    std::vector<std::uint32_t> indices;
+    GeometryGenerator::CreateBox(vertices, indices);
+
+    model_ = std::make_unique<Model>();
+    model_->AddMesh("Box", vertices, indices);
+    model_->CreateBuffers(context_, cmdList);
+
     renderer_.CreateRootSignature();
     renderer_.BuildShaders();
     renderer_.SetInputLayout();
-    renderer_.InitBox(cmdList);
     renderer_.CreatePSO(swapChain_.GetBackBufferFormat());
 
     cmdBuffer.EndRecording();
@@ -45,6 +55,11 @@ void Application::Initialize() {
     frameFence_[frameIdx].Signal();
     frameFence_[frameIdx].WaitForGPU();
 
+    model_->ReleaseStagingBuffers();
+}
+
+void Application::Update() {
+    model_->Update();
 }
 
 int Application::Run() {
@@ -72,8 +87,11 @@ int Application::Run() {
 
                 context_.SetViewport(cmdList);
 
-                renderer_.Update(timer_);
-                renderer_.Draw(cmdList, swapChain_.GetCurrentBackBuffer());
+                // TODO: Constant Buffer를 업데이트 단위로 분리하면 Application의 update와 renderer의 Update의 순서가 바뀔 예정
+                renderer_.Update(timer_, *model_);
+                Update();
+
+                renderer_.Draw(cmdList, swapChain_.GetCurrentBackBuffer(), *model_);
 
                 cmdBuffer.EndRecording();
 
@@ -84,6 +102,8 @@ int Application::Run() {
                 swapChain_.Present();
 
                 frameFence_[frameIdx].Signal();
+
+                // 다른 CPU 작업 수행 가능
             } else {
                 Sleep(100); // 비활성 상태에서는 CPU 사용량 감소를 위해 잠시 대기
                 // TODO: GUI 추가되면 GUI 사용

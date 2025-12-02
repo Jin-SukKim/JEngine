@@ -38,11 +38,11 @@
 [INFO] Depth Stencil Buffer created.
 [INFO] Depth Stencil View created.
 [INFO] Creating 2 command buffers...
-[INFO] Command Allocator created: 0x125ee7118c0
-[INFO] Graphics Command List created: 0x125ee712390
+[INFO] Command Allocator created: 0x226715f7a30
+[INFO] Graphics Command List created: 0x22677c49320
 [INFO] Command List closed and ready for recording commands.
-[INFO] Command Allocator created: 0x125ee783ef0
-[INFO] Graphics Command List created: 0x125ee7849c0
+[INFO] Command Allocator created: 0x22677cbabe0
+[INFO] Graphics Command List created: 0x22677cbb6b0
 [INFO] Command List closed and ready for recording commands.
 [INFO] Fence created for CPU-GPU synchronization.
 [INFO] Fence destroyed.
@@ -69,65 +69,64 @@
 [INFO] Setting Viewport and Scissor Rect (1280x720)...
 [INFO] Viewport and Scissor Rect configured successfully.
 [INFO] Resize complete.
-[INFO] Get new Descriptor Handle - Current Index: 1, Max Size: 1
-[INFO] D3D12 resource created: GPU Address=0x8862000
-[INFO] Buffer created: type=2, count=1, sizeOf=256, total=256 bytes
-[INFO] Buffer mapped: address=0x125E9AC0000
-[INFO] Constant buffer created: 1 elements x 256 bytes (aligned)
-[INFO] Constant Buffer created successfully.
-[INFO] Root Signature created successfully.
-[INFO] Shaders compiled successfully.
 [INFO] Creating vertex buffer: 8 vertices x 28 bytes
-[INFO] D3D12 resource created: GPU Address=0x8863000
+[INFO] D3D12 resource created: GPU Address=0x8862000
 [INFO] Buffer created: type=0, count=8, sizeOf=28, total=224 bytes
-[INFO] Vertex buffer created at GPU address: 0x8863000
-[INFO] Creating index buffer: 36 indices x 2 bytes
+[INFO] Vertex buffer created at GPU address: 0x8862000
+[INFO] Creating index buffer: 36 indices x 4 bytes
+[INFO] D3D12 resource created: GPU Address=0x8863000
+[INFO] Buffer created: type=1, count=36, sizeOf=4, total=144 bytes
+[INFO] Index buffer created at GPU address: 0x8863000
 [INFO] D3D12 resource created: GPU Address=0x8864000
-[INFO] Buffer created: type=1, count=36, sizeOf=2, total=72 bytes
-[INFO] Index buffer created at GPU address: 0x8864000
-[INFO] D3D12 resource created: GPU Address=0x8865000
 [INFO] Buffer created: type=3, count=8, sizeOf=28, total=224 bytes
 [INFO] Staging buffer created and mapped: 8 elements x 28 bytes = 224 total bytes
 [INFO] Starting buffer copy: 224 bytes
-[INFO] Buffer mapped: address=0x125E9AC3000
+[INFO] Buffer mapped: address=0x22672EC2000
 [INFO] Buffer unmapped
 [INFO] Buffer copy completed: 224 bytes to state 1
-[INFO] D3D12 resource created: GPU Address=0x8866000
-[INFO] Buffer created: type=3, count=36, sizeOf=2, total=72 bytes
-[INFO] Staging buffer created and mapped: 36 elements x 2 bytes = 72 total bytes
-[INFO] Starting buffer copy: 72 bytes
-[INFO] Buffer mapped: address=0x125E9AC4000
+[INFO] D3D12 resource created: GPU Address=0x8865000
+[INFO] Buffer created: type=3, count=36, sizeOf=4, total=144 bytes
+[INFO] Staging buffer created and mapped: 36 elements x 4 bytes = 144 total bytes
+[INFO] Starting buffer copy: 144 bytes
+[INFO] Buffer mapped: address=0x22672EC3000
 [INFO] Buffer unmapped
-[INFO] Buffer copy completed: 72 bytes to state 2
-[INFO] Created VBV: Location=0x8863000, Stride=28, Size=224
-[INFO] Created IBV: Location=0x8864000, Format=57, Size=72
-[INFO] Box geometry created: 8 vertices, 36 indices
+[INFO] Buffer copy completed: 144 bytes to state 2
+[INFO] Created VBV: Location=0x8862000, Stride=28, Size=224
+[INFO] Created IBV: Location=0x8863000, Format=42, Size=144
+[INFO] Get new Descriptor Handle - Current Index: 1, Max Size: 1
+[INFO] D3D12 resource created: GPU Address=0x8866000
+[INFO] Buffer created: type=2, count=1, sizeOf=256, total=256 bytes
+[INFO] Buffer mapped: address=0x22672EC4000
+[INFO] Constant buffer created: 1 elements x 256 bytes (aligned)
+[INFO] Root Signature created successfully.
+[INFO] Shaders compiled successfully.
 [INFO] Pipeline State Object created successfully.
+[INFO] Resource resource have been reset.
+[INFO] Resource resource have been reset.
+[INFO] Resource resource have been reset.
+[INFO] Resource resource have been reset.
+[INFO] Resource resource have been reset.
+[INFO] Resource resource have been reset.
 [INFO] Timer reset.
 [INFO] === Entering Main Message Loop ===
 [INFO] Application destructor - GPU is idle, cleaning up resources.
-[INFO] Fence destroyed.
-[INFO] Fence destroyed.
-[INFO] CommandBuffer destructor - releasing CommandList: 0x125ee712390
-[INFO] CommandBuffer destructor - releasing CommandAllocator: 0x125ee7118c0
-[INFO] CommandBuffer destructor - releasing CommandList: 0x125ee7849c0
-[INFO] CommandBuffer destructor - releasing CommandAllocator: 0x125ee783ef0
-[INFO] Resource resource have been reset.
-[INFO] Resource resource have been reset.
-[INFO] Resource resource have been reset.
-[INFO] Resource resource have been reset.
-[INFO] Resource resource have been reset.
-[INFO] Resource resource have been reset.
-[INFO] Resource resource have been reset.
-[INFO] Resource resource have been reset.
-[INFO] Resource resource have been reset.
-[INFO] Resource resource have been reset.
-[INFO] Resource resource have been reset.
-[INFO] Resource resource have been reset.
 [INFO] Buffer unmapped
 [INFO] Resource resource have been reset.
 [INFO] Resource resource have been reset.
 [INFO] Resource resource have been reset.
+[INFO] Resource resource have been reset.
+[INFO] Resource resource have been reset.
+[INFO] Resource resource have been reset.
+[INFO] Resource resource have been reset.
+[INFO] Resource resource have been reset.
+[INFO] Resource resource have been reset.
+[INFO] Resource resource have been reset.
+[INFO] Fence destroyed.
+[INFO] Fence destroyed.
+[INFO] CommandBuffer destructor - releasing CommandList: 0x22677c49320
+[INFO] CommandBuffer destructor - releasing CommandAllocator: 0x226715f7a30
+[INFO] CommandBuffer destructor - releasing CommandList: 0x22677cbb6b0
+[INFO] CommandBuffer destructor - releasing CommandAllocator: 0x22677cbabe0
 [INFO] Resource resource have been reset.
 [INFO] Resource resource have been reset.
 [INFO] Resource resource have been reset.
@@ -138,4 +137,4 @@
 [INFO] Resource resource have been reset.
 
 === Logging Session Ended ===
-Total messages processed: 132
+Total messages processed: 131
