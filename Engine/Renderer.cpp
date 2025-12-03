@@ -13,6 +13,7 @@
 #include "Model.h"
 #include "Mesh.h"
 #include "CommandBuffer.h"
+#include "Shader.h"
 
 namespace JEngine {
 Renderer::Renderer(Context& ctx)
@@ -133,9 +134,9 @@ ComPtr<ID3DBlob> Renderer::CompileShader(const std::wstring& filePath,
 }
 
 void Renderer::BuildShaders() {
-    vertexShader_ = CompileShader(L"C:\\Study\\Project\\JEngine\\Assets\\Shaders\\Color.hlsl",
+    vertexShader_ = std::make_unique<Shader>("BasicVS", assetsPath_ + L"Shaders\\Color.hlsl",
                                   "VSMain", "vs_5_0");
-    pixelShader_ = CompileShader(L"C:\\Study\\Project\\JEngine\\Assets\\Shaders\\Color.hlsl",
+    pixelShader_ = std::make_unique<Shader>("BasicPS", assetsPath_ + L"Shaders\\Color.hlsl",
                                  "PSMain", "ps_5_0");
     LogInfo("Shaders compiled successfully.");
 }
@@ -184,10 +185,8 @@ void Renderer::CreatePSO(DXGI_FORMAT backFormat) {
     ZeroMemory(&psoDesc, sizeof(D3D12_GRAPHICS_PIPELINE_STATE_DESC));
     psoDesc.InputLayout = {inputLayout_.data(), (UINT)inputLayout_.size()};
     psoDesc.pRootSignature = rootSignature_.Get();
-    psoDesc.VS = {reinterpret_cast<BYTE*>(vertexShader_->GetBufferPointer()),
-                  vertexShader_->GetBufferSize()};
-    psoDesc.PS = {reinterpret_cast<BYTE*>(pixelShader_->GetBufferPointer()),
-                  pixelShader_->GetBufferSize()};
+    psoDesc.VS = vertexShader_->GetShader();
+    psoDesc.PS = pixelShader_->GetShader();
     psoDesc.RasterizerState = rasterizerDesc;
     psoDesc.BlendState = blendDesc;
     psoDesc.DepthStencilState = depthStencilDesc;

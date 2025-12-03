@@ -10,6 +10,7 @@ class UploadBuffer;
 class Context;
 class Model;
 class CommandBuffer;
+class Shader;
 
 class Renderer
 {
@@ -40,12 +41,12 @@ class Renderer
     std::vector<D3D12_INPUT_ELEMENT_DESC> inputLayout_;
     ComPtr<ID3D12RootSignature> rootSignature_;
 
-    ComPtr<ID3DBlob> vertexShader_;
-    ComPtr<ID3DBlob> pixelShader_;
+    std::unique_ptr<Shader> vertexShader_;
+    std::unique_ptr<Shader> pixelShader_;
 
     ComPtr<ID3D12PipelineState> mPSO = nullptr;
 
-    std::wstring assetsPath_ = L"../../Assets/";
+    std::wstring assetsPath_ = L"..\\Assets\\";
 
     Camera camera_;
 };

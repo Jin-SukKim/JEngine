@@ -38,11 +38,11 @@
 [INFO] Depth Stencil Buffer created.
 [INFO] Depth Stencil View created.
 [INFO] Creating 2 command buffers...
-[INFO] Command Allocator created: 0x226715f7a30
-[INFO] Graphics Command List created: 0x22677c49320
+[INFO] Command Allocator created: 0x1f8192b2d40
+[INFO] Graphics Command List created: 0x1f81faf0b20
 [INFO] Command List closed and ready for recording commands.
-[INFO] Command Allocator created: 0x22677cbabe0
-[INFO] Graphics Command List created: 0x22677cbb6b0
+[INFO] Command Allocator created: 0x1f81fb61240
+[INFO] Graphics Command List created: 0x1f81fb61d10
 [INFO] Command List closed and ready for recording commands.
 [INFO] Fence created for CPU-GPU synchronization.
 [INFO] Fence destroyed.
@@ -81,14 +81,14 @@
 [INFO] Buffer created: type=3, count=8, sizeOf=28, total=224 bytes
 [INFO] Staging buffer created and mapped: 8 elements x 28 bytes = 224 total bytes
 [INFO] Starting buffer copy: 224 bytes
-[INFO] Buffer mapped: address=0x22672EC2000
+[INFO] Buffer mapped: address=0x1F81AEC2000
 [INFO] Buffer unmapped
 [INFO] Buffer copy completed: 224 bytes to state 1
 [INFO] D3D12 resource created: GPU Address=0x8865000
 [INFO] Buffer created: type=3, count=36, sizeOf=4, total=144 bytes
 [INFO] Staging buffer created and mapped: 36 elements x 4 bytes = 144 total bytes
 [INFO] Starting buffer copy: 144 bytes
-[INFO] Buffer mapped: address=0x22672EC3000
+[INFO] Buffer mapped: address=0x1F81AEC3000
 [INFO] Buffer unmapped
 [INFO] Buffer copy completed: 144 bytes to state 2
 [INFO] Created VBV: Location=0x8862000, Stride=28, Size=224
@@ -96,7 +96,7 @@
 [INFO] Get new Descriptor Handle - Current Index: 1, Max Size: 1
 [INFO] D3D12 resource created: GPU Address=0x8866000
 [INFO] Buffer created: type=2, count=1, sizeOf=256, total=256 bytes
-[INFO] Buffer mapped: address=0x22672EC4000
+[INFO] Buffer mapped: address=0x1F81AEC4000
 [INFO] Constant buffer created: 1 elements x 256 bytes (aligned)
 [INFO] Root Signature created successfully.
 [INFO] Shaders compiled successfully.
@@ -123,10 +123,10 @@
 [INFO] Resource resource have been reset.
 [INFO] Fence destroyed.
 [INFO] Fence destroyed.
-[INFO] CommandBuffer destructor - releasing CommandList: 0x22677c49320
-[INFO] CommandBuffer destructor - releasing CommandAllocator: 0x226715f7a30
-[INFO] CommandBuffer destructor - releasing CommandList: 0x22677cbb6b0
-[INFO] CommandBuffer destructor - releasing CommandAllocator: 0x22677cbabe0
+[INFO] CommandBuffer destructor - releasing CommandList: 0x1f81faf0b20
+[INFO] CommandBuffer destructor - releasing CommandAllocator: 0x1f8192b2d40
+[INFO] CommandBuffer destructor - releasing CommandList: 0x1f81fb61d10
+[INFO] CommandBuffer destructor - releasing CommandAllocator: 0x1f81fb61240
 [INFO] Resource resource have been reset.
 [INFO] Resource resource have been reset.
 [INFO] Resource resource have been reset.

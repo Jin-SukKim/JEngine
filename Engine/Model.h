@@ -21,11 +21,12 @@ class Model
     void CreateBuffers(Context& ctx, ID3D12GraphicsCommandList* cmdList);
     void ReleaseStagingBuffers();
 
+    void UpdateWorldMatrix(const DirectX::XMMATRIX& matrix);
+
     void AddMesh(const std::string& name, const std::vector<Vertex>& vertices, const std::vector<uint32_t>& indices);
     const std::vector<Mesh>& GetMeshes() const;
     std::vector<Mesh>& GetMeshes();
 
-    void UpdateWorldMatrix(const DirectX::XMMATRIX& matrix);
     void SetWorldMatrix(const DirectX::XMFLOAT4X4& worldMatrix);
     const DirectX::XMFLOAT4X4& GetWorldMatrix() const;
 
