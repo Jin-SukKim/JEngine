@@ -40,11 +40,22 @@ Resource& Resource::operator=(Resource&& other) noexcept {
 }
 
 void Resource::Reset() {
+    // GPU Address 로깅 (디버깅용)
+    if (resource_) {
+        LogInfo("Resetting Resource: GPU Address=0x{:X}", GetGPUAddress());
+    }
+    
+    // ComPtr 해제 (자동으로 ref count 감소)
     resource_.Reset();
+    
+    // 멤버 변수 초기화
     format_ = DXGI_FORMAT_UNKNOWN;
     viewHandle_.ptr = 0;
+    
+    // BarrierHelper 상태 초기화
     barrierHelper_.SetInitialState(D3D12_RESOURCE_STATE_COMMON);
-    LogInfo("Resource resource have been reset.");
+    
+    LogInfo("Resource has been reset successfully.");
 }
 
 void Resource::TransitionTo(ID3D12GraphicsCommandList* cmdList, D3D12_RESOURCE_STATES newState) {

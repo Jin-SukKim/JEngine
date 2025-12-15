@@ -7,7 +7,7 @@
 
 namespace JEngine {
 Application::Application(HINSTANCE hinstance, std::wstring name)
-    : window_(hinstance, name), context_(window_), swapChain_(context_), renderer_(context_) {
+    : window_(hinstance, name), context_(window_), swapChain_(context_), renderer_(context_, swapChain_) {
 }
 
 Application::~Application() {
@@ -25,7 +25,7 @@ void Application::Initialize() {
 
     commandBuffers_ = context_.CreateGraphicsCommandBuffers(bufferCount);
     frameFence_.reserve(bufferCount);
-    
+
     for (uint32_t i = 0; i < bufferCount; ++i) {
         frameFence_.emplace_back(Fence(context_.GetDevice(), context_.GetCommandQueue()));
     }
@@ -43,11 +43,6 @@ void Application::Initialize() {
     model_ = std::make_unique<Model>();
     model_->AddMesh("Box", vertices, indices);
     model_->CreateBuffers(context_, cmdList);
-
-    renderer_.CreateRootSignature();
-    renderer_.BuildShaders();
-    renderer_.SetInputLayout();
-    renderer_.CreatePSO(swapChain_.GetBackBufferFormat());
 
     cmdBuffer.EndRecording();
     context_.ExecuteCommands(cmdList);
@@ -83,15 +78,16 @@ int Application::Run() {
                 frameFence_[frameIdx].WaitForGPU();
 
                 auto& cmdBuffer = commandBuffers_[frameIdx];
-                auto* cmdList = cmdBuffer.BeginRecording(renderer_.GetPSO());
+                auto* cmdList = cmdBuffer.BeginRecording();
 
                 context_.SetViewport(cmdList);
 
-                // TODO: Constant Buffer를 업데이트 단위로 분리하면 Application의 update와 renderer의 Update의 순서가 바뀔 예정
+                // TODO: Constant Buffer를 업데이트 단위로 분리하면 Application의 update와
+                // renderer의 Update의 순서가 바뀔 예정
                 renderer_.Update(timer_, *model_);
                 Update();
 
-                renderer_.Draw(cmdList, swapChain_.GetCurrentBackBuffer(), *model_);
+                renderer_.Draw(cmdList, *model_);
 
                 cmdBuffer.EndRecording();
 
@@ -118,7 +114,7 @@ void Application::OnResize() {
     // Resource에 변화를 주기 전에 GPU가 모든 작업을 완료하도록 대기
     for (Fence& fence : frameFence_)
         fence.WaitForGPU();
-    
+
     swapChain_.Resize();
     renderer_.Resize();
 
@@ -127,4 +123,5 @@ void Application::OnResize() {
 
     LogInfo("Resize complete.");
 }
+
 } // namespace JEngine

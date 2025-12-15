@@ -37,20 +37,25 @@
 [INFO] D3D12 resource created: GPU Address=0x0
 [INFO] Depth Stencil Buffer created.
 [INFO] Depth Stencil View created.
+[INFO] Shaders compiled successfully.
+[INFO] Root Signature created successfully.
+[INFO] BasicPipeline is created.
 [INFO] Creating 2 command buffers...
-[INFO] Command Allocator created: 0x1f8192b2d40
-[INFO] Graphics Command List created: 0x1f81faf0b20
+[INFO] Command Allocator created: 0x281fbda2010
+[INFO] Graphics Command List created: 0x281fbde0a20
 [INFO] Command List closed and ready for recording commands.
-[INFO] Command Allocator created: 0x1f81fb61240
-[INFO] Graphics Command List created: 0x1f81fb61d10
+[INFO] Command Allocator created: 0x281fbdf0a80
+[INFO] Graphics Command List created: 0x281fbe61200
 [INFO] Command List closed and ready for recording commands.
 [INFO] Fence created for CPU-GPU synchronization.
 [INFO] Fence destroyed.
 [INFO] Fence created for CPU-GPU synchronization.
 [INFO] Fence destroyed.
 [INFO] === Resizing Swap Chain Buffers ===
-[INFO] Resource resource have been reset.
-[INFO] Resource resource have been reset.
+[INFO] Resetting Resource: GPU Address=0x0
+[INFO] Resource has been reset successfully.
+[INFO] Resetting Resource: GPU Address=0x0
+[INFO] Resource has been reset successfully.
 [INFO] Descriptor Heap reset - Current Index set to 0
 [INFO] === Creating Render Target Views ===
 [INFO] Get new Descriptor Handle - Current Index: 1, Max Size: 2
@@ -60,7 +65,8 @@
 [INFO] Render Target Views created for all back buffers.
 [INFO] === Render Target Views Creation Complete ===
 
-[INFO] Resource resource have been reset.
+[INFO] Resetting Resource: GPU Address=0x0
+[INFO] Resource has been reset successfully.
 [INFO] Descriptor Heap reset - Current Index set to 0
 [INFO] Get new Descriptor Handle - Current Index: 1, Max Size: 1
 [INFO] D3D12 resource created: GPU Address=0x0
@@ -81,14 +87,14 @@
 [INFO] Buffer created: type=3, count=8, sizeOf=28, total=224 bytes
 [INFO] Staging buffer created and mapped: 8 elements x 28 bytes = 224 total bytes
 [INFO] Starting buffer copy: 224 bytes
-[INFO] Buffer mapped: address=0x1F81AEC2000
+[INFO] Buffer mapped: address=0x281F70C2000
 [INFO] Buffer unmapped
 [INFO] Buffer copy completed: 224 bytes to state 1
 [INFO] D3D12 resource created: GPU Address=0x8865000
 [INFO] Buffer created: type=3, count=36, sizeOf=4, total=144 bytes
 [INFO] Staging buffer created and mapped: 36 elements x 4 bytes = 144 total bytes
 [INFO] Starting buffer copy: 144 bytes
-[INFO] Buffer mapped: address=0x1F81AEC3000
+[INFO] Buffer mapped: address=0x281F70C3000
 [INFO] Buffer unmapped
 [INFO] Buffer copy completed: 144 bytes to state 2
 [INFO] Created VBV: Location=0x8862000, Stride=28, Size=224
@@ -96,45 +102,50 @@
 [INFO] Get new Descriptor Handle - Current Index: 1, Max Size: 1
 [INFO] D3D12 resource created: GPU Address=0x8866000
 [INFO] Buffer created: type=2, count=1, sizeOf=256, total=256 bytes
-[INFO] Buffer mapped: address=0x1F81AEC4000
+[INFO] Buffer mapped: address=0x281F70C4000
 [INFO] Constant buffer created: 1 elements x 256 bytes (aligned)
-[INFO] Root Signature created successfully.
-[INFO] Shaders compiled successfully.
-[INFO] Pipeline State Object created successfully.
-[INFO] Resource resource have been reset.
-[INFO] Resource resource have been reset.
-[INFO] Resource resource have been reset.
-[INFO] Resource resource have been reset.
-[INFO] Resource resource have been reset.
-[INFO] Resource resource have been reset.
+[INFO] Resetting Resource: GPU Address=0x8864000
+[INFO] Resource has been reset successfully.
+[INFO] Resource has been reset successfully.
+[INFO] Resource has been reset successfully.
+[INFO] Resetting Resource: GPU Address=0x8865000
+[INFO] Resource has been reset successfully.
+[INFO] Resource has been reset successfully.
+[INFO] Resource has been reset successfully.
 [INFO] Timer reset.
 [INFO] === Entering Main Message Loop ===
 [INFO] Application destructor - GPU is idle, cleaning up resources.
 [INFO] Buffer unmapped
-[INFO] Resource resource have been reset.
-[INFO] Resource resource have been reset.
-[INFO] Resource resource have been reset.
-[INFO] Resource resource have been reset.
-[INFO] Resource resource have been reset.
-[INFO] Resource resource have been reset.
-[INFO] Resource resource have been reset.
-[INFO] Resource resource have been reset.
-[INFO] Resource resource have been reset.
-[INFO] Resource resource have been reset.
+[INFO] Resetting Resource: GPU Address=0x8866000
+[INFO] Resource has been reset successfully.
+[INFO] Resource has been reset successfully.
+[INFO] Resource has been reset successfully.
+[INFO] Resource has been reset successfully.
+[INFO] Resetting Resource: GPU Address=0x8863000
+[INFO] Resource has been reset successfully.
+[INFO] Resource has been reset successfully.
+[INFO] Resource has been reset successfully.
+[INFO] Resetting Resource: GPU Address=0x8862000
+[INFO] Resource has been reset successfully.
+[INFO] Resource has been reset successfully.
+[INFO] Resource has been reset successfully.
 [INFO] Fence destroyed.
 [INFO] Fence destroyed.
-[INFO] CommandBuffer destructor - releasing CommandList: 0x1f81faf0b20
-[INFO] CommandBuffer destructor - releasing CommandAllocator: 0x1f8192b2d40
-[INFO] CommandBuffer destructor - releasing CommandList: 0x1f81fb61d10
-[INFO] CommandBuffer destructor - releasing CommandAllocator: 0x1f81fb61240
-[INFO] Resource resource have been reset.
-[INFO] Resource resource have been reset.
-[INFO] Resource resource have been reset.
-[INFO] Resource resource have been reset.
-[INFO] Resource resource have been reset.
-[INFO] Resource resource have been reset.
-[INFO] Resource resource have been reset.
-[INFO] Resource resource have been reset.
+[INFO] CommandBuffer destructor - releasing CommandList: 0x281fbde0a20
+[INFO] CommandBuffer destructor - releasing CommandAllocator: 0x281fbda2010
+[INFO] CommandBuffer destructor - releasing CommandList: 0x281fbe61200
+[INFO] CommandBuffer destructor - releasing CommandAllocator: 0x281fbdf0a80
+[INFO] Resetting Resource: GPU Address=0x0
+[INFO] Resource has been reset successfully.
+[INFO] Resource has been reset successfully.
+[INFO] Resetting Resource: GPU Address=0x0
+[INFO] Resource has been reset successfully.
+[INFO] Resetting Resource: GPU Address=0x0
+[INFO] Resource has been reset successfully.
+[INFO] Resource has been reset successfully.
+[INFO] Resource has been reset successfully.
+[INFO] Resource has been reset successfully.
+[INFO] Resource has been reset successfully.
 
 === Logging Session Ended ===
-Total messages processed: 131
+Total messages processed: 142

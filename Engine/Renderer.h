@@ -10,45 +10,40 @@ class UploadBuffer;
 class Context;
 class Model;
 class CommandBuffer;
-class Shader;
+class ShaderManager;
+class RootSignature;
+class Pipeline;
+class SwapChain;
 
 class Renderer
 {
   public:
-    Renderer(Context& ctx);
+    Renderer(Context& ctx, SwapChain& swapChain);
     ~Renderer();
 
     void Initialize();
     void Update(const Timer& timer, Model& model);
-    void Draw(ID3D12GraphicsCommandList* cmdList, Texture& backBuffer, Model& model);
+    void Draw(ID3D12GraphicsCommandList* cmdList, Model& model);
     void Resize();
 
-    void CreateRootSignature();
-    void SetInputLayout();
-    ComPtr<ID3DBlob> CompileShader(const std::wstring& filePath, const std::string& entryPoint,
-                                   const std::string& target);
-    void BuildShaders();
-    void CreatePSO(DXGI_FORMAT backFormat);
+    ID3D12PipelineState* GetPSO() const;
 
-    ID3D12PipelineState* GetPSO() const {
-        return mPSO.Get();
-    }
+  private:
+    void InitResources();
+    void InitShaders();
+    void InitRootSignature();
+    void InitPipeline();
 
   private:
     Context& context_;
-    std::unique_ptr<Texture> depthStencil_;
-
-    std::vector<D3D12_INPUT_ELEMENT_DESC> inputLayout_;
-    ComPtr<ID3D12RootSignature> rootSignature_;
-
-    std::unique_ptr<Shader> vertexShader_;
-    std::unique_ptr<Shader> pixelShader_;
-
-    ComPtr<ID3D12PipelineState> mPSO = nullptr;
-
-    std::wstring assetsPath_ = L"..\\Assets\\";
-
+    SwapChain& swapChain_;
     Camera camera_;
+
+    std::unique_ptr<Texture> depthStencil_;
+    std::wstring assetsPath_ = L"..\\Assets\\";
+    std::unique_ptr<ShaderManager> shaderManager_;
+    std::unique_ptr<RootSignature> rootSignature_;
+    std::unique_ptr<Pipeline> pipeline_;
 };
 
 } // namespace JEngine

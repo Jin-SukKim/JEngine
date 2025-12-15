@@ -3,7 +3,7 @@
 #include "ShaderManager.h"
 
 namespace JEngine {
-Pipeline::Pipeline(ID3D12Device& device, ShaderManager& shaderManager)
+Pipeline::Pipeline(ComPtr<ID3D12Device>& device, ShaderManager& shaderManager)
     : device_(device), shaderManager_(shaderManager) {
 }
 
@@ -31,7 +31,7 @@ void Pipeline::CreatePSO(const PipelineConfig& config, ID3D12RootSignature* root
     psoDesc.SampleDesc.Count = 1;
     psoDesc.SampleDesc.Quality = 0;
     psoDesc.DSVFormat = config.dsvFormat;
-    ThrowIfFailed(device_.CreateGraphicsPipelineState(&psoDesc, IID_PPV_ARGS(&pso_)));
+    ThrowIfFailed(device_->CreateGraphicsPipelineState(&psoDesc, IID_PPV_ARGS(&pso_)));
 
     LogInfo("{} is created.", config.name);
 }

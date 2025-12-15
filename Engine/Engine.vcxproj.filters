@@ -27,6 +27,7 @@
     <ClInclude Include="Shader.h" />
     <ClInclude Include="ShaderManager.h" />
     <ClInclude Include="Pipeline.h" />
+    <ClInclude Include="RootSignature.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp" />
@@ -55,5 +56,6 @@
     <ClCompile Include="Shader.cpp" />
     <ClCompile Include="ShaderManager.cpp" />
     <ClCompile Include="Pipeline.cpp" />
+    <ClCompile Include="RootSignature.cpp" />
   </ItemGroup>
 </Project>

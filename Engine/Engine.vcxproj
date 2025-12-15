@@ -37,6 +37,7 @@
     <ClInclude Include="Pipeline.h" />
     <ClInclude Include="Renderer.h" />
     <ClInclude Include="Resource.h" />
+    <ClInclude Include="RootSignature.h" />
     <ClInclude Include="Shader.h" />
     <ClInclude Include="ShaderManager.h" />
     <ClInclude Include="SwapChain.h" />
@@ -70,6 +71,7 @@
     <ClCompile Include="Pipeline.cpp" />
     <ClCompile Include="Renderer.cpp" />
     <ClCompile Include="Resource.cpp" />
+    <ClCompile Include="RootSignature.cpp" />
     <ClCompile Include="Shader.cpp" />
     <ClCompile Include="ShaderManager.cpp" />
     <ClCompile Include="SwapChain.cpp" />

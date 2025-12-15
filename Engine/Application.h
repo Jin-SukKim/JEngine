@@ -10,6 +10,9 @@
 namespace JEngine {
 
 class Model;
+class ShaderManager;
+class RootSignature;
+class Pipeline;
 
 class Application
 {
@@ -18,10 +21,8 @@ class Application
     ~Application();
     void Initialize();
     void Update();
-    
+
     int Run();
-
-
 
     void OnResize();
 

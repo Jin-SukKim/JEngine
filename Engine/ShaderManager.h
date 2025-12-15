@@ -5,7 +5,8 @@ namespace JEngine {
 
 struct ShaderConfig
 {
-    std::wstring fileName;
+    std::string name;
+    std::wstring path;
     std::string entryPoint;
     std::string targetVersion;
 };
@@ -36,7 +37,7 @@ class ShaderManager
     ShaderManager(const std::wstring& assetsPath);
     ~ShaderManager();
 
-    void LoadShader(const std::string& name, const ShaderConfig& config);
+    void LoadShader(const ShaderConfig& config);
     void CreatePipelineShaders(const std::string& pipelineName, const PipelineShadersConfig& config);
     Shader* GetShaderPtr(const std::string& name) const;
 

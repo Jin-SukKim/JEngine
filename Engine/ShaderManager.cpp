@@ -8,13 +8,13 @@ ShaderManager::ShaderManager(const std::wstring& assetsPath) : assetsPath_(asset
 ShaderManager::~ShaderManager() {
 }
 
-void ShaderManager::LoadShader(const std::string& name, const ShaderConfig& config) {
-    if (shaders_.find(name) != shaders_.end()) {
-        LogInfo("Shader '{}' is already loaded. Skipping.\n", name);
+void ShaderManager::LoadShader(const ShaderConfig& config) {
+    if (shaders_.find(config.name) != shaders_.end()) {
+        LogInfo("Shader '{}' is already loaded. Skipping.\n", config.name);
         return;
     }
 
-    shaders_[name] = std::make_unique<Shader>(name, assetsPath_ + config.fileName,
+    shaders_[config.name] = std::make_unique<Shader>(config.name, assetsPath_ + config.path,
                                               config.entryPoint, config.targetVersion);
 }
 void ShaderManager::CreatePipelineShaders(const std::string& pipelineName,
