@@ -12,12 +12,10 @@ Mesh::Mesh() {
 Mesh::~Mesh() {
 }
 
-Mesh::Mesh(Mesh&& other) noexcept : name_(std::move(other.name_)), vertices_(std::move(other.vertices_)), indices_(std::move(other.indices_)), vertexBuffer_(std::move(other.vertexBuffer_)), indexBuffer_(std::move(other.indexBuffer_)) {
-    other.name_.clear();
-    other.vertices_.clear();
-    other.indices_.clear();
-    other.vertexBuffer_ = nullptr;
-    other.indexBuffer_ = nullptr;
+Mesh::Mesh(Mesh&& other) noexcept
+    : name_(std::move(other.name_)), vertices_(std::move(other.vertices_)),
+      indices_(std::move(other.indices_)), vertexBuffer_(std::move(other.vertexBuffer_)),
+      indexBuffer_(std::move(other.indexBuffer_)) {
 }
 
 Mesh& Mesh::operator=(Mesh&& other) noexcept {

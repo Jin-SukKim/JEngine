@@ -27,6 +27,12 @@ class Application
     void OnResize();
 
   private:
+    void InitSubsystems();
+    void InitCommandBuffers();
+    void InitFences();
+    void InitScene();
+
+  private:
     Window window_;
     Context context_;
     Timer timer_;

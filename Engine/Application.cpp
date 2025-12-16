@@ -15,42 +15,13 @@ Application::~Application() {
 }
 
 void Application::Initialize() {
-    window_.Initialize();
-    context_.Initialize();
-    swapChain_.Initialize();
-    renderer_.Initialize();
-
-    uint32_t bufferCount = swapChain_.GetBufferCount();
-    LogInfo("Creating {} command buffers...", bufferCount);
-
-    commandBuffers_ = context_.CreateGraphicsCommandBuffers(bufferCount);
-    frameFence_.reserve(bufferCount);
-
-    for (uint32_t i = 0; i < bufferCount; ++i) {
-        frameFence_.emplace_back(Fence(context_.GetDevice(), context_.GetCommandQueue()));
-    }
+    InitSubsystems();
+    InitCommandBuffers();
+    InitFences();
 
     OnResize();
 
-    int frameIdx = swapChain_.GetCurrentBackBufferIndex();
-    auto& cmdBuffer = commandBuffers_[frameIdx];
-    auto* cmdList = cmdBuffer.BeginRecording();
-
-    std::vector<Vertex> vertices;
-    std::vector<std::uint32_t> indices;
-    GeometryGenerator::CreateBox(vertices, indices);
-
-    model_ = std::make_unique<Model>();
-    model_->AddMesh("Box", vertices, indices);
-    model_->CreateBuffers(context_, cmdList);
-
-    cmdBuffer.EndRecording();
-    context_.ExecuteCommands(cmdList);
-
-    frameFence_[frameIdx].Signal();
-    frameFence_[frameIdx].WaitForGPU();
-
-    model_->ReleaseStagingBuffers();
+    InitScene();
 }
 
 void Application::Update() {
@@ -122,6 +93,51 @@ void Application::OnResize() {
     context_.SetViewportConfig();
 
     LogInfo("Resize complete.");
+}
+
+void Application::InitSubsystems() {
+    window_.Initialize();
+    context_.Initialize();
+    swapChain_.Initialize();
+    renderer_.Initialize();
+}
+
+void Application::InitCommandBuffers() {
+    const uint32_t bufferCount = swapChain_.GetBufferCount();
+    LogInfo("Creating {} command buffers...", bufferCount);
+
+    commandBuffers_ = context_.CreateGraphicsCommandBuffers(bufferCount);
+}
+
+void Application::InitFences() {
+    const uint32_t bufferCount = swapChain_.GetBufferCount();
+    frameFence_.reserve(bufferCount);
+
+    for (uint32_t i = 0; i < bufferCount; ++i) {
+        frameFence_.emplace_back(Fence(context_.GetDevice(), context_.GetCommandQueue()));
+    }
+}
+
+void Application::InitScene() {
+    int frameIdx = swapChain_.GetCurrentBackBufferIndex();
+    auto& cmdBuffer = commandBuffers_[frameIdx];
+    auto* cmdList = cmdBuffer.BeginRecording();
+
+    std::vector<Vertex> vertices;
+    std::vector<std::uint32_t> indices;
+    GeometryGenerator::CreateBox(vertices, indices);
+
+    model_ = std::make_unique<Model>();
+    model_->AddMesh("Box", vertices, indices);
+    model_->CreateBuffers(context_, cmdList);
+
+    cmdBuffer.EndRecording();
+    context_.ExecuteCommands(cmdList);
+
+    frameFence_[frameIdx].Signal();
+    frameFence_[frameIdx].WaitForGPU();
+
+    model_->ReleaseStagingBuffers();
 }
 
 } // namespace JEngine

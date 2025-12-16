@@ -19,7 +19,8 @@
 #include "SwapChain.h"
 
 namespace JEngine {
-Renderer::Renderer(Context& ctx, SwapChain& swapChain) : context_(ctx), swapChain_(swapChain), camera_(Camera::CameraType::LOOK_AT) {
+Renderer::Renderer(Context& ctx, SwapChain& swapChain)
+    : context_(ctx), swapChain_(swapChain), camera_(Camera::CameraType::LOOK_AT) {
 }
 
 Renderer::~Renderer() = default;
@@ -52,16 +53,8 @@ void Renderer::Update(const Timer& timer, Model& model) {
     // ⭐ World Matrix - 박스를 제자리에서 회전시킴
     // 경과 시간에 따라 회전 각도 계산 (라디안 단위)
     float rotationAngle = timer.TotalTime() * 0.5f; // 0.5는 회전 속도 (조절 가능)
-
-    // Y축(수직 축)을 중심으로 회전
-    XMMATRIX rotationY = XMMatrixRotationY(rotationAngle);
-
-    // Z축을 중심으로 약간의 회전 추가 (더 흥미로운 효과)
-    XMMATRIX rotationZ = XMMatrixRotationZ(rotationAngle * 0.3f);
-
-    // 두 회전을 결합
-    XMMATRIX world = rotationZ * rotationY;
-    XMMATRIX worldViewProj = world * camera_.GetViewProjMatrix();
+    XMMATRIX worldViewProj = XMMatrixRotationZ(rotationAngle * 0.3f) *
+                             XMMatrixRotationY(rotationAngle) * camera_.GetViewProjMatrix();
 
     model.UpdateWorldMatrix(worldViewProj);
 }
