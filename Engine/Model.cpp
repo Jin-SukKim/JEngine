@@ -9,6 +9,7 @@ Model::Model() : worldMatrix_(DirectX::XMFLOAT4X4()) {
 }
 
 Model::~Model() {
+    ReleaseStagingBuffers();
     for (auto& cb : constantBuffers_) {
         cb.Reset();
     }
@@ -59,12 +60,15 @@ void Model::ReleaseStagingBuffers() {
         mesh.ReleaseStagingBuffers();
 }
 
-void Model::AddMesh(const std::string& name, const std::vector<Vertex>& vertices,
+void Model::AddMesh(Context& ctx, ID3D12GraphicsCommandList* cmdList, const std::string& name,
+                    const std::vector<Vertex>& vertices,
                     const std::vector<uint32_t>& indices) {
 
     Mesh mesh;
     mesh.SetMesh(name, vertices, indices);
     meshes_.emplace_back(std::move(mesh));
+
+    CreateBuffers(ctx, cmdList);
 }
 
 const std::vector<Mesh>& Model::GetMeshes() const {

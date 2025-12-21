@@ -2,7 +2,7 @@
 #include "Fence.h"
 
 namespace JEngine {
-Fence::Fence(ComPtr<ID3D12Device>& device, ComPtr<ID3D12CommandQueue>& commandQueue)
+Fence::Fence(ID3D12Device* device, ID3D12CommandQueue* commandQueue)
     : commandQueue_(commandQueue) {
 
     // Fence 생성 (CPU-GPU 동기화용)

@@ -2,7 +2,7 @@
 #include "DescriptorHeap.h"
 
 namespace JEngine {
-DescriptorHeap::DescriptorHeap(ComPtr<ID3D12Device>& device, UINT maxDescriptorNum,
+DescriptorHeap::DescriptorHeap(ID3D12Device* device, UINT maxDescriptorNum,
                                    D3D12_DESCRIPTOR_HEAP_TYPE type,
                                    D3D12_DESCRIPTOR_HEAP_FLAGS flag)
     : device_(device) {

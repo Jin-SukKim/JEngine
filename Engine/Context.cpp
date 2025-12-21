@@ -1,6 +1,7 @@
 #include "pch.h"
 #include "Context.h"
 #include "Application.h"
+#include "DescriptorPool.h"
 
 namespace JEngine {
 
@@ -17,7 +18,7 @@ void Context::Initialize() {
     LogInfo("=== Initializing Context ===");
     createDevice();
     createCommandObjects();
-    descriptorPool_ = std::make_unique<DescriptorPool>(device_);
+    descriptorPool_ = std::make_unique<DescriptorPool>(device_.Get());
     LogInfo("=== Context Initialization Complete ===\n");
 }
 
@@ -102,32 +103,36 @@ void Context::ExecuteCommands(ID3D12GraphicsCommandList* cmd) {
     commandQueue_->ExecuteCommandLists(_countof(cmdsLists), cmdsLists);
 }
 
-ComPtr<IDXGIFactory6> Context::GetDXGIFactory() const {
-    return dxgiFactory_;
+IDXGIFactory6* Context::GetDXGIFactory() const {
+    return dxgiFactory_.Get();
 }
 
-ComPtr<ID3D12Device> Context::GetDevice() const {
-    return device_;
+ID3D12Device* Context::GetDevice() const {
+    return device_.Get();
 }
 
-ComPtr<ID3D12CommandQueue> Context::GetCommandQueue() const {
-    return commandQueue_;
+ID3D12CommandQueue* Context::GetCommandQueue() const {
+    return commandQueue_.Get();
 }
 
-ComPtr<ID3D12Device>& Context::GetDevice() {
-    return device_;
+ID3D12Device* Context::GetDevice() {
+    return device_.Get();
 }
 
-ComPtr<ID3D12CommandQueue>& Context::GetCommandQueue() {
-    return commandQueue_;
+ID3D12CommandQueue* Context::GetCommandQueue() {
+    return commandQueue_.Get();
 }
 
 Window& Context::GetWindow() {
     return window_;
 }
 
-std::unique_ptr<DescriptorPool>& Context::GetDescriptorPool() {
-    return descriptorPool_;
+DescriptorPool* Context::GetDescriptorPool() {
+    return descriptorPool_.get();
+}
+
+ID3D12DescriptorHeap* Context::GetDescriptorHeap(D3D12_DESCRIPTOR_HEAP_TYPE type) {
+    return GetDescriptorPool()->Get(type)->GetHeap();
 }
 
 void Context::SetViewportConfig() {
@@ -159,14 +164,14 @@ std::vector<CommandBuffer> Context::CreateGraphicsCommandBuffers(uint32_t numBuf
     buffers.reserve(numBuffers);
 
     for (uint32_t i = 0; i < numBuffers; ++i) {
-        buffers.emplace_back(CommandBuffer(device_));
+        buffers.emplace_back(CommandBuffer(device_.Get()));
     }
 
     return buffers;
 }
 
 CommandBuffer Context::CreateGraphicsCommandBuffer() {
-    return CommandBuffer(device_);
+    return CommandBuffer(device_.Get());
 }
 
 } // namespace JEngine

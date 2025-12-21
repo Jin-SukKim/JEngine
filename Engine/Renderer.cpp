@@ -72,7 +72,7 @@ void Renderer::Draw(ID3D12GraphicsCommandList* cmdList, Model& model) {
                                    1.0f, 0, 0, nullptr);
 
     ID3D12DescriptorHeap* cbvHeap =
-        context_.GetDescriptorPool()->Get(D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV)->GetHeap();
+        context_.GetDescriptorHeap(D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV);
     ID3D12DescriptorHeap* descriptorHeaps[] = {cbvHeap};
     cmdList->SetDescriptorHeaps(_countof(descriptorHeaps), descriptorHeaps);
 

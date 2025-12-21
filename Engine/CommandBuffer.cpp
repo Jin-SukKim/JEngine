@@ -3,7 +3,7 @@
 
 namespace JEngine {
 
-CommandBuffer::CommandBuffer(ComPtr<ID3D12Device>& device) {
+CommandBuffer::CommandBuffer(ID3D12Device* device) {
     // Command Allocator 积己 (Command List狼 皋葛府 包府磊)
     ThrowIfFailed(device->CreateCommandAllocator(D3D12_COMMAND_LIST_TYPE_DIRECT,
                                                   IID_PPV_ARGS(commandAllocator_.GetAddressOf())));

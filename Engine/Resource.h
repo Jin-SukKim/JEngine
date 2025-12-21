@@ -21,8 +21,8 @@ class Resource
     void TransitionTo(ID3D12GraphicsCommandList* cmdList, D3D12_RESOURCE_STATES newState);
 
     // Getter
-    ComPtr<ID3D12Resource>& GetResource();
-    const ComPtr<ID3D12Resource>& GetResource() const;
+    ID3D12Resource* GetResource();
+    const ID3D12Resource* GetResource() const;
     ID3D12Resource* GetResourcePtr() const;
     D3D12_GPU_VIRTUAL_ADDRESS GetGPUAddress() const;
     D3D12_RESOURCE_STATES GetCurrentState() const;

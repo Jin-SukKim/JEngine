@@ -22,14 +22,15 @@ class Context
     void ExecuteCommands(ID3D12GraphicsCommandList* cmd);
 
     // === Getter 함수들 ===
-    ComPtr<IDXGIFactory6> GetDXGIFactory() const;
+    IDXGIFactory6* GetDXGIFactory() const;
 
-    ComPtr<ID3D12Device> GetDevice() const;
-    ComPtr<ID3D12CommandQueue> GetCommandQueue() const;
-    ComPtr<ID3D12Device>& GetDevice();
-    ComPtr<ID3D12CommandQueue>& GetCommandQueue();
+    ID3D12Device* GetDevice() const;
+    ID3D12CommandQueue* GetCommandQueue() const;
+    ID3D12Device* GetDevice();
+    ID3D12CommandQueue* GetCommandQueue();
     Window& GetWindow();
-    std::unique_ptr<DescriptorPool>& GetDescriptorPool();
+    DescriptorPool* GetDescriptorPool();
+    ID3D12DescriptorHeap* GetDescriptorHeap(D3D12_DESCRIPTOR_HEAP_TYPE type);
 
     // === 렌더링 설정 ===
     void SetViewportConfig();  // Viewport 및 Scissor Rect 설정

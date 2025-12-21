@@ -68,7 +68,7 @@ void SwapChain::createSwapChain() {
     // - Legacy CreateSwapChain()보다 Flip Model에 최적화
     ComPtr<IDXGISwapChain1> tempSwapChain;
     ThrowIfFailed(context_.GetDXGIFactory()->CreateSwapChainForHwnd(
-        context_.GetCommandQueue().Get(), context_.GetWindow().GetHwnd(), &sd, &fsDesc,
+        context_.GetCommandQueue(), context_.GetWindow().GetHwnd(), &sd, &fsDesc,
         nullptr, // Output 제한 없음 (모든 모니터 허용)
         tempSwapChain.GetAddressOf()));
 

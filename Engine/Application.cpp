@@ -128,8 +128,7 @@ void Application::InitScene() {
     GeometryGenerator::CreateBox(vertices, indices);
 
     model_ = std::make_unique<Model>();
-    model_->AddMesh("Box", vertices, indices);
-    model_->CreateBuffers(context_, cmdList);
+    model_->AddMesh(context_, cmdList, "Box", vertices, indices);
 
     cmdBuffer.EndRecording();
     context_.ExecuteCommands(cmdList);

@@ -3,7 +3,7 @@
 #include "ShaderManager.h"
 
 namespace JEngine {
-Pipeline::Pipeline(ComPtr<ID3D12Device>& device, ShaderManager& shaderManager)
+Pipeline::Pipeline(ID3D12Device* device, ShaderManager& shaderManager)
     : device_(device), shaderManager_(shaderManager) {
 }
 

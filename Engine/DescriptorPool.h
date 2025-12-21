@@ -5,7 +5,7 @@ namespace JEngine {
 class DescriptorPool
 {
   public:
-    DescriptorPool(ComPtr<ID3D12Device>& device);
+    DescriptorPool(ID3D12Device* device);
     void Initialize();
 
     auto AllocateRTV() -> D3D12_CPU_DESCRIPTOR_HANDLE;
@@ -21,7 +21,7 @@ class DescriptorPool
     auto Get(D3D12_DESCRIPTOR_HEAP_TYPE type) -> DescriptorHeap*;
 
   private:
-    ComPtr<ID3D12Device>& device_;
+    ID3D12Device* device_;
     std::unordered_map<D3D12_DESCRIPTOR_HEAP_TYPE, std::unique_ptr<DescriptorHeap>> heapAllocator_;
 };
 } // namespace JEngine

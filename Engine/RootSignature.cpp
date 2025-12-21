@@ -2,7 +2,7 @@
 #include "RootSignature.h"
 
 namespace JEngine {
-RootSignature::RootSignature(ComPtr<ID3D12Device>& device)
+RootSignature::RootSignature(ID3D12Device* device)
     : device_(device), rootSignature_(nullptr) {
 }
 

@@ -47,7 +47,7 @@ struct PipelineConfig
 class Pipeline
 {
   public:
-    Pipeline(ComPtr<ID3D12Device>& device, ShaderManager& shaderManager);
+    Pipeline(ID3D12Device* device, ShaderManager& shaderManager);
 
     void CreatePSO(const PipelineConfig& config, ID3D12RootSignature* rootSignature);
     ID3D12PipelineState* GetPSO() const;
@@ -58,7 +58,7 @@ class Pipeline
     D3D12_DEPTH_STENCIL_DESC CreateDepthStencilDesc() const;
 
   private:
-    ComPtr<ID3D12Device>& device_;
+    ID3D12Device* device_;
     ShaderManager& shaderManager_;
     PipelineConfig config_;
     ComPtr<ID3D12PipelineState> pso_;

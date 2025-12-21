@@ -6,7 +6,7 @@ namespace JEngine {
 class CommandBuffer
 {
   public:
-    CommandBuffer(ComPtr<ID3D12Device>& device);
+    CommandBuffer(ID3D12Device* device);
     ~CommandBuffer();
 
     // 복사 방지

@@ -3,7 +3,7 @@
 
 namespace JEngine {
 
-DescriptorPool::DescriptorPool(ComPtr<ID3D12Device>& device) : device_(device) {
+DescriptorPool::DescriptorPool(ID3D12Device* device) : device_(device) {
     // TODO: 일단 고정된 개수로 초기화
     heapAllocator_[D3D12_DESCRIPTOR_HEAP_TYPE_RTV] =
         std::make_unique<DescriptorHeap>(device_, 2, D3D12_DESCRIPTOR_HEAP_TYPE_RTV);

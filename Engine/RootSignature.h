@@ -16,7 +16,7 @@ struct RootParamConfig
 class RootSignature
 {
   public:
-    RootSignature(ComPtr<ID3D12Device>& device);
+    RootSignature(ID3D12Device* device);
     ~RootSignature();
 
     void Create(const std::vector<RootParamConfig>& rootParamConfigs);
@@ -30,7 +30,7 @@ class RootSignature
 
 
   private:
-    ComPtr<ID3D12Device>& device_;
+    ID3D12Device* device_;
     ID3D12RootSignature* rootSignature_;
 };
 } // namespace JEngine

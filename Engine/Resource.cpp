@@ -64,12 +64,12 @@ void Resource::TransitionTo(ID3D12GraphicsCommandList* cmdList, D3D12_RESOURCE_S
 }
 
 // Getters
-ComPtr<ID3D12Resource>& Resource::GetResource() {
-    return resource_;
+ID3D12Resource* Resource::GetResource() {
+    return resource_.Get();
 }
 
-const ComPtr<ID3D12Resource>& Resource::GetResource() const {
-    return resource_;
+const ID3D12Resource* Resource::GetResource() const {
+    return resource_.Get();
 }
 
 ID3D12Resource* Resource::GetResourcePtr() const {

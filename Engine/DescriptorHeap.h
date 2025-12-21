@@ -4,7 +4,7 @@ namespace JEngine {
 class DescriptorHeap
 {
   public:
-    DescriptorHeap(ComPtr<ID3D12Device>& device, UINT maxDescriptorNum,
+    DescriptorHeap(ID3D12Device* device, UINT maxDescriptorNum,
                    D3D12_DESCRIPTOR_HEAP_TYPE type,
                    D3D12_DESCRIPTOR_HEAP_FLAGS flag = D3D12_DESCRIPTOR_HEAP_FLAG_NONE);
 
@@ -23,7 +23,7 @@ class DescriptorHeap
     //
     // - DirectX 12: Heap을 명시적으로 생성하고 관리 (성능 최적화를 위해)
     // GPU가 빠르게 접근할 수 있도록 연속된 메모리 공간에 View들을 저장
-    ComPtr<ID3D12Device>& device_;
+    ID3D12Device* device_;
     ComPtr<ID3D12DescriptorHeap> heap_; // Descriptor View들을 담는 Heap
 
     UINT descriptorSize_ = 0; // Descriptor 1개의 크기
