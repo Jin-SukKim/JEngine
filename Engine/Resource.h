@@ -1,5 +1,6 @@
-#pragma once
+ï»¿#pragma once
 #include "BarrierHelper.h"
+#include "DescriptorHeap.h"
 
 namespace JEngine {
 
@@ -10,7 +11,7 @@ class Resource
     Resource(Context& ctx);
     virtual ~Resource();
 
-    // ¸®¼Ò½º º¹»ç ¹æÁö
+    // ë¦¬ì†ŒìŠ¤ ë³µì‚¬ ë°©ì§€
     Resource(const Resource&) = delete;
     Resource& operator=(const Resource&) = delete;
 
@@ -28,17 +29,22 @@ class Resource
     D3D12_RESOURCE_STATES GetCurrentState() const;
     D3D12_RESOURCE_DESC GetDesc() const;
     DXGI_FORMAT GetFormat() const;
-    D3D12_CPU_DESCRIPTOR_HANDLE GetViewHandle() const;
+    
+    // CPU Handle ë°˜í™˜
+    D3D12_CPU_DESCRIPTOR_HANDLE GetCPUHandle() const;
+    
+    // GPU Handle ë°˜í™˜ (ìƒˆë¡œ ì¶”ê°€)
+    D3D12_GPU_DESCRIPTOR_HANDLE GetGPUHandle() const;
 
     // Setter
     void SetResource(ComPtr<ID3D12Resource>& res);
 
   protected:
-    // ÇÏÀ§ Å¬·¡½º¿¡¼­ »ç¿ë °¡´ÉÇÑ Setter ÇÔ¼ö
-    void SetViewHandle(D3D12_CPU_DESCRIPTOR_HANDLE handle);
+    // í•˜ìœ„ í´ë˜ìŠ¤ì—ì„œ ì‚¬ìš© ê°€ëŠ¥í•œ Setter í•¨ìˆ˜
+    void SetDescriptorHandle(DescriptorHandle handle);
     void SetFormat(DXGI_FORMAT format);
 
-    // ¸®¼Ò½º »ı¼º ÇïÆÛ ÇÔ¼öµé
+    // ë¦¬ì†ŒìŠ¤ ìƒì„± í—¬í¼ í•¨ìˆ˜ë“¤
     D3D12_HEAP_PROPERTIES CreateHeapProperties(D3D12_HEAP_TYPE type) const;
     D3D12_RESOURCE_DESC
     CreateResourceDesc(D3D12_RESOURCE_DIMENSION dimension, UINT64 width, UINT height = 1,
@@ -55,7 +61,7 @@ class Resource
     Context& context_;
     ComPtr<ID3D12Resource> resource_ = nullptr;
     DXGI_FORMAT format_ = DXGI_FORMAT_UNKNOWN;
-    D3D12_CPU_DESCRIPTOR_HANDLE viewHandle_{};
+    DescriptorHandle descriptorHandle_{}; // CPU + GPU Handle ëª¨ë‘ ì €ì¥
 
     BarrierHelper barrierHelper_;
 };

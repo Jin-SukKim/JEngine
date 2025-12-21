@@ -27,6 +27,8 @@ class Model
                  const std::vector<Vertex>& vertices, const std::vector<uint32_t>& indices);
     const std::vector<Mesh>& GetMeshes() const;
     std::vector<Mesh>& GetMeshes();
+    Mesh& GetMesh(size_t index);
+    D3D12_GPU_DESCRIPTOR_HANDLE GetConstantGPUHandle(size_t index) const;
 
     void SetWorldMatrix(const DirectX::XMFLOAT4X4& worldMatrix);
     const DirectX::XMFLOAT4X4& GetWorldMatrix() const;

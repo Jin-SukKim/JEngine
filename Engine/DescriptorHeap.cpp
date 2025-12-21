@@ -1,30 +1,45 @@
-#include "pch.h"
+ï»¿#include "pch.h"
 #include "DescriptorHeap.h"
 
 namespace JEngine {
 DescriptorHeap::DescriptorHeap(ID3D12Device* device, UINT maxDescriptorNum,
                                    D3D12_DESCRIPTOR_HEAP_TYPE type,
                                    D3D12_DESCRIPTOR_HEAP_FLAGS flag)
-    : device_(device) {
+    : device_(device), isShaderVisible_(flag & D3D12_DESCRIPTOR_HEAP_FLAG_SHADER_VISIBLE) {
 
-    // Descriptor Å©±â Á¶È¸ (GPU¸¶´Ù ´Ù¸¦ ¼ö ÀÖÀ½)
-    // - Descriptor Heap¿¡¼­ ´ÙÀ½ Descriptor·Î ÀÌµ¿ÇÒ ¶§ ÇÊ¿äÇÑ ¿ÀÇÁ¼Â Å©±â
+    // Descriptor í¬ê¸° ì¡°íšŒ (GPUë§ˆë‹¤ ë‹¤ë¥¼ ìˆ˜ ìžˆìŒ)
+    // - Descriptor Heapì—ì„œ ë‹¤ìŒ Descriptorë¡œ ì´ë™í•  ë•Œ í•„ìš”í•œ ì˜¤í”„ì…‹ í¬ê¸°
     descriptorSize_ = device_->GetDescriptorHandleIncrementSize(type);
 
-    // Descriptor Heap »ý¼º
+    // Descriptor Heap ìƒì„±
     createHeap(maxDescriptorNum, type, flag);
 }
 
-auto DescriptorHeap::AllocateView() -> D3D12_CPU_DESCRIPTOR_HANDLE {
+DescriptorHandle DescriptorHeap::AllocateView() {
     if (viewIdx_ >= maxHeapSize_) {
         LogError("Descriptor Heap allocation failed: Exceeded maximum descriptors ({})",
                  maxHeapSize_);
     }
-    // HeapÀÇ ½ÃÀÛ ÁÖ¼Ò °¡Á®¿À±â
-    auto handle = heap_->GetCPUDescriptorHandleForHeapStart();
-    // - ptr = ½ÃÀÛ ÁÖ¼Ò + (ÀÎµ¦½º ¡¿ Descriptor Å©±â)
-    handle.ptr += descriptorSize_ * viewIdx_++;
-    LogInfo("Get new Descriptor Handle - Current Index: {}, Max Size: {}", viewIdx_, maxHeapSize_);
+
+    DescriptorHandle handle;
+
+    // CPU Handle ê³„ì‚°
+    // Heapì˜ ì‹œìž‘ ì£¼ì†Œ ê°€ì ¸ì˜¤ê¸°
+    handle.cpuHandle = heap_->GetCPUDescriptorHandleForHeapStart();
+    // ptr = ì‹œìž‘ ì£¼ì†Œ + (ì¸ë±ìŠ¤ Ã— Descriptor í¬ê¸°)
+    handle.cpuHandle.ptr += descriptorSize_ * viewIdx_;
+
+    // GPU Handle ê³„ì‚° (Shader Visible Heapì¸ ê²½ìš°ë§Œ)
+    if (isShaderVisible_) {
+        handle.gpuHandle = heap_->GetGPUDescriptorHandleForHeapStart();
+        handle.gpuHandle.ptr += descriptorSize_ * viewIdx_;
+    } else {
+        handle.gpuHandle.ptr = 0; // Non-Shader Visibleì¸ ê²½ìš° 0
+    }
+    
+    viewIdx_++;
+    
+    LogInfo("Allocated Descriptor Handle - Index: {}, Max Size: {}", viewIdx_, maxHeapSize_);
     return handle;
 }
 
@@ -44,11 +59,11 @@ void DescriptorHeap::createHeap(UINT maxDescriptorNum, D3D12_DESCRIPTOR_HEAP_TYP
     D3D12_DESCRIPTOR_HEAP_DESC desc = {};
     desc.NumDescriptors = maxDescriptorNum;
     desc.Type = type;
-    desc.Flags = flag; // CPU Àü¿ë Heap
+    desc.Flags = flag; // CPU ì „ìš© Heap
     desc.NodeMask = 0;                            // Single GPU
     ThrowIfFailed(device_->CreateDescriptorHeap(&desc, IID_PPV_ARGS(&heap_)));
-    LogInfo("Descriptor Heap created - Type: {}, NumDescriptors: {}, DescriptorSize: {}",
-            static_cast<UINT>(type), maxDescriptorNum, descriptorSize_);
+    LogInfo("Descriptor Heap created - Type: {}, NumDescriptors: {}, DescriptorSize: {}, ShaderVisible: {}",
+            static_cast<UINT>(type), maxDescriptorNum, descriptorSize_, isShaderVisible_);
 }
 
 } // namespace JEngine

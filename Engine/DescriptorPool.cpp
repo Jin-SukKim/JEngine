@@ -15,23 +15,23 @@ DescriptorPool::DescriptorPool(ID3D12Device* device) : device_(device) {
     LogInfo("Descriptor Pool created.");
 }
 
-auto DescriptorPool::AllocateRTV() -> D3D12_CPU_DESCRIPTOR_HANDLE {
+auto DescriptorPool::AllocateRTV() -> DescriptorHandle {
     return heapAllocator_[D3D12_DESCRIPTOR_HEAP_TYPE_RTV]->AllocateView();
 }
 
-auto DescriptorPool::AllocateDSV() -> D3D12_CPU_DESCRIPTOR_HANDLE {
+auto DescriptorPool::AllocateDSV() -> DescriptorHandle {
     return heapAllocator_[D3D12_DESCRIPTOR_HEAP_TYPE_DSV]->AllocateView();
 }
 
-auto DescriptorPool::AllocateCBV() -> D3D12_CPU_DESCRIPTOR_HANDLE {
+auto DescriptorPool::AllocateCBV() -> DescriptorHandle {
     return heapAllocator_[D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV]->AllocateView();
 }
 
-auto DescriptorPool::AllocateSRV() -> D3D12_CPU_DESCRIPTOR_HANDLE {
+auto DescriptorPool::AllocateSRV() -> DescriptorHandle {
     return heapAllocator_[D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV]->AllocateView();
 }
 
-auto DescriptorPool::AllocateUAV() -> D3D12_CPU_DESCRIPTOR_HANDLE {
+auto DescriptorPool::AllocateUAV() -> DescriptorHandle {
     return heapAllocator_[D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV]->AllocateView();
 }
 

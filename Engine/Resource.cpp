@@ -1,4 +1,4 @@
-#include "pch.h"
+ï»¿#include "pch.h"
 #include "Resource.h"
 #include "Context.h"
 
@@ -14,52 +14,52 @@ Resource::~Resource() {
 // Move constructor
 Resource::Resource(Resource&& other) noexcept
     : context_(other.context_), resource_(std::move(other.resource_)), format_(other.format_),
-      viewHandle_(other.viewHandle_), barrierHelper_(std::move(other.barrierHelper_)) {
-    // ÀÌµ¿ ÈÄ other´Â ºñ¾îÀÖ´Â »óÅÂ·Î ¸¸µê
+      descriptorHandle_(other.descriptorHandle_), barrierHelper_(std::move(other.barrierHelper_)) {
+    // ì´ë™ í›„ otherëŠ” ë¹„ì–´ìˆëŠ” ìƒíƒœë¡œ ë§Œë“¦
     other.format_ = DXGI_FORMAT_UNKNOWN;
-    other.viewHandle_.ptr = 0;
+    other.descriptorHandle_.cpuHandle.ptr = 0;
 }
 
 // Move assignment operator
 Resource& Resource::operator=(Resource&& other) noexcept {
     if (this != &other) {
-        // ±âÁ¸ ¸®¼Ò½º Á¤¸®
+        // ê¸°ì¡´ ë¦¬ì†ŒìŠ¤ ì •ë¦¬
         Reset();
 
-        // context_´Â ÂüÁ¶ÀÌ¹Ç·Î ÀçÇÒ´ç ºÒ°¡ (ÀÌ¹Ì ÃÊ±âÈ­µÊ)
-        // ´Ù¸¥ ¸â¹öµé¸¸ ÀÌµ¿
+        // context_ëŠ” ì°¸ì¡°ì´ë¯€ë¡œ ì¬í• ë‹¹ ë¶ˆê°€ (ì´ë¯¸ ì´ˆê¸°í™”ë¨)
+        // ë‹¤ë¥¸ ë©¤ë²„ë“¤ë§Œ ì´ë™
         resource_ = std::move(other.resource_);
         format_ = other.format_;
-        viewHandle_ = other.viewHandle_;
+        descriptorHandle_ = other.descriptorHandle_;
         barrierHelper_ = std::move(other.barrierHelper_);
 
-        // ÀÌµ¿ ÈÄ other´Â ºñ¾îÀÖ´Â »óÅÂ·Î ¸¸µê
+        // ì´ë™ í›„ otherëŠ” ë¹„ì–´ìˆëŠ” ìƒíƒœë¡œ ë§Œë“¦
         other.Reset();
     }
     return *this;
 }
 
 void Resource::Reset() {
-    // GPU Address ·Î±ë (µğ¹ö±ë¿ë)
+    // GPU Address ë¡œê¹… (ë””ë²„ê¹…ìš©)
     if (resource_) {
         LogInfo("Resetting Resource: GPU Address=0x{:X}", GetGPUAddress());
     }
     
-    // ComPtr ÇØÁ¦ (ÀÚµ¿À¸·Î ref count °¨¼Ò)
+    // ComPtr í•´ì œ (ìë™ìœ¼ë¡œ ref count ê°ì†Œ)
     resource_.Reset();
     
-    // ¸â¹ö º¯¼ö ÃÊ±âÈ­
+    // ë©¤ë²„ ë³€ìˆ˜ ì´ˆê¸°í™”
     format_ = DXGI_FORMAT_UNKNOWN;
-    viewHandle_.ptr = 0;
+    descriptorHandle_.cpuHandle.ptr = 0;
     
-    // BarrierHelper »óÅÂ ÃÊ±âÈ­
+    // BarrierHelper ìƒíƒœ ì´ˆê¸°í™”
     barrierHelper_.SetInitialState(D3D12_RESOURCE_STATE_COMMON);
     
     LogInfo("Resource has been reset successfully.");
 }
 
 void Resource::TransitionTo(ID3D12GraphicsCommandList* cmdList, D3D12_RESOURCE_STATES newState) {
-    // === Resource State Transition (¸®¼Ò½º »óÅÂ ÀüÈ¯) ===
+    // === Resource State Transition (ë¦¬ì†ŒìŠ¤ ìƒíƒœ ì „í™˜) ===
     barrierHelper_.Transition(cmdList, resource_.Get(), newState);
 }
 
@@ -92,8 +92,12 @@ DXGI_FORMAT Resource::GetFormat() const {
     return format_;
 }
 
-D3D12_CPU_DESCRIPTOR_HANDLE Resource::GetViewHandle() const {
-    return viewHandle_;
+D3D12_CPU_DESCRIPTOR_HANDLE Resource::GetCPUHandle() const {
+    return descriptorHandle_.cpuHandle;
+}
+
+D3D12_GPU_DESCRIPTOR_HANDLE Resource::GetGPUHandle() const {
+    return descriptorHandle_.gpuHandle;
 }
 
 // Setter
@@ -101,17 +105,17 @@ void Resource::SetResource(ComPtr<ID3D12Resource>& res) {
     resource_ = res;
 }
 
-void Resource::SetViewHandle(D3D12_CPU_DESCRIPTOR_HANDLE handle) {
-    viewHandle_ = handle;
-}
-
 void Resource::SetFormat(DXGI_FORMAT format) {
     format_ = format;
 }
 
-// ¸®¼Ò½º »ı¼º ÇïÆÛ ÇÔ¼öµé
+void Resource::SetDescriptorHandle(DescriptorHandle handle) {
+    descriptorHandle_ = handle; // â­ CPU + GPU ë‘˜ ë‹¤ ì €ì¥ë¨
+}
+
+// ë¦¬ì†ŒìŠ¤ ìƒì„± í—¬í¼ í•¨ìˆ˜ë“¤
 D3D12_HEAP_PROPERTIES Resource::CreateHeapProperties(D3D12_HEAP_TYPE type) const {
-    // Heap Properties ¼³Á¤ (CD3DX12_HEAP_PROPERTIES ÇïÆÛ ¾øÀÌ)
+    // Heap Properties ì„¤ì • (CD3DX12_HEAP_PROPERTIES í—¬í¼ ì—†ì´)
     D3D12_HEAP_PROPERTIES heapProps = {};
     heapProps.Type = type;
     heapProps.CPUPageProperty = D3D12_CPU_PAGE_PROPERTY_UNKNOWN;
@@ -127,14 +131,14 @@ Resource::CreateResourceDesc(D3D12_RESOURCE_DIMENSION dimension, UINT64 width, U
                              D3D12_TEXTURE_LAYOUT layout, D3D12_RESOURCE_FLAGS flags) {
     SetFormat(format);
 
-    // Resource Description ¼³Á¤
+    // Resource Description ì„¤ì •
     D3D12_RESOURCE_DESC desc = {};
     desc.Dimension = dimension;
-    desc.Alignment = 0; // ±âº» Á¤·Ä
+    desc.Alignment = 0; // ê¸°ë³¸ ì •ë ¬
     desc.Width = width;
     desc.Height = height;
-    desc.DepthOrArraySize = depthOrArraySize; // 1Àº ´ÜÀÏ ÅØ½ºÃ³
-    desc.MipLevels = mipLevels;               // Mipmap ¾øÀ½
+    desc.DepthOrArraySize = depthOrArraySize; // 1ì€ ë‹¨ì¼ í…ìŠ¤ì²˜
+    desc.MipLevels = mipLevels;               // Mipmap ì—†ìŒ
     desc.Format = format;
     desc.SampleDesc.Count = 1;
     desc.SampleDesc.Quality = 0;

@@ -41,7 +41,7 @@ void UploadBuffer::CreateStagingBuffer(size_t elementCount, size_t sizeOf) {
 }
 
 void UploadBuffer::CreateConstantBuffer(size_t count, size_t sizeOf,
-                                        D3D12_CPU_DESCRIPTOR_HANDLE viewHandle) {
+                                        DescriptorHandle handle) {
     // 상수 버퍼는 256byte 정렬이 필요
     sizeOf = calculateConstantBufferByteSize(sizeOf);
 
@@ -59,8 +59,8 @@ void UploadBuffer::CreateConstantBuffer(size_t count, size_t sizeOf,
     cbvDesc.BufferLocation = GetGPUAddress();
     cbvDesc.SizeInBytes = static_cast<UINT>(sizeOf);
 
-    context_.GetDevice()->CreateConstantBufferView(&cbvDesc, viewHandle);
-    SetViewHandle(viewHandle);
+    context_.GetDevice()->CreateConstantBufferView(&cbvDesc, handle.cpuHandle);
+    SetDescriptorHandle(handle);
 
     LogInfo("Constant buffer created: {} elements x {} bytes (aligned)", count, sizeOf);
 }

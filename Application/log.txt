@@ -14,9 +14,9 @@
 [INFO] Command Queue created.
 [INFO] === Command Objects Creation Complete ===
 
-[INFO] Descriptor Heap created - Type: 2, NumDescriptors: 2, DescriptorSize: 32
-[INFO] Descriptor Heap created - Type: 3, NumDescriptors: 1, DescriptorSize: 8
-[INFO] Descriptor Heap created - Type: 0, NumDescriptors: 1, DescriptorSize: 32
+[INFO] Descriptor Heap created - Type: 2, NumDescriptors: 2, DescriptorSize: 32, ShaderVisible: false
+[INFO] Descriptor Heap created - Type: 3, NumDescriptors: 1, DescriptorSize: 8, ShaderVisible: false
+[INFO] Descriptor Heap created - Type: 0, NumDescriptors: 1, DescriptorSize: 32, ShaderVisible: true
 [INFO] Descriptor Pool created.
 [INFO] === Context Initialization Complete ===
 
@@ -26,14 +26,14 @@
 [INFO] === Swap Chain Creation Complete ===
 
 [INFO] === Creating Render Target Views ===
-[INFO] Get new Descriptor Handle - Current Index: 1, Max Size: 2
+[INFO] Allocated Descriptor Handle - Index: 1, Max Size: 2
 [INFO] Wrapped BackBuffer with format 28
-[INFO] Get new Descriptor Handle - Current Index: 2, Max Size: 2
+[INFO] Allocated Descriptor Handle - Index: 2, Max Size: 2
 [INFO] Wrapped BackBuffer with format 28
 [INFO] Render Target Views created for all back buffers.
 [INFO] === Render Target Views Creation Complete ===
 
-[INFO] Get new Descriptor Handle - Current Index: 1, Max Size: 1
+[INFO] Allocated Descriptor Handle - Index: 1, Max Size: 1
 [INFO] D3D12 resource created: GPU Address=0x0
 [INFO] Depth Stencil Buffer created.
 [INFO] Depth Stencil View created.
@@ -41,11 +41,11 @@
 [INFO] Root Signature created successfully.
 [INFO] BasicPipeline is created.
 [INFO] Creating 2 command buffers...
-[INFO] Command Allocator created: 0x2b0494799e0
-[INFO] Graphics Command List created: 0x2b04949d460
+[INFO] Command Allocator created: 0x15264913c00
+[INFO] Graphics Command List created: 0x1526aff70c0
 [INFO] Command List closed and ready for recording commands.
-[INFO] Command Allocator created: 0x2b0495659d0
-[INFO] Graphics Command List created: 0x2b0495662d0
+[INFO] Command Allocator created: 0x1526b07fa20
+[INFO] Graphics Command List created: 0x1526b0c1e70
 [INFO] Command List closed and ready for recording commands.
 [INFO] Fence created for CPU-GPU synchronization.
 [INFO] Fence destroyed.
@@ -58,9 +58,9 @@
 [INFO] Resource has been reset successfully.
 [INFO] Descriptor Heap reset - Current Index set to 0
 [INFO] === Creating Render Target Views ===
-[INFO] Get new Descriptor Handle - Current Index: 1, Max Size: 2
+[INFO] Allocated Descriptor Handle - Index: 1, Max Size: 2
 [INFO] Wrapped BackBuffer with format 28
-[INFO] Get new Descriptor Handle - Current Index: 2, Max Size: 2
+[INFO] Allocated Descriptor Handle - Index: 2, Max Size: 2
 [INFO] Wrapped BackBuffer with format 28
 [INFO] Render Target Views created for all back buffers.
 [INFO] === Render Target Views Creation Complete ===
@@ -68,7 +68,7 @@
 [INFO] Resetting Resource: GPU Address=0x0
 [INFO] Resource has been reset successfully.
 [INFO] Descriptor Heap reset - Current Index set to 0
-[INFO] Get new Descriptor Handle - Current Index: 1, Max Size: 1
+[INFO] Allocated Descriptor Handle - Index: 1, Max Size: 1
 [INFO] D3D12 resource created: GPU Address=0x0
 [INFO] Depth Stencil Buffer created.
 [INFO] Depth Stencil View created.
@@ -87,22 +87,22 @@
 [INFO] Buffer created: type=3, count=8, sizeOf=28, total=224 bytes
 [INFO] Staging buffer created and mapped: 8 elements x 28 bytes = 224 total bytes
 [INFO] Starting buffer copy: 224 bytes
-[INFO] Buffer mapped: address=0x2B0448C2000
+[INFO] Buffer mapped: address=0x152662C2000
 [INFO] Buffer unmapped
 [INFO] Buffer copy completed: 224 bytes to state 1
 [INFO] D3D12 resource created: GPU Address=0x8865000
 [INFO] Buffer created: type=3, count=36, sizeOf=4, total=144 bytes
 [INFO] Staging buffer created and mapped: 36 elements x 4 bytes = 144 total bytes
 [INFO] Starting buffer copy: 144 bytes
-[INFO] Buffer mapped: address=0x2B0448C3000
+[INFO] Buffer mapped: address=0x152662C3000
 [INFO] Buffer unmapped
 [INFO] Buffer copy completed: 144 bytes to state 2
 [INFO] Created VBV: Location=0x8862000, Stride=28, Size=224
 [INFO] Created IBV: Location=0x8863000, Format=42, Size=144
-[INFO] Get new Descriptor Handle - Current Index: 1, Max Size: 1
+[INFO] Allocated Descriptor Handle - Index: 1, Max Size: 1
 [INFO] D3D12 resource created: GPU Address=0x8866000
 [INFO] Buffer created: type=2, count=1, sizeOf=256, total=256 bytes
-[INFO] Buffer mapped: address=0x2B0448C4000
+[INFO] Buffer mapped: address=0x152662C4000
 [INFO] Constant buffer created: 1 elements x 256 bytes (aligned)
 [INFO] Resetting Resource: GPU Address=0x8864000
 [INFO] Resource has been reset successfully.
@@ -131,10 +131,10 @@
 [INFO] Resource has been reset successfully.
 [INFO] Fence destroyed.
 [INFO] Fence destroyed.
-[INFO] CommandBuffer destructor - releasing CommandList: 0x2b04949d460
-[INFO] CommandBuffer destructor - releasing CommandAllocator: 0x2b0494799e0
-[INFO] CommandBuffer destructor - releasing CommandList: 0x2b0495662d0
-[INFO] CommandBuffer destructor - releasing CommandAllocator: 0x2b0495659d0
+[INFO] CommandBuffer destructor - releasing CommandList: 0x1526aff70c0
+[INFO] CommandBuffer destructor - releasing CommandAllocator: 0x15264913c00
+[INFO] CommandBuffer destructor - releasing CommandList: 0x1526b0c1e70
+[INFO] CommandBuffer destructor - releasing CommandAllocator: 0x1526b07fa20
 [INFO] Resetting Resource: GPU Address=0x0
 [INFO] Resource has been reset successfully.
 [INFO] Resource has been reset successfully.

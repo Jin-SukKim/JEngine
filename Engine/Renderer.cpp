@@ -63,8 +63,8 @@ void Renderer::Draw(ID3D12GraphicsCommandList* cmdList, Model& model) {
     Texture& backBuffer = swapChain_.GetCurrentBackBuffer();
     backBuffer.TransitionTo(cmdList, D3D12_RESOURCE_STATE_RENDER_TARGET);
 
-    D3D12_CPU_DESCRIPTOR_HANDLE rtvHandle = backBuffer.GetViewHandle();
-    D3D12_CPU_DESCRIPTOR_HANDLE dsvHandle = depthStencil_->GetViewHandle();
+    D3D12_CPU_DESCRIPTOR_HANDLE rtvHandle = backBuffer.GetCPUHandle();
+    D3D12_CPU_DESCRIPTOR_HANDLE dsvHandle = depthStencil_->GetCPUHandle();
     cmdList->OMSetRenderTargets(1, &rtvHandle, FALSE, &dsvHandle);
 
     cmdList->ClearRenderTargetView(rtvHandle, DirectX::Colors::LightSteelBlue, 0, nullptr);
@@ -79,11 +79,15 @@ void Renderer::Draw(ID3D12GraphicsCommandList* cmdList, Model& model) {
     cmdList->SetGraphicsRootSignature(rootSignature_->GetSignature());
     cmdList->SetPipelineState(pipeline_->GetPSO());
 
-    cmdList->IASetVertexBuffers(0, 1, model.GetMeshes()[0].GetVertexBufferView());
-    cmdList->IASetIndexBuffer(model.GetMeshes()[0].GetIndexBufferView());
-    cmdList->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
-    cmdList->SetGraphicsRootDescriptorTable(0, cbvHeap->GetGPUDescriptorHandleForHeapStart());
-    cmdList->DrawIndexedInstanced(model.GetMeshes()[0].GetIndexCount(), 1, 0, 0, 0);
+    std::vector<Mesh>& meshes = model.GetMeshes();
+    for (size_t i = 0; i < meshes.size(); ++i) {
+        Mesh& mesh = meshes[i];
+        cmdList->IASetVertexBuffers(0, 1, mesh.GetVertexBufferView());
+        cmdList->IASetIndexBuffer(mesh.GetIndexBufferView());
+        cmdList->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+        cmdList->SetGraphicsRootDescriptorTable(0, model.GetConstantGPUHandle(i)); // Constant Buffer Binding
+        cmdList->DrawIndexedInstanced(mesh.GetIndexCount(), 1, 0, 0, 0);
+    }
 
     // Back Buffer를 RENDER_TARGET → PRESENT 상태로 전환
     backBuffer.TransitionTo(cmdList, D3D12_RESOURCE_STATE_PRESENT);

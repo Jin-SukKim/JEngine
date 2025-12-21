@@ -26,7 +26,7 @@ Texture& Texture::operator=(Texture&& other) noexcept {
 }
 
 void Texture::CreateRenderTarget(DXGI_FORMAT format, UINT width, UINT height,
-                                 D3D12_CPU_DESCRIPTOR_HANDLE viewHandle) {
+                                 DescriptorHandle handle) {
     D3D12_CLEAR_VALUE clearValue = {};
     clearValue.Format = format;
     clearValue.Color[0] = 0.0f; // R
@@ -39,23 +39,23 @@ void Texture::CreateRenderTarget(DXGI_FORMAT format, UINT width, UINT height,
                     &clearValue);
 
     // Render Target View 생성
-    context_.GetDevice()->CreateRenderTargetView(resource_.Get(), nullptr, viewHandle);
-    SetViewHandle(viewHandle);
+    context_.GetDevice()->CreateRenderTargetView(resource_.Get(), nullptr, handle.cpuHandle);
+    SetDescriptorHandle(handle);
     LogInfo("Created RenderTarget with format {}", static_cast<int>(format));
 }
 
-void Texture::WrapBackBuffer(DXGI_FORMAT format, D3D12_CPU_DESCRIPTOR_HANDLE viewHandle) {
+void Texture::WrapBackBuffer(DXGI_FORMAT format, DescriptorHandle handle) {
     SetFormat(format);
     type_ = TextureType::RENDER_TARGET;
 
-    context_.GetDevice()->CreateRenderTargetView(resource_.Get(), nullptr, viewHandle);
-    SetViewHandle(viewHandle);
+    context_.GetDevice()->CreateRenderTargetView(resource_.Get(), nullptr, handle.cpuHandle);
+    SetDescriptorHandle(handle);
 
     barrierHelper_.SetInitialState(D3D12_RESOURCE_STATE_PRESENT);
     LogInfo("Wrapped BackBuffer with format {}", static_cast<int>(format));
 }
 
-void Texture::CreateDepthStencil(UINT width, UINT height, D3D12_CPU_DESCRIPTOR_HANDLE viewHandle) {
+void Texture::CreateDepthStencil(UINT width, UINT height, DescriptorHandle handle) {
     // Optimized Clear Value 설정 (성능 최적화)
     // - GPU가 Clear 작업을 빠르게 수행하도록 힌트 제공
     D3D12_CLEAR_VALUE optClear = {};
@@ -78,8 +78,8 @@ void Texture::CreateDepthStencil(UINT width, UINT height, D3D12_CPU_DESCRIPTOR_H
     SetFormat(DXGI_FORMAT_D24_UNORM_S8_UINT);
 
     // Heap의 시작 위치에 DSV 생성
-    context_.GetDevice()->CreateDepthStencilView(resource_.Get(), &dsvDesc, viewHandle);
-    SetViewHandle(viewHandle);
+    context_.GetDevice()->CreateDepthStencilView(resource_.Get(), &dsvDesc, handle.cpuHandle);
+    SetDescriptorHandle(handle);
     LogInfo("Depth Stencil View created.");
 }
 

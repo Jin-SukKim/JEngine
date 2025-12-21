@@ -21,7 +21,7 @@ class UploadBuffer : public Buffer
     void CreateStagingBuffer(size_t count, size_t sizeOf);
 
     // 매 프레임 업데이트되는 Constant Buffer
-    void CreateConstantBuffer(size_t count, size_t sizeOf, D3D12_CPU_DESCRIPTOR_HANDLE viewHandle);
+    void CreateConstantBuffer(size_t count, size_t sizeOf, DescriptorHandle handle);
 
     template <typename T>
     void Update(UINT elementIndex, const T& data);

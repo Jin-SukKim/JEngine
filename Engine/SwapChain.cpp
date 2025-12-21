@@ -89,7 +89,7 @@ void SwapChain::createRTV() {
         // Swap Chain으로부터 Back Buffer 리소스 가져오기
         ThrowIfFailed(swapChain_->GetBuffer(i, IID_PPV_ARGS(&buffer)));
         
-        D3D12_CPU_DESCRIPTOR_HANDLE rtvHandle = context_.GetDescriptorPool()->AllocateRTV();
+        DescriptorHandle rtvHandle = context_.GetDescriptorPool()->AllocateRTV();
         
         // ⭐ SetResource → WrapBackBuffer 사용
         backBuffers_[i].SetResource(buffer);

@@ -8,11 +8,12 @@ class DescriptorPool
     DescriptorPool(ID3D12Device* device);
     void Initialize();
 
-    auto AllocateRTV() -> D3D12_CPU_DESCRIPTOR_HANDLE;
-    auto AllocateDSV() -> D3D12_CPU_DESCRIPTOR_HANDLE;
-    auto AllocateCBV() -> D3D12_CPU_DESCRIPTOR_HANDLE;
-    auto AllocateSRV() -> D3D12_CPU_DESCRIPTOR_HANDLE;
-    auto AllocateUAV() -> D3D12_CPU_DESCRIPTOR_HANDLE;
+    auto AllocateRTV() -> DescriptorHandle;
+    auto AllocateDSV() -> DescriptorHandle;
+    auto AllocateCBV() -> DescriptorHandle;
+    auto AllocateSRV() -> DescriptorHandle;
+    auto AllocateUAV() -> DescriptorHandle;
+    
     void ResetRTV();
     void ResetDSV();
     void ResetCBV();

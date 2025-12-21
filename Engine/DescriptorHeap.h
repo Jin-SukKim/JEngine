@@ -1,6 +1,12 @@
-#pragma once
+ï»¿#pragma once
 
 namespace JEngine {
+
+struct DescriptorHandle {
+    D3D12_CPU_DESCRIPTOR_HANDLE cpuHandle{};
+    D3D12_GPU_DESCRIPTOR_HANDLE gpuHandle{}; 
+};
+
 class DescriptorHeap
 {
   public:
@@ -8,26 +14,28 @@ class DescriptorHeap
                    D3D12_DESCRIPTOR_HEAP_TYPE type,
                    D3D12_DESCRIPTOR_HEAP_FLAGS flag = D3D12_DESCRIPTOR_HEAP_FLAG_NONE);
 
-    auto AllocateView() -> D3D12_CPU_DESCRIPTOR_HANDLE;
+    auto AllocateView() -> DescriptorHandle; 
     void Reset();
     auto GetHeap() -> ID3D12DescriptorHeap*;
+    
   private:
     void createHeap(UINT maxDescriptorNum, D3D12_DESCRIPTOR_HEAP_TYPE type,
                     D3D12_DESCRIPTOR_HEAP_FLAGS flag = D3D12_DESCRIPTOR_HEAP_FLAG_NONE);
   private:
-    // === Descriptor Heaps (ViewµéÀ» ´ã´Â ¹è¿­ ÄÁÅ×ÀÌ³Ê) ===
-    // Descriptor Heap = View(Descriptor)µéÀ» ÀúÀåÇÏ´Â "¹è¿­" ¶Ç´Â "»óÀÚ"
-    // ¿¹: rtvHeap_ = [ RTV_0 | RTV_1 | RTV_2 | ... ]
-    //                   ¡è       ¡è       ¡è
+    // === Descriptor Heaps (Viewë“¤ì„ ë‹´ëŠ” ë°°ì—´ ì»¨í…Œì´ë„ˆ) ===
+    // Descriptor Heap = View(Descriptor)ë“¤ì„ ì €ì¥í•˜ëŠ” "ë°°ì—´" ë˜ëŠ” "ìƒì"
+    // ì˜ˆ: rtvHeap_ = [ RTV_0 | RTV_1 | RTV_2 | ... ]
+    //                   â†‘       â†‘       â†‘
     //                 View    View    View
     //
-    // - DirectX 12: HeapÀ» ¸í½ÃÀûÀ¸·Î »ı¼ºÇÏ°í °ü¸® (¼º´É ÃÖÀûÈ­¸¦ À§ÇØ)
-    // GPU°¡ ºü¸£°Ô Á¢±ÙÇÒ ¼ö ÀÖµµ·Ï ¿¬¼ÓµÈ ¸Ş¸ğ¸® °ø°£¿¡ ViewµéÀ» ÀúÀå
+    // - DirectX 12: Heapì„ ëª…ì‹œì ìœ¼ë¡œ ìƒì„±í•˜ê³  ê´€ë¦¬ (ì„±ëŠ¥ ìµœì í™”ë¥¼ ìœ„í•´)
+    // GPUê°€ ë¹ ë¥´ê²Œ ì ‘ê·¼í•  ìˆ˜ ìˆë„ë¡ ì—°ì†ëœ ë©”ëª¨ë¦¬ ê³µê°„ì— Viewë“¤ì„ ì €ì¥
     ID3D12Device* device_;
-    ComPtr<ID3D12DescriptorHeap> heap_; // Descriptor ViewµéÀ» ´ã´Â Heap
+    ComPtr<ID3D12DescriptorHeap> heap_; // Descriptor Viewë“¤ì„ ë‹´ëŠ” Heap
 
-    UINT descriptorSize_ = 0; // Descriptor 1°³ÀÇ Å©±â
-    UINT maxHeapSize_ = 0;    // HeapÀÌ ´ãÀ» ¼ö ÀÖ´Â ÃÖ´ë Descriptor ¼ö
-    UINT viewIdx_ = 0;        // ÇöÀç ÇÒ´çµÈ Descriptor ÀÎµ¦½º
+    UINT descriptorSize_ = 0; // Descriptor 1ê°œì˜ í¬ê¸°
+    UINT maxHeapSize_ = 0;    // Heapì´ ë‹´ì„ ìˆ˜ ìˆëŠ” ìµœëŒ€ Descriptor ìˆ˜
+    UINT viewIdx_ = 0;        // í˜„ì¬ í• ë‹¹ëœ Descriptor ì¸ë±ìŠ¤
+    bool isShaderVisible_ = false;
 };
 } // namespace JEngine

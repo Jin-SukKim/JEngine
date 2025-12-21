@@ -1,4 +1,4 @@
-#include "pch.h"
+ï»¿#include "pch.h"
 #include "Model.h"
 #include "Mesh.h"
 #include "UploadBuffer.h"
@@ -16,7 +16,7 @@ Model::~Model() {
 }
 
 Model::Model(Model&& other) noexcept
-    : meshes_(std::move(other.meshes_)), worldMatrix_(std::move(worldMatrix_)),
+    : meshes_(std::move(other.meshes_)), worldMatrix_(std::move(other.worldMatrix_)),
       constantBuffers_(std::move(other.constantBuffers_)) {
     other.meshes_.clear();
     other.worldMatrix_ = {};
@@ -45,10 +45,11 @@ void Model::CreateBuffers(Context& ctx, ID3D12GraphicsCommandList* cmdList) {
     for (auto& mesh : meshes_)
         mesh.CreateBuffers(ctx, cmdList);
 
-    // °¢ ¸Ş½Ã¿¡ ´ëÇÑ »ó¼ö ¹öÆÛ »ı¼º
+    // ê° ë©”ì‹œì— ëŒ€í•œ ìƒìˆ˜ ë²„í¼ ìƒì„±
+    constantBuffers_.clear();
     constantBuffers_.reserve(meshes_.size());
     for (size_t i = 0; i < meshes_.size(); ++i) {
-        // emplace_backÀ¸·Î Á÷Á¢ »ı¼º
+        // emplace_backìœ¼ë¡œ ì§ì ‘ ìƒì„±
         auto& cb = constantBuffers_.emplace_back(ctx);
         cb.CreateConstantBuffer(1, sizeof(DirectX::XMFLOAT4X4),
                                 ctx.GetDescriptorPool()->AllocateCBV());
@@ -61,8 +62,7 @@ void Model::ReleaseStagingBuffers() {
 }
 
 void Model::AddMesh(Context& ctx, ID3D12GraphicsCommandList* cmdList, const std::string& name,
-                    const std::vector<Vertex>& vertices,
-                    const std::vector<uint32_t>& indices) {
+                    const std::vector<Vertex>& vertices, const std::vector<uint32_t>& indices) {
 
     Mesh mesh;
     mesh.SetMesh(name, vertices, indices);
@@ -77,6 +77,14 @@ const std::vector<Mesh>& Model::GetMeshes() const {
 
 std::vector<Mesh>& Model::GetMeshes() {
     return meshes_;
+}
+
+Mesh& Model::GetMesh(size_t index) {
+    return meshes_.at(index);
+}
+
+D3D12_GPU_DESCRIPTOR_HANDLE Model::GetConstantGPUHandle(size_t index) const {
+    return constantBuffers_.at(index).GetGPUHandle();
 }
 
 void Model::UpdateWorldMatrix(const DirectX::XMMATRIX& matrix) {
