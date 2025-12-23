@@ -59,7 +59,7 @@ void Renderer::Update(const Timer& timer, Model& model) {
     model.UpdateWorldMatrix(worldViewProj);
 }
 
-void Renderer::Draw(ID3D12GraphicsCommandList* cmdList, Model& model) {
+void Renderer::Draw(ID3D12GraphicsCommandList* cmdList, Model& model, size_t frameIdx) {
     Texture& backBuffer = swapChain_.GetCurrentBackBuffer();
     backBuffer.TransitionTo(cmdList, D3D12_RESOURCE_STATE_RENDER_TARGET);
 
@@ -85,7 +85,7 @@ void Renderer::Draw(ID3D12GraphicsCommandList* cmdList, Model& model) {
         cmdList->IASetVertexBuffers(0, 1, mesh.GetVertexBufferView());
         cmdList->IASetIndexBuffer(mesh.GetIndexBufferView());
         cmdList->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
-        cmdList->SetGraphicsRootDescriptorTable(0, model.GetConstantGPUHandle(i)); // Constant Buffer Binding
+        cmdList->SetGraphicsRootDescriptorTable(0, model.GetConstantGPUHandle(frameIdx, i)); // Constant Buffer Binding
         cmdList->DrawIndexedInstanced(mesh.GetIndexCount(), 1, 0, 0, 0);
     }
 
@@ -100,8 +100,7 @@ void Renderer::Resize() {
     context_.GetDescriptorPool()->ResetDSV();
     // Depth Stencil 버퍼 재생성
     depthStencil_->CreateDepthStencil(context_.GetWindow().GetWidth(),
-                                      context_.GetWindow().GetHeight(),
-                                      context_.GetDescriptorPool()->AllocateDSV());
+                                      context_.GetWindow().GetHeight());
 
     camera_.SetPerspective(45.f, context_.GetWindow().GetAspectRatio(), 0.1f, 100.0f);
 }
@@ -114,8 +113,7 @@ void Renderer::InitResources() {
     // Depth Stencil 이미지 객체 생성
     depthStencil_ = std::make_unique<Texture>(context_);
     depthStencil_->CreateDepthStencil(context_.GetWindow().GetWidth(),
-                                      context_.GetWindow().GetHeight(),
-                                      context_.GetDescriptorPool()->AllocateDSV());
+                                      context_.GetWindow().GetHeight());
 }
 
 void Renderer::InitShaders() {

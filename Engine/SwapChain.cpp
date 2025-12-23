@@ -17,8 +17,8 @@ SwapChain::~SwapChain() {
 
 void SwapChain::Initialize() {
     // Back Buffer 이미지 객체들 초기화
-    backBuffers_.reserve(bufferCount_);
-    for (UINT i = 0; i < bufferCount_; ++i) 
+    backBuffers_.reserve(MAX_FRAME_COUNT);
+    for (UINT i = 0; i < MAX_FRAME_COUNT; ++i) 
         backBuffers_.emplace_back(context_);
     
     createSwapChain();
@@ -39,7 +39,7 @@ void SwapChain::createSwapChain() {
     swapChain_.Reset();
 
     LogInfo("Configuring Swap Chain ({}x{}, Buffers: {})...", context_.GetWindow().GetWidth(),
-            context_.GetWindow().GetHeight(), bufferCount_);
+            context_.GetWindow().GetHeight(), MAX_FRAME_COUNT);
 
     DXGI_SWAP_CHAIN_DESC1 sd = {};
     sd.Width = context_.GetWindow().GetWidth();
@@ -50,7 +50,7 @@ void SwapChain::createSwapChain() {
     sd.SampleDesc.Quality = 0;
 
     sd.BufferUsage = DXGI_USAGE_RENDER_TARGET_OUTPUT;
-    sd.BufferCount = bufferCount_; // Double Buffering (2개)
+    sd.BufferCount = MAX_FRAME_COUNT; // Double Buffering (2개)
     sd.Scaling = DXGI_SCALING_STRETCH;
     sd.SwapEffect = DXGI_SWAP_EFFECT_FLIP_DISCARD; // Flip Model (최고 성능)
     sd.AlphaMode = DXGI_ALPHA_MODE_UNSPECIFIED;    // 투명 윈도우 아님
@@ -84,16 +84,14 @@ void SwapChain::createRTV() {
     LogInfo("=== Creating Render Target Views ===");
 
     // 각 Back Buffer에 대한 RTV 생성
-    for (UINT i = 0; i < bufferCount_; ++i) {
+    for (UINT i = 0; i < MAX_FRAME_COUNT; ++i) {
         ComPtr<ID3D12Resource> buffer;  // 임시 변수 생성
         // Swap Chain으로부터 Back Buffer 리소스 가져오기
         ThrowIfFailed(swapChain_->GetBuffer(i, IID_PPV_ARGS(&buffer)));
         
-        DescriptorHandle rtvHandle = context_.GetDescriptorPool()->AllocateRTV();
-        
         // ⭐ SetResource → WrapBackBuffer 사용
         backBuffers_[i].SetResource(buffer);
-        backBuffers_[i].WrapBackBuffer(backBufferFormat_, rtvHandle);
+        backBuffers_[i].WrapBackBuffer(backBufferFormat_);
     }
     LogInfo("Render Target Views created for all back buffers.");
 
@@ -101,7 +99,7 @@ void SwapChain::createRTV() {
 }
 
 void SwapChain::BufferReset() {
-    for (UINT i = 0; i < bufferCount_; ++i)
+    for (UINT i = 0; i < MAX_FRAME_COUNT; ++i)
         backBuffers_[i].Reset();
 }
 
@@ -111,7 +109,7 @@ void SwapChain::Resize() {
     BufferReset();
 
     // Swap Chain 크기 조정
-    ThrowIfFailed(swapChain_->ResizeBuffers(bufferCount_, context_.GetWindow().GetWidth(),
+    ThrowIfFailed(swapChain_->ResizeBuffers(MAX_FRAME_COUNT, context_.GetWindow().GetWidth(),
                                             context_.GetWindow().GetHeight(), backBufferFormat_,
                                             DXGI_SWAP_CHAIN_FLAG_ALLOW_MODE_SWITCH));
     context_.GetDescriptorPool()->ResetRTV();
@@ -125,7 +123,7 @@ void SwapChain::Present() {
 }
 
 uint32_t SwapChain::GetBufferCount() const {
-    return bufferCount_;
+    return MAX_FRAME_COUNT;
 }
 
 DXGI_FORMAT SwapChain::GetBackBufferFormat() const {

@@ -24,8 +24,8 @@ void Application::Initialize() {
     InitScene();
 }
 
-void Application::Update() {
-    model_->Update();
+void Application::Update(size_t frameIdx) {
+    model_->Update(frameIdx);
 }
 
 int Application::Run() {
@@ -55,10 +55,10 @@ int Application::Run() {
 
                 // TODO: Constant Buffer를 업데이트 단위로 분리하면 Application의 update와
                 // renderer의 Update의 순서가 바뀔 예정
-                renderer_.Update(timer_, *model_);
-                Update();
+                renderer_.Update(timer_, *model_); // World/View/Proj Matrix 업데이트
+                Update(frameIdx);                  // Constant Buffer에 데이터 복사
 
-                renderer_.Draw(cmdList, *model_);
+                renderer_.Draw(cmdList, *model_, frameIdx);
 
                 cmdBuffer.EndRecording();
 

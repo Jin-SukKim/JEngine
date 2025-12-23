@@ -15,6 +15,7 @@ class DescriptorHeap
                    D3D12_DESCRIPTOR_HEAP_FLAGS flag = D3D12_DESCRIPTOR_HEAP_FLAG_NONE);
 
     auto AllocateView() -> DescriptorHandle; 
+    auto AllocateViewArray(size_t count) -> std::vector<DescriptorHandle>;
     void Reset();
     auto GetHeap() -> ID3D12DescriptorHeap*;
     

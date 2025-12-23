@@ -13,6 +13,8 @@ class DescriptorPool
     auto AllocateCBV() -> DescriptorHandle;
     auto AllocateSRV() -> DescriptorHandle;
     auto AllocateUAV() -> DescriptorHandle;
+
+    auto AllocateCBVArray(size_t count) -> std::vector<DescriptorHandle>;
     
     void ResetRTV();
     void ResetDSV();

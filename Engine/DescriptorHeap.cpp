@@ -43,6 +43,49 @@ DescriptorHandle DescriptorHeap::AllocateView() {
     return handle;
 }
 
+auto DescriptorHeap::AllocateViewArray(size_t count) -> std::vector<DescriptorHandle> {
+    if (viewIdx_ >= maxHeapSize_) {
+        LogError("Descriptor Heap allocation failed: Exceeded maximum descriptors ({})",
+                 maxHeapSize_);
+    }
+
+    std::vector<DescriptorHandle> handles;
+
+    D3D12_CPU_DESCRIPTOR_HANDLE cpuStart = heap_->GetCPUDescriptorHandleForHeapStart();
+    cpuStart.ptr += descriptorSize_ * viewIdx_; // 시작 위치 계산
+
+    D3D12_GPU_DESCRIPTOR_HANDLE gpuStart{};
+    if (isShaderVisible_) {
+        gpuStart = heap_->GetGPUDescriptorHandleForHeapStart();
+        gpuStart.ptr += descriptorSize_ * viewIdx_; // 시작 위치 계산
+    } 
+
+    for (size_t i = 0; i < count; ++i) {
+        DescriptorHandle handle;
+
+        // CPU Handle 계산
+        // Heap의 시작 주소 가져오기
+        handle.cpuHandle = cpuStart;
+        // offset 적용한 위치 계산
+        handle.cpuHandle.ptr += descriptorSize_ * i;
+
+        // GPU Handle 계산 (Shader Visible Heap인 경우만)
+        if (isShaderVisible_) {
+            handle.gpuHandle = gpuStart;
+            handle.gpuHandle.ptr += descriptorSize_ * i;
+        } else {
+            handle.gpuHandle.ptr = 0; // Non-Shader Visible인 경우 0
+        }
+
+        handles.emplace_back(handle);
+    }
+
+    viewIdx_ += static_cast<UINT>(count);
+
+    LogInfo("Allocated Descriptor Handle - Index: {}, Max Size: {}", viewIdx_, maxHeapSize_);
+    return handles;
+}
+
 void DescriptorHeap::Reset() {
     viewIdx_ = 0;
     LogInfo("Descriptor Heap reset - Current Index set to 0");

@@ -21,3 +21,4 @@
 using Microsoft::WRL::ComPtr;
 
 #include "Logger.h"
+#include "Utils.h"

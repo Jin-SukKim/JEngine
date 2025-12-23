@@ -25,7 +25,6 @@ class SwapChain
   private:
     Context& context_;
     ComPtr<IDXGISwapChain4> swapChain_ = nullptr;
-    const UINT bufferCount_ = 2;
 
     DXGI_FORMAT backBufferFormat_ = DXGI_FORMAT_R8G8B8A8_UNORM;
     std::vector<Texture> backBuffers_;  // ⭐ Resource → Texture

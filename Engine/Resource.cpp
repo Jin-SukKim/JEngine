@@ -14,10 +14,10 @@ Resource::~Resource() {
 // Move constructor
 Resource::Resource(Resource&& other) noexcept
     : context_(other.context_), resource_(std::move(other.resource_)), format_(other.format_),
-      descriptorHandle_(other.descriptorHandle_), barrierHelper_(std::move(other.barrierHelper_)) {
+      descriptorHandles_(std::move(other.descriptorHandles_)), barrierHelper_(std::move(other.barrierHelper_)) {
     // 이동 후 other는 비어있는 상태로 만듦
     other.format_ = DXGI_FORMAT_UNKNOWN;
-    other.descriptorHandle_.cpuHandle.ptr = 0;
+    other.descriptorHandles_.clear();
 }
 
 // Move assignment operator
@@ -30,7 +30,7 @@ Resource& Resource::operator=(Resource&& other) noexcept {
         // 다른 멤버들만 이동
         resource_ = std::move(other.resource_);
         format_ = other.format_;
-        descriptorHandle_ = other.descriptorHandle_;
+        descriptorHandles_ = std::move(other.descriptorHandles_);
         barrierHelper_ = std::move(other.barrierHelper_);
 
         // 이동 후 other는 비어있는 상태로 만듦
@@ -50,7 +50,7 @@ void Resource::Reset() {
     
     // 멤버 변수 초기화
     format_ = DXGI_FORMAT_UNKNOWN;
-    descriptorHandle_.cpuHandle.ptr = 0;
+    descriptorHandles_.clear();
     
     // BarrierHelper 상태 초기화
     barrierHelper_.SetInitialState(D3D12_RESOURCE_STATE_COMMON);
@@ -92,12 +92,12 @@ DXGI_FORMAT Resource::GetFormat() const {
     return format_;
 }
 
-D3D12_CPU_DESCRIPTOR_HANDLE Resource::GetCPUHandle() const {
-    return descriptorHandle_.cpuHandle;
+D3D12_CPU_DESCRIPTOR_HANDLE Resource::GetCPUHandle(size_t index) const {
+    return descriptorHandles_[index].cpuHandle;
 }
 
-D3D12_GPU_DESCRIPTOR_HANDLE Resource::GetGPUHandle() const {
-    return descriptorHandle_.gpuHandle;
+D3D12_GPU_DESCRIPTOR_HANDLE Resource::GetGPUHandle(size_t index) const {
+    return descriptorHandles_[index].gpuHandle;
 }
 
 // Setter
@@ -109,8 +109,13 @@ void Resource::SetFormat(DXGI_FORMAT format) {
     format_ = format;
 }
 
-void Resource::SetDescriptorHandle(DescriptorHandle handle) {
-    descriptorHandle_ = handle; // ⭐ CPU + GPU 둘 다 저장됨
+void Resource::SetDescriptorHandle(const DescriptorHandle& handle) {
+    descriptorHandles_.clear();
+    descriptorHandles_.emplace_back(handle); // ⭐ CPU + GPU 둘 다 저장됨
+}
+
+void Resource::SetDescriptorHandles(const std::vector<DescriptorHandle>&& handles) {
+    descriptorHandles_ = handles; // ⭐ CPU + GPU 둘 다 저장됨
 }
 
 // 리소스 생성 헬퍼 함수들

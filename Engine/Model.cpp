@@ -19,8 +19,6 @@ Model::Model(Model&& other) noexcept
     : meshes_(std::move(other.meshes_)), worldMatrix_(std::move(other.worldMatrix_)),
       constantBuffers_(std::move(other.constantBuffers_)) {
     other.meshes_.clear();
-    other.worldMatrix_ = {};
-    other.constantBuffers_.clear();
 }
 
 Model& Model::operator=(Model&& other) noexcept {
@@ -30,14 +28,13 @@ Model& Model::operator=(Model&& other) noexcept {
         constantBuffers_ = std::move(other.constantBuffers_);
 
         other.meshes_.clear();
-        other.worldMatrix_ = {};
-        other.constantBuffers_.clear();
     }
     return *this;
 }
-void Model::Update() {
-    for (auto& cb : constantBuffers_) {
-        cb.Update(0, worldMatrix_);
+
+void Model::Update(size_t frameIdx) {
+    for (size_t i = 0; i < meshes_.size(); ++i) {
+        constantBuffers_[frameIdx].Update(i, worldMatrix_);
     }
 }
 
@@ -47,12 +44,10 @@ void Model::CreateBuffers(Context& ctx, ID3D12GraphicsCommandList* cmdList) {
 
     // 각 메시에 대한 상수 버퍼 생성
     constantBuffers_.clear();
-    constantBuffers_.reserve(meshes_.size());
-    for (size_t i = 0; i < meshes_.size(); ++i) {
-        // emplace_back으로 직접 생성
-        auto& cb = constantBuffers_.emplace_back(ctx);
-        cb.CreateConstantBuffer(1, sizeof(DirectX::XMFLOAT4X4),
-                                ctx.GetDescriptorPool()->AllocateCBV());
+    constantBuffers_.reserve(MAX_FRAME_COUNT);
+    for (size_t i = 0; i < MAX_FRAME_COUNT; ++i) {
+        auto& cb = constantBuffers_.emplace_back(UploadBuffer(ctx));
+        cb.CreateConstantBufferArray(meshes_.size(), sizeof(DirectX::XMFLOAT4X4));
     }
 }
 
@@ -83,8 +78,8 @@ Mesh& Model::GetMesh(size_t index) {
     return meshes_.at(index);
 }
 
-D3D12_GPU_DESCRIPTOR_HANDLE Model::GetConstantGPUHandle(size_t index) const {
-    return constantBuffers_.at(index).GetGPUHandle();
+D3D12_GPU_DESCRIPTOR_HANDLE Model::GetConstantGPUHandle(size_t frameIdx, size_t meshIdx) const {
+    return constantBuffers_[frameIdx].GetGPUHandle(meshIdx);
 }
 
 void Model::UpdateWorldMatrix(const DirectX::XMMATRIX& matrix) {

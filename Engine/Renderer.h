@@ -23,7 +23,7 @@ class Renderer
 
     void Initialize();
     void Update(const Timer& timer, Model& model);
-    void Draw(ID3D12GraphicsCommandList* cmdList, Model& model);
+    void Draw(ID3D12GraphicsCommandList* cmdList, Model& model, size_t frameIdx);
     void Resize();
 
     ID3D12PipelineState* GetPSO() const;

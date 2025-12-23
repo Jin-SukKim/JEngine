@@ -18,11 +18,11 @@ class Texture : public Resource
     Texture& operator=(Texture&& other) noexcept;
 
     // RenderTarget 생성
-    void CreateRenderTarget(DXGI_FORMAT format, UINT width, UINT height, DescriptorHandle handle);
+    void CreateRenderTarget(DXGI_FORMAT format, UINT width, UINT height);
     // SwapChain의 BackBuffer를 Resource로 Wrapping해 GPU에서 사용
-    void WrapBackBuffer(DXGI_FORMAT format, DescriptorHandle handle);
+    void WrapBackBuffer(DXGI_FORMAT format);
 
-    void CreateDepthStencil(UINT width, UINT height, DescriptorHandle handle);
+    void CreateDepthStencil(UINT width, UINT height);
 
     void Reset() override;
 

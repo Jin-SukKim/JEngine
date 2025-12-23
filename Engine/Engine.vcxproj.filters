@@ -14,13 +14,8 @@
     <ClInclude Include="BarrierHelper.h" />
     <ClInclude Include="Fence.h" />
     <ClInclude Include="DescriptorPool.h" />
-    <ClInclude Include="Resource.h" />
     <ClInclude Include="Vertex.h" />
-    <ClInclude Include="UploadBuffer.h" />
     <ClInclude Include="Camera.h" />
-    <ClInclude Include="Buffer.h" />
-    <ClInclude Include="GPUBuffer.h" />
-    <ClInclude Include="Texture.h" />
     <ClInclude Include="GeometryGenerator.h" />
     <ClInclude Include="Mesh.h" />
     <ClInclude Include="Model.h" />
@@ -28,6 +23,22 @@
     <ClInclude Include="ShaderManager.h" />
     <ClInclude Include="Pipeline.h" />
     <ClInclude Include="RootSignature.h" />
+    <ClInclude Include="Utils.h" />
+    <ClInclude Include="GPUBuffer.h">
+      <Filter>GPUResource</Filter>
+    </ClInclude>
+    <ClInclude Include="Resource.h">
+      <Filter>GPUResource</Filter>
+    </ClInclude>
+    <ClInclude Include="Buffer.h">
+      <Filter>GPUResource</Filter>
+    </ClInclude>
+    <ClInclude Include="UploadBuffer.h">
+      <Filter>GPUResource</Filter>
+    </ClInclude>
+    <ClInclude Include="Texture.h">
+      <Filter>GPUResource</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp" />
@@ -43,13 +54,8 @@
     <ClCompile Include="BarrierHelper.cpp" />
     <ClCompile Include="Fence.cpp" />
     <ClCompile Include="DescriptorPool.cpp" />
-    <ClCompile Include="Resource.cpp" />
     <ClCompile Include="Vertex.cpp" />
-    <ClCompile Include="UploadBuffer.cpp" />
     <ClCompile Include="Camera.cpp" />
-    <ClCompile Include="Buffer.cpp" />
-    <ClCompile Include="GPUBuffer.cpp" />
-    <ClCompile Include="Texture.cpp" />
     <ClCompile Include="GeometryGenerator.cpp" />
     <ClCompile Include="Mesh.cpp" />
     <ClCompile Include="Model.cpp" />
@@ -57,5 +63,26 @@
     <ClCompile Include="ShaderManager.cpp" />
     <ClCompile Include="Pipeline.cpp" />
     <ClCompile Include="RootSignature.cpp" />
+    <ClCompile Include="Utils.cpp" />
+    <ClCompile Include="GPUBuffer.cpp">
+      <Filter>GPUResource</Filter>
+    </ClCompile>
+    <ClCompile Include="Resource.cpp">
+      <Filter>GPUResource</Filter>
+    </ClCompile>
+    <ClCompile Include="Buffer.cpp">
+      <Filter>GPUResource</Filter>
+    </ClCompile>
+    <ClCompile Include="UploadBuffer.cpp">
+      <Filter>GPUResource</Filter>
+    </ClCompile>
+    <ClCompile Include="Texture.cpp">
+      <Filter>GPUResource</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="GPUResource">
+      <UniqueIdentifier>{2f411305-44cb-4a60-925c-d1dfe349558d}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
 </Project>

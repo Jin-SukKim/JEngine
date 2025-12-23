@@ -21,10 +21,11 @@ class UploadBuffer : public Buffer
     void CreateStagingBuffer(size_t count, size_t sizeOf);
 
     // 매 프레임 업데이트되는 Constant Buffer
-    void CreateConstantBuffer(size_t count, size_t sizeOf, DescriptorHandle handle);
+    void CreateConstantBuffer(size_t sizeOf);
+    void CreateConstantBufferArray(size_t count, size_t sizeOf);
 
     template <typename T>
-    void Update(UINT elementIndex, const T& data);
+    void Update(size_t elementIndex, const T& data);
 
     // 1D 데이터 복사
     void CopyDataToBuffer(ID3D12GraphicsCommandList* cmdList, Buffer& dstBuffer,
@@ -42,7 +43,7 @@ class UploadBuffer : public Buffer
 };
 
 template <typename T>
-inline void UploadBuffer::Update(UINT elementIndex, const T& data) {
+inline void UploadBuffer::Update(size_t elementIndex, const T& data) {
     if (!mappedData_) {
         LogError("Unmapped buffer cannot be updated");
         return;

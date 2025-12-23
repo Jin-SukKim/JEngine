@@ -20,7 +20,7 @@ class Application
     Application(HINSTANCE hinstance, std::wstring name);
     ~Application();
     void Initialize();
-    void Update();
+    void Update(size_t frameIdx);
 
     int Run();
 

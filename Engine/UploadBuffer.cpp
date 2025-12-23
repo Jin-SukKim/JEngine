@@ -40,12 +40,12 @@ void UploadBuffer::CreateStagingBuffer(size_t elementCount, size_t sizeOf) {
             elementCount, sizeOf, elementCount * sizeOf);
 }
 
-void UploadBuffer::CreateConstantBuffer(size_t count, size_t sizeOf,
-                                        DescriptorHandle handle) {
+
+void UploadBuffer::CreateConstantBuffer(size_t sizeOf) {
     // 상수 버퍼는 256byte 정렬이 필요
     sizeOf = calculateConstantBufferByteSize(sizeOf);
 
-    CreateBuffer(BufferType::CONSTANT, count, sizeOf, D3D12_HEAP_TYPE_UPLOAD,
+    CreateBuffer(BufferType::CONSTANT, 1, sizeOf, D3D12_HEAP_TYPE_UPLOAD,
                  D3D12_RESOURCE_FLAG_NONE, D3D12_RESOURCE_STATE_GENERIC_READ);
 
     map();
@@ -55,12 +55,41 @@ void UploadBuffer::CreateConstantBuffer(size_t count, size_t sizeOf,
     // int offset = 0;
     // gpuAddress += offset * sizeOf;
 
+    DescriptorHandle handle = context_.GetDescriptorPool()->AllocateCBV();
+
     D3D12_CONSTANT_BUFFER_VIEW_DESC cbvDesc = {};
     cbvDesc.BufferLocation = GetGPUAddress();
     cbvDesc.SizeInBytes = static_cast<UINT>(sizeOf);
 
     context_.GetDevice()->CreateConstantBufferView(&cbvDesc, handle.cpuHandle);
     SetDescriptorHandle(handle);
+
+    LogInfo("Constant buffer created: {} elements x {} bytes (aligned)", 1, sizeOf);
+}
+
+void UploadBuffer::CreateConstantBufferArray(size_t count, size_t sizeOf) {
+    // 상수 버퍼는 256byte 정렬이 필요
+    sizeOf = calculateConstantBufferByteSize(sizeOf);
+
+    // 하나의 큰 Buffer를 생성
+    CreateBuffer(BufferType::CONSTANT, count, sizeOf, D3D12_HEAP_TYPE_UPLOAD,
+                 D3D12_RESOURCE_FLAG_NONE, D3D12_RESOURCE_STATE_GENERIC_READ);
+
+    map();
+    
+    std::vector<DescriptorHandle> handles = context_.GetDescriptorPool()->AllocateCBVArray(count);
+
+    D3D12_GPU_VIRTUAL_ADDRESS gpuAddress = GetGPUAddress();
+    D3D12_CONSTANT_BUFFER_VIEW_DESC cbvDesc = {};
+
+    for (size_t i = 0; i < count; ++i) {
+        cbvDesc.BufferLocation = gpuAddress + i * sizeOf;
+        cbvDesc.SizeInBytes = static_cast<UINT>(sizeOf);
+
+        context_.GetDevice()->CreateConstantBufferView(&cbvDesc, handles[i].cpuHandle);
+    }
+
+    SetDescriptorHandles(std::move(handles));
 
     LogInfo("Constant buffer created: {} elements x {} bytes (aligned)", count, sizeOf);
 }

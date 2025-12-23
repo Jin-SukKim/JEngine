@@ -16,7 +16,7 @@ class Model
     Model(Model&& other) noexcept;
     Model& operator=(Model&& other) noexcept;
 
-    void Update();
+    void Update(size_t frameIdx);
 
     void CreateBuffers(Context& ctx, ID3D12GraphicsCommandList* cmdList);
     void ReleaseStagingBuffers();
@@ -28,7 +28,7 @@ class Model
     const std::vector<Mesh>& GetMeshes() const;
     std::vector<Mesh>& GetMeshes();
     Mesh& GetMesh(size_t index);
-    D3D12_GPU_DESCRIPTOR_HANDLE GetConstantGPUHandle(size_t index) const;
+    D3D12_GPU_DESCRIPTOR_HANDLE GetConstantGPUHandle(size_t frameIdx, size_t meshIdx = 0) const;
 
     void SetWorldMatrix(const DirectX::XMFLOAT4X4& worldMatrix);
     const DirectX::XMFLOAT4X4& GetWorldMatrix() const;

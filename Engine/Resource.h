@@ -31,17 +31,18 @@ class Resource
     DXGI_FORMAT GetFormat() const;
     
     // CPU Handle 반환
-    D3D12_CPU_DESCRIPTOR_HANDLE GetCPUHandle() const;
+    D3D12_CPU_DESCRIPTOR_HANDLE GetCPUHandle(size_t index = 0) const;
     
     // GPU Handle 반환 (새로 추가)
-    D3D12_GPU_DESCRIPTOR_HANDLE GetGPUHandle() const;
+    D3D12_GPU_DESCRIPTOR_HANDLE GetGPUHandle(size_t index = 0) const;
 
     // Setter
     void SetResource(ComPtr<ID3D12Resource>& res);
 
   protected:
     // 하위 클래스에서 사용 가능한 Setter 함수
-    void SetDescriptorHandle(DescriptorHandle handle);
+    void SetDescriptorHandle(const DescriptorHandle& handle);
+    void SetDescriptorHandles(const std::vector<DescriptorHandle>&& handles);
     void SetFormat(DXGI_FORMAT format);
 
     // 리소스 생성 헬퍼 함수들
@@ -61,7 +62,7 @@ class Resource
     Context& context_;
     ComPtr<ID3D12Resource> resource_ = nullptr;
     DXGI_FORMAT format_ = DXGI_FORMAT_UNKNOWN;
-    DescriptorHandle descriptorHandle_{}; // CPU + GPU Handle 모두 저장
+    std::vector<DescriptorHandle> descriptorHandles_; // CPU + GPU Handle 모두 저장
 
     BarrierHelper barrierHelper_;
 };

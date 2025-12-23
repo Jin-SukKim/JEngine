@@ -10,7 +10,7 @@ DescriptorPool::DescriptorPool(ID3D12Device* device) : device_(device) {
     heapAllocator_[D3D12_DESCRIPTOR_HEAP_TYPE_DSV] =
         std::make_unique<DescriptorHeap>(device_, 1, D3D12_DESCRIPTOR_HEAP_TYPE_DSV);
     heapAllocator_[D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV] =
-        std::make_unique<DescriptorHeap>(device_, 1, D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV,
+        std::make_unique<DescriptorHeap>(device_, 1000, D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV,
         D3D12_DESCRIPTOR_HEAP_FLAG_SHADER_VISIBLE); // Shader에서 접근 가능하도록 설정
     LogInfo("Descriptor Pool created.");
 }
@@ -33,6 +33,10 @@ auto DescriptorPool::AllocateSRV() -> DescriptorHandle {
 
 auto DescriptorPool::AllocateUAV() -> DescriptorHandle {
     return heapAllocator_[D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV]->AllocateView();
+}
+
+auto DescriptorPool::AllocateCBVArray(size_t count) -> std::vector<DescriptorHandle> {
+    return heapAllocator_[D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV]->AllocateViewArray(count);
 }
 
 void DescriptorPool::ResetRTV() {
