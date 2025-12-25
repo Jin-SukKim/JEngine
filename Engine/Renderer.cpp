@@ -128,14 +128,35 @@ void Renderer::InitShaders() {
 }
 
 void Renderer::InitRootSignature() {
-    RootParamConfig rootParamConfig;
-    rootParamConfig.rangeType = D3D12_DESCRIPTOR_RANGE_TYPE_CBV;
-    rootParamConfig.numDescriptors = 1;
-    rootParamConfig.baseShaderRegister = 0;
-    rootParamConfig.shaderVisibility = D3D12_SHADER_VISIBILITY_ALL;
+
+    std::vector<RootSignatureConfig> configs;
+
+    // Per-Object CBV Descriptor Table 설정
+    configs.emplace_back(RootSignature::CreateDescriptorTableConfig(
+        D3D12_DESCRIPTOR_RANGE_TYPE_CBV, 1, 0));
+
+    // Per-Frame CBV Descriptor Table 설정
+    configs.emplace_back(RootSignature::CreateDescriptorTableConfig(
+        D3D12_DESCRIPTOR_RANGE_TYPE_CBV, 1, 1));
+
+    // Example) Material (CBV + Textures)
+    //{
+    //    std::vector<DescriptorRangeConfig> ranges;
+
+    //    DescriptorRangeConfig matCBVRange = RootSignature::CreateDescriptorRangeConfig(
+    //        D3D12_DESCRIPTOR_RANGE_TYPE_CBV, 1, 2);
+    //    ranges.emplace_back(matCBVRange);
+
+    //    DescriptorRangeConfig matTextureRange =
+    //        RootSignature::CreateDescriptorRangeConfig(D3D12_DESCRIPTOR_RANGE_TYPE_SRV, 5, 0);
+    //    ranges.emplace_back(matTextureRange);
+
+    //    configs.push_back(
+    //        RootSignature::CreateDescriptorTableConfig(ranges, D3D12_SHADER_VISIBILITY_PIXEL));
+    //}
 
     rootSignature_ = std::make_unique<RootSignature>(context_.GetDevice());
-    rootSignature_->Create({rootParamConfig});
+    rootSignature_->Create(configs);
 }
 
 void Renderer::InitPipeline() {

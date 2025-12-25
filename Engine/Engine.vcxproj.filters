@@ -39,6 +39,7 @@
     <ClInclude Include="Texture.h">
       <Filter>GPUResource</Filter>
     </ClInclude>
+    <ClInclude Include="ConstantData.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp" />
@@ -79,6 +80,7 @@
     <ClCompile Include="Texture.cpp">
       <Filter>GPUResource</Filter>
     </ClCompile>
+    <ClCompile Include="ConstantData.cpp" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="GPUResource">
