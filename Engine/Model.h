@@ -40,8 +40,11 @@ class Model
     //       ex) unique_ptr<Mesh> mesh_; -> 하나의 Mesh에 모든 데이터
     //           std::vector<SubMesh> subMeshes_; -> 각 SubMesh의 Offset 정보들
     std::vector<Mesh> meshes_;
+
+    // Model에 대한 상수 버퍼(world, 나중에 animation은 따로 skeleton class나 animation class를 통해 bone별 matrix로 관리)
     MeshConstants meshConst_;
 
+    // Frame별 상수 버퍼
     std::vector<UploadBuffer> constantBuffers_;
 };
 } // namespace JEngine

@@ -48,7 +48,7 @@ void Renderer::Initialize() {
 void Renderer::Update(const Timer& timer, Model& model, size_t frameIdx) {
     using namespace DirectX;
 
-    camera_.UpdateViewMatrix();
+    camera_.Update();
 
     // Scene Constant Buffer 업데이트
     camera_.UpdateSceneConstants(sceneConstants_);
@@ -86,6 +86,7 @@ void Renderer::Draw(ID3D12GraphicsCommandList* cmdList, Model& model, size_t fra
     // Scene Constant Buffer Binding (Root Parameter 1)
     cmdList->SetGraphicsRootDescriptorTable(1, sceneConstantBuffer_[frameIdx].GetGPUHandle());
 
+    // Model Rendering
     std::vector<Mesh>& meshes = model.GetMeshes();
     for (size_t i = 0; i < meshes.size(); ++i) {
         Mesh& mesh = meshes[i];

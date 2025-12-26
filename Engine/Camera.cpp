@@ -25,7 +25,7 @@ Camera::Camera(CameraType type) : type_(type) {
 Camera::~Camera() {
 }
 
-void Camera::UpdateViewMatrix() {
+void Camera::Update() {
     DirectX::XMVECTOR pos = DirectX::XMLoadFloat3(&position_);
     pos = DirectX::XMVectorSetW(pos, 1.0f);
     DirectX::XMVECTOR up = DirectX::XMLoadFloat3(&up_);

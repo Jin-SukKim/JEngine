@@ -10,7 +10,7 @@ class Camera
     Camera(CameraType type = CameraType::FIRST_PERSON);
     ~Camera();
 
-    void UpdateViewMatrix();
+    void Update();
     void UpdateSceneConstants(SceneConstants& sceneConst);
 
     void SetType(CameraType type);
