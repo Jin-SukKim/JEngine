@@ -22,7 +22,7 @@ class Renderer
     ~Renderer();
 
     void Initialize();
-    void Update(const Timer& timer, Model& model);
+    void Update(const Timer& timer, Model& model, size_t frameIdx);
     void Draw(ID3D12GraphicsCommandList* cmdList, Model& model, size_t frameIdx);
     void Resize();
 
@@ -44,6 +44,10 @@ class Renderer
     std::unique_ptr<ShaderManager> shaderManager_;
     std::unique_ptr<RootSignature> rootSignature_;
     std::unique_ptr<Pipeline> pipeline_;
+
+    SceneConstants sceneConstants_;
+    // frame마다 하나씩
+    std::vector<UploadBuffer> sceneConstantBuffer_;
 };
 
 } // namespace JEngine

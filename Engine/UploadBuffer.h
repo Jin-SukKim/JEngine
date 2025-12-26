@@ -25,7 +25,7 @@ class UploadBuffer : public Buffer
     void CreateConstantBufferArray(size_t count, size_t sizeOf);
 
     template <typename T>
-    void Update(size_t elementIndex, const T& data);
+    void Update(const T& data, size_t elementIndex = 0);
 
     // 1D 데이터 복사
     void CopyDataToBuffer(ID3D12GraphicsCommandList* cmdList, Buffer& dstBuffer,
@@ -43,7 +43,7 @@ class UploadBuffer : public Buffer
 };
 
 template <typename T>
-inline void UploadBuffer::Update(size_t elementIndex, const T& data) {
+inline void UploadBuffer::Update(const T& data, size_t elementIndex) {
     if (!mappedData_) {
         LogError("Unmapped buffer cannot be updated");
         return;

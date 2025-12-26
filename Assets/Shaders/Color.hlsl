@@ -6,7 +6,20 @@
 
 cbuffer cbPerObject : register(b0)
 {
-    float4x4 gWorldViewProj;
+    float4x4 world;
+    float4x4 worldInv;
+};
+
+cbuffer cbPerObject : register(b1)
+{
+    float4x4 view;
+    float4x4 invView;
+    float4x4 projection;
+    float4x4 invProj;
+    float4x4 viewProj;
+    float4x4 invViewProj;
+    float3 eyeWorld; // Cameara À§Ä¡
+    float padding1;
 };
 
 struct VertexIn
@@ -27,7 +40,8 @@ VertexOut VSMain(VertexIn vin)
     VertexOut vout;
 	
 	// Transform to homogeneous clip space.
-    vout.PosH = mul(float4(vin.PosL, 1.0f), gWorldViewProj);
+    vin.PosL = mul(float4(vin.PosL, 1.0f), world);
+    vout.PosH = mul(float4(vin.PosL, 1.0f), viewProj);
 	
 	// Just pass vertex color into the pixel shader.
     vout.Color = vin.Color;

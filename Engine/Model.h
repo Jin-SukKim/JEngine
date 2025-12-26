@@ -31,7 +31,7 @@ class Model
     D3D12_GPU_DESCRIPTOR_HANDLE GetConstantGPUHandle(size_t frameIdx, size_t meshIdx = 0) const;
 
     void SetWorldMatrix(const DirectX::XMFLOAT4X4& worldMatrix);
-    const DirectX::XMFLOAT4X4& GetWorldMatrix() const;
+    const DirectX::XMFLOAT4X4 GetWorldMatrix() const;
 
   private:
     // TODO: 하나의 Model의 모든 Mesh의 vertex, index buffer 등을 하나로 합치고 offset으로
@@ -40,7 +40,7 @@ class Model
     //       ex) unique_ptr<Mesh> mesh_; -> 하나의 Mesh에 모든 데이터
     //           std::vector<SubMesh> subMeshes_; -> 각 SubMesh의 Offset 정보들
     std::vector<Mesh> meshes_;
-    DirectX::XMFLOAT4X4 worldMatrix_;
+    MeshConstants meshConst_;
 
     std::vector<UploadBuffer> constantBuffers_;
 };

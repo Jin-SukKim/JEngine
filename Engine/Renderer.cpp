@@ -45,18 +45,22 @@ void Renderer::Initialize() {
     camera_.SetPerspective(45.f, context_.GetWindow().GetAspectRatio(), 0.1f, 100.0f);
 }
 
-void Renderer::Update(const Timer& timer, Model& model) {
+void Renderer::Update(const Timer& timer, Model& model, size_t frameIdx) {
     using namespace DirectX;
 
     camera_.UpdateViewMatrix();
 
+    // Scene Constant Buffer 업데이트
+    camera_.UpdateSceneConstants(sceneConstants_);
+    sceneConstantBuffer_[frameIdx].Update(sceneConstants_);
+
     // ⭐ World Matrix - 박스를 제자리에서 회전시킴
     // 경과 시간에 따라 회전 각도 계산 (라디안 단위)
     float rotationAngle = timer.TotalTime() * 0.5f; // 0.5는 회전 속도 (조절 가능)
-    XMMATRIX worldViewProj = XMMatrixRotationZ(rotationAngle * 0.3f) *
-                             XMMatrixRotationY(rotationAngle) * camera_.GetViewProjMatrix();
+    XMMATRIX world = XMMatrixRotationZ(rotationAngle * 0.3f) *
+                             XMMatrixRotationY(rotationAngle);
 
-    model.UpdateWorldMatrix(worldViewProj);
+    model.UpdateWorldMatrix(world);
 }
 
 void Renderer::Draw(ID3D12GraphicsCommandList* cmdList, Model& model, size_t frameIdx) {
@@ -78,6 +82,9 @@ void Renderer::Draw(ID3D12GraphicsCommandList* cmdList, Model& model, size_t fra
 
     cmdList->SetGraphicsRootSignature(rootSignature_->GetSignature());
     cmdList->SetPipelineState(pipeline_->GetPSO());
+
+    // Scene Constant Buffer Binding (Root Parameter 1)
+    cmdList->SetGraphicsRootDescriptorTable(1, sceneConstantBuffer_[frameIdx].GetGPUHandle());
 
     std::vector<Mesh>& meshes = model.GetMeshes();
     for (size_t i = 0; i < meshes.size(); ++i) {
@@ -114,6 +121,15 @@ void Renderer::InitResources() {
     depthStencil_ = std::make_unique<Texture>(context_);
     depthStencil_->CreateDepthStencil(context_.GetWindow().GetWidth(),
                                       context_.GetWindow().GetHeight());
+
+    // Frame마다 하나씩 Scene Constant Buffer 생성
+    sceneConstantBuffer_.clear();
+    sceneConstantBuffer_.reserve(MAX_FRAME_COUNT);
+    for (size_t i = 0; i < MAX_FRAME_COUNT; ++i) {
+        auto& cb = sceneConstantBuffer_.emplace_back(UploadBuffer(context_));
+        cb.CreateConstantBuffer(sizeof(SceneConstants));
+    }
+
 }
 
 void Renderer::InitShaders() {

@@ -5,7 +5,7 @@
 
 namespace JEngine {
 
-Model::Model() : worldMatrix_(DirectX::XMFLOAT4X4()) {
+Model::Model() : meshConst_() {
 }
 
 Model::~Model() {
@@ -16,7 +16,7 @@ Model::~Model() {
 }
 
 Model::Model(Model&& other) noexcept
-    : meshes_(std::move(other.meshes_)), worldMatrix_(std::move(other.worldMatrix_)),
+    : meshes_(std::move(other.meshes_)), meshConst_(std::move(other.meshConst_)),
       constantBuffers_(std::move(other.constantBuffers_)) {
     other.meshes_.clear();
 }
@@ -24,7 +24,7 @@ Model::Model(Model&& other) noexcept
 Model& Model::operator=(Model&& other) noexcept {
     if (this != &other) {
         meshes_ = std::move(other.meshes_);
-        worldMatrix_ = std::move(other.worldMatrix_);
+        meshConst_ = std::move(other.meshConst_);
         constantBuffers_ = std::move(other.constantBuffers_);
 
         other.meshes_.clear();
@@ -34,7 +34,7 @@ Model& Model::operator=(Model&& other) noexcept {
 
 void Model::Update(size_t frameIdx) {
     for (size_t i = 0; i < meshes_.size(); ++i) {
-        constantBuffers_[frameIdx].Update(i, worldMatrix_);
+        constantBuffers_[frameIdx].Update(meshConst_, i);
     }
 }
 
@@ -47,7 +47,7 @@ void Model::CreateBuffers(Context& ctx, ID3D12GraphicsCommandList* cmdList) {
     constantBuffers_.reserve(MAX_FRAME_COUNT);
     for (size_t i = 0; i < MAX_FRAME_COUNT; ++i) {
         auto& cb = constantBuffers_.emplace_back(UploadBuffer(ctx));
-        cb.CreateConstantBufferArray(meshes_.size(), sizeof(DirectX::XMFLOAT4X4));
+        cb.CreateConstantBufferArray(meshes_.size(), sizeof(MeshConstants));
     }
 }
 
@@ -83,15 +83,23 @@ D3D12_GPU_DESCRIPTOR_HANDLE Model::GetConstantGPUHandle(size_t frameIdx, size_t 
 }
 
 void Model::UpdateWorldMatrix(const DirectX::XMMATRIX& matrix) {
-    DirectX::XMStoreFloat4x4(&worldMatrix_, XMMatrixTranspose(matrix));
+    using namespace DirectX;
+    // Shader에서 사용하기 위해 Transpose된 행렬로 저장
+    XMStoreFloat4x4(&meshConst_.world, XMMatrixTranspose(matrix));
+    XMStoreFloat4x4(&meshConst_.invWorld, XMMatrixTranspose(XMMatrixInverse(nullptr, matrix)));
 }
 
 void Model::SetWorldMatrix(const DirectX::XMFLOAT4X4& worldMatrix) {
-    worldMatrix_ = worldMatrix;
+    DirectX::XMMATRIX worldMat = DirectX::XMLoadFloat4x4(&worldMatrix);
+    UpdateWorldMatrix(worldMat);
 }
 
-const DirectX::XMFLOAT4X4& Model::GetWorldMatrix() const {
-    return worldMatrix_;
+const DirectX::XMFLOAT4X4 Model::GetWorldMatrix() const {
+    using namespace DirectX;
+    DirectX::XMMATRIX mat = XMLoadFloat4x4(&meshConst_.world);
+    XMFLOAT4X4 world;
+    XMStoreFloat4x4(&world, XMMatrixTranspose(mat));
+    return world;
 }
 
 } // namespace JEngine

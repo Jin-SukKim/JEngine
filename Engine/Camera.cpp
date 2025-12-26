@@ -37,6 +37,21 @@ void Camera::UpdateViewMatrix() {
     DirectX::XMStoreFloat4x4(&matrices.view_, view);
 }
 
+void Camera::UpdateSceneConstants(SceneConstants& sceneConst) {
+    DirectX::XMMATRIX view =
+        DirectX::XMMatrixTranspose(GetViewMatrix());
+    DirectX::XMMATRIX proj = DirectX::XMMatrixTranspose(GetProjMatrix());
+    DirectX::XMMATRIX viewProj = proj * view;
+
+    DirectX::XMStoreFloat4x4(&sceneConst.view, view);
+    DirectX::XMStoreFloat4x4(&sceneConst.invView, DirectX::XMMatrixInverse(nullptr, view));
+    DirectX::XMStoreFloat4x4(&sceneConst.proj, proj);
+    DirectX::XMStoreFloat4x4(&sceneConst.invProj, DirectX::XMMatrixInverse(nullptr, proj));
+    DirectX::XMStoreFloat4x4(&sceneConst.viewProj, viewProj);
+    DirectX::XMStoreFloat4x4(&sceneConst.invViewProj, DirectX::XMMatrixInverse(nullptr, viewProj));
+    sceneConst.eyeWorld = position_;
+}
+
 void Camera::SetType(CameraType type) {
     type_ = type;
 }
@@ -74,7 +89,9 @@ DirectX::XMMATRIX Camera::GetViewMatrix() const {
 DirectX::XMMATRIX Camera::GetProjMatrix() const {
     return DirectX::XMLoadFloat4x4(&matrices.perspective_);
 }
+
 DirectX::XMMATRIX Camera::GetViewProjMatrix() const {
     return GetViewMatrix() * GetProjMatrix();
 }
+
 } // namespace JEngine

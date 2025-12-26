@@ -2,28 +2,7 @@
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
     <ClInclude Include="pch.h" />
-    <ClInclude Include="Logger.h" />
-    <ClInclude Include="Context.h" />
-    <ClInclude Include="Timer.h" />
-    <ClInclude Include="Window.h" />
-    <ClInclude Include="DescriptorHeap.h" />
-    <ClInclude Include="Renderer.h" />
     <ClInclude Include="Application.h" />
-    <ClInclude Include="SwapChain.h" />
-    <ClInclude Include="CommandBuffer.h" />
-    <ClInclude Include="BarrierHelper.h" />
-    <ClInclude Include="Fence.h" />
-    <ClInclude Include="DescriptorPool.h" />
-    <ClInclude Include="Vertex.h" />
-    <ClInclude Include="Camera.h" />
-    <ClInclude Include="GeometryGenerator.h" />
-    <ClInclude Include="Mesh.h" />
-    <ClInclude Include="Model.h" />
-    <ClInclude Include="Shader.h" />
-    <ClInclude Include="ShaderManager.h" />
-    <ClInclude Include="Pipeline.h" />
-    <ClInclude Include="RootSignature.h" />
-    <ClInclude Include="Utils.h" />
     <ClInclude Include="GPUBuffer.h">
       <Filter>GPUResource</Filter>
     </ClInclude>
@@ -39,32 +18,76 @@
     <ClInclude Include="Texture.h">
       <Filter>GPUResource</Filter>
     </ClInclude>
-    <ClInclude Include="ConstantData.h" />
+    <ClInclude Include="DescriptorHeap.h">
+      <Filter>Descriptor</Filter>
+    </ClInclude>
+    <ClInclude Include="DescriptorPool.h">
+      <Filter>Descriptor</Filter>
+    </ClInclude>
+    <ClInclude Include="BarrierHelper.h">
+      <Filter>GPUResource</Filter>
+    </ClInclude>
+    <ClInclude Include="CommandBuffer.h">
+      <Filter>Core</Filter>
+    </ClInclude>
+    <ClInclude Include="Fence.h">
+      <Filter>Core</Filter>
+    </ClInclude>
+    <ClInclude Include="Context.h">
+      <Filter>Core</Filter>
+    </ClInclude>
+    <ClInclude Include="Logger.h">
+      <Filter>Core</Filter>
+    </ClInclude>
+    <ClInclude Include="Pipeline.h">
+      <Filter>Rendering</Filter>
+    </ClInclude>
+    <ClInclude Include="Renderer.h">
+      <Filter>Rendering</Filter>
+    </ClInclude>
+    <ClInclude Include="Mesh.h">
+      <Filter>Model</Filter>
+    </ClInclude>
+    <ClInclude Include="Model.h">
+      <Filter>Model</Filter>
+    </ClInclude>
+    <ClInclude Include="RootSignature.h">
+      <Filter>Core</Filter>
+    </ClInclude>
+    <ClInclude Include="Shader.h">
+      <Filter>Rendering</Filter>
+    </ClInclude>
+    <ClInclude Include="ShaderManager.h">
+      <Filter>Rendering</Filter>
+    </ClInclude>
+    <ClInclude Include="SwapChain.h">
+      <Filter>Core</Filter>
+    </ClInclude>
+    <ClInclude Include="Timer.h">
+      <Filter>Core</Filter>
+    </ClInclude>
+    <ClInclude Include="Vertex.h">
+      <Filter>Model</Filter>
+    </ClInclude>
+    <ClInclude Include="Window.h">
+      <Filter>Core</Filter>
+    </ClInclude>
+    <ClInclude Include="GeometryGenerator.h">
+      <Filter>Model</Filter>
+    </ClInclude>
+    <ClInclude Include="Utils.h">
+      <Filter>Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="ConstantData.h">
+      <Filter>Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="Camera.h">
+      <Filter>Model</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp" />
-    <ClCompile Include="Logger.cpp" />
-    <ClCompile Include="Context.cpp" />
-    <ClCompile Include="Timer.cpp" />
-    <ClCompile Include="Window.cpp" />
-    <ClCompile Include="DescriptorHeap.cpp" />
-    <ClCompile Include="Renderer.cpp" />
     <ClCompile Include="Application.cpp" />
-    <ClCompile Include="SwapChain.cpp" />
-    <ClCompile Include="CommandBuffer.cpp" />
-    <ClCompile Include="BarrierHelper.cpp" />
-    <ClCompile Include="Fence.cpp" />
-    <ClCompile Include="DescriptorPool.cpp" />
-    <ClCompile Include="Vertex.cpp" />
-    <ClCompile Include="Camera.cpp" />
-    <ClCompile Include="GeometryGenerator.cpp" />
-    <ClCompile Include="Mesh.cpp" />
-    <ClCompile Include="Model.cpp" />
-    <ClCompile Include="Shader.cpp" />
-    <ClCompile Include="ShaderManager.cpp" />
-    <ClCompile Include="Pipeline.cpp" />
-    <ClCompile Include="RootSignature.cpp" />
-    <ClCompile Include="Utils.cpp" />
     <ClCompile Include="GPUBuffer.cpp">
       <Filter>GPUResource</Filter>
     </ClCompile>
@@ -80,11 +103,91 @@
     <ClCompile Include="Texture.cpp">
       <Filter>GPUResource</Filter>
     </ClCompile>
-    <ClCompile Include="ConstantData.cpp" />
+    <ClCompile Include="BarrierHelper.cpp">
+      <Filter>GPUResource</Filter>
+    </ClCompile>
+    <ClCompile Include="DescriptorHeap.cpp">
+      <Filter>Descriptor</Filter>
+    </ClCompile>
+    <ClCompile Include="DescriptorPool.cpp">
+      <Filter>Descriptor</Filter>
+    </ClCompile>
+    <ClCompile Include="CommandBuffer.cpp">
+      <Filter>Core</Filter>
+    </ClCompile>
+    <ClCompile Include="Context.cpp">
+      <Filter>Core</Filter>
+    </ClCompile>
+    <ClCompile Include="Fence.cpp">
+      <Filter>Core</Filter>
+    </ClCompile>
+    <ClCompile Include="Logger.cpp">
+      <Filter>Core</Filter>
+    </ClCompile>
+    <ClCompile Include="Pipeline.cpp">
+      <Filter>Rendering</Filter>
+    </ClCompile>
+    <ClCompile Include="Renderer.cpp">
+      <Filter>Rendering</Filter>
+    </ClCompile>
+    <ClCompile Include="Mesh.cpp">
+      <Filter>Model</Filter>
+    </ClCompile>
+    <ClCompile Include="Model.cpp">
+      <Filter>Model</Filter>
+    </ClCompile>
+    <ClCompile Include="RootSignature.cpp">
+      <Filter>Core</Filter>
+    </ClCompile>
+    <ClCompile Include="Shader.cpp">
+      <Filter>Rendering</Filter>
+    </ClCompile>
+    <ClCompile Include="ShaderManager.cpp">
+      <Filter>Rendering</Filter>
+    </ClCompile>
+    <ClCompile Include="SwapChain.cpp">
+      <Filter>Core</Filter>
+    </ClCompile>
+    <ClCompile Include="Timer.cpp">
+      <Filter>Core</Filter>
+    </ClCompile>
+    <ClCompile Include="Vertex.cpp">
+      <Filter>Model</Filter>
+    </ClCompile>
+    <ClCompile Include="Window.cpp">
+      <Filter>Core</Filter>
+    </ClCompile>
+    <ClCompile Include="GeometryGenerator.cpp">
+      <Filter>Model</Filter>
+    </ClCompile>
+    <ClCompile Include="Utils.cpp">
+      <Filter>Utils</Filter>
+    </ClCompile>
+    <ClCompile Include="ConstantData.cpp">
+      <Filter>Utils</Filter>
+    </ClCompile>
+    <ClCompile Include="Camera.cpp">
+      <Filter>Model</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="GPUResource">
       <UniqueIdentifier>{2f411305-44cb-4a60-925c-d1dfe349558d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Descriptor">
+      <UniqueIdentifier>{cecfee0a-3e05-4756-b689-13e1b5a5d83b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Core">
+      <UniqueIdentifier>{773f1cc0-9b32-44b8-9851-4fed56ceda6b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Rendering">
+      <UniqueIdentifier>{a289a3ed-fc19-4346-a71e-f415d46feba5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Model">
+      <UniqueIdentifier>{201ed8aa-9eab-454b-9817-42cc427ff512}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Utils">
+      <UniqueIdentifier>{1f9118ee-447e-4f95-9752-7a0d2607d89f}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>

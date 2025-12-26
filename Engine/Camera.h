@@ -11,6 +11,7 @@ class Camera
     ~Camera();
 
     void UpdateViewMatrix();
+    void UpdateSceneConstants(SceneConstants& sceneConst);
 
     void SetType(CameraType type);
     void SetPosition(const DirectX::XMFLOAT3& position);
