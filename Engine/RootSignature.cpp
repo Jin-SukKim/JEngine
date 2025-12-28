@@ -170,17 +170,6 @@ D3D12_ROOT_PARAMETER RootSignature::createDescriptorTableParameter(
 
 D3D12_ROOT_PARAMETER
 RootSignature::createRootConstantsParameter(const RootSignatureConfig& config) {
-    // TODO: 구현 필요
-    return D3D12_ROOT_PARAMETER();
-}
-
-D3D12_ROOT_PARAMETER
-RootSignature::createRootDescriptorParameter(const RootSignatureConfig& config) {
-    // TODO: 구현 필요
-    return D3D12_ROOT_PARAMETER();
-}
-
-D3D12_ROOT_PARAMETER createRootConstantsParam(const RootSignatureConfig& config) {
     D3D12_ROOT_PARAMETER param = {};
     param.ParameterType = D3D12_ROOT_PARAMETER_TYPE_32BIT_CONSTANTS;
     param.Constants.Num32BitValues = config.num32BitValues;
@@ -189,7 +178,8 @@ D3D12_ROOT_PARAMETER createRootConstantsParam(const RootSignatureConfig& config)
     return param;
 }
 
-D3D12_ROOT_PARAMETER createRootDescriptorParam(const RootSignatureConfig& config) {
+D3D12_ROOT_PARAMETER
+RootSignature::createRootDescriptorParameter(const RootSignatureConfig& config) {
     D3D12_ROOT_PARAMETER param = {};
     param.ParameterType = D3D12_ROOT_PARAMETER_TYPE_CBV; // (참고: SRV, UAV 분기 필요시 수정)
     param.Descriptor.ShaderRegister = config.shaderRegister;

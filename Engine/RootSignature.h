@@ -11,6 +11,8 @@ Draw 호출 시점에 RootSignature를 통해 어떤 Page(Root Parameter)를 갱
 
 일반적으로 갱신 주기에 따라 Parameter를 나눠 설정 (예: Frame 단위, Object 단위 등)
 그리고 갱신될 데이터 형식을 설정
+
+성능상의 이유로 하나의 Root Signature에는 최대 64개의 DWORD(32-bit)만 설정 가능
 */
 
 struct DescriptorRangeConfig
@@ -19,13 +21,26 @@ struct DescriptorRangeConfig
     UINT numDescriptors = 1; // descriptor view 개수 (같은 크기의 Descriptor를 여러개 쓸 때)
     // 셰이더 레지스터 시작 번호 (시작 번호부터 numDescriptors 개수만큼 할당)
     UINT baseShaderRegister = 0;
-    UINT registerSpace = 0; // Register Space (특별한 경우 아니면 0)
+    // Register Space (특별한 경우 아니면 0) - Shader Register를 지정하는 또 다른 차원
+    /*
+    ex) Texture2D diffuse : register(t0, space0);
+        Texture2D specular : register(t0, space1);
+         두 개의 Register가 같은 슬롯(ex: t0)에 겹쳐질 것 같지만, 
+         각자 다른 공간에 있으므로 실제로는 서로 다른 레지스터
+         배열을 사용할 경우 여러 개의 공간을 사용하는 것이 유용하고 크기를 미리 알 수 없는 배열을
+    사용할 때도 유용
+    */
+    UINT registerSpace = 0; 
 };
 
 enum class RootParameterType {
-    DESCRIPTOR_TABLE, // Descriptor Heap 사용 (일반적)
-    ROOT_CONSTANTS,   // 상수값 직접 전달 (주로 작은 데이터)
-    ROOT_DESCRIPTOR   // Descriptor 없이 GPU 주소 직접 전달
+    // Descriptor Heap 사용 (일반적) - Table당 DWORD 1개
+    DESCRIPTOR_TABLE,
+    // 직접 32-bit 상수 전달 - 32bit 상수당 DWORD 1개
+    ROOT_CONSTANTS,
+    // Descriptor 없이 GPU 주소 직접 전달 - DWORD 2개
+    // - CBV나 자원 버퍼에 대한 SRV/UAV만 사용할 수 있는데 Texture에 대한 SRV는 불가능
+    ROOT_DESCRIPTOR
 };
 
 struct RootSignatureConfig
@@ -36,7 +51,9 @@ struct RootSignatureConfig
     std::vector<DescriptorRangeConfig> descriptorRanges;
 
     // type이 Root Constants일때 사용
-    UINT num32BitValues = 0; // 32-bit 값 개수
+    UINT num32BitValues = 0; // 32-bit 상수들의 개수
+
+    // type이 Root Constants, Root Descriptor일때 사용
     UINT shaderRegister = 0; // Shader Resgister 번호 (b0, t0 등)
     UINT registerSpace = 0;  // Register Space (특별한 경우 아니면 0)
 
@@ -74,7 +91,7 @@ class RootSignature
                                                              UINT numDescriptors,
                                                              UINT baseShaderRegister,
                                                              UINT registerSpace = 0);
-    
+
   private:
     D3D12_ROOT_PARAMETER
     createRootParameter(const RootSignatureConfig& config,
