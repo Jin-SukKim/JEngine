@@ -42,8 +42,8 @@ class Resource
   protected:
     // 하위 클래스에서 사용 가능한 Setter 함수
     void SetDescriptorHandle(const DescriptorHandle& handle);
-    void SetDescriptorHandles(const std::vector<DescriptorHandle>&& handles);
-    void SetFormat(DXGI_FORMAT format);
+    void SetDescriptorHandle(size_t idx, const DescriptorHandle& handle);
+    void SetDescriptorHandles(std::vector<DescriptorHandle>&& handles);
 
     // 리소스 생성 헬퍼 함수들
     D3D12_HEAP_PROPERTIES CreateHeapProperties(D3D12_HEAP_TYPE type) const;
@@ -61,7 +61,6 @@ class Resource
   protected:
     Context& context_;
     ComPtr<ID3D12Resource> resource_ = nullptr;
-    DXGI_FORMAT format_ = DXGI_FORMAT_UNKNOWN;
     std::vector<DescriptorHandle> descriptorHandles_; // CPU + GPU Handle 모두 저장
 
     BarrierHelper barrierHelper_;

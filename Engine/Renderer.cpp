@@ -67,8 +67,8 @@ void Renderer::Draw(ID3D12GraphicsCommandList* cmdList, Model& model, size_t fra
     Texture& backBuffer = swapChain_.GetCurrentBackBuffer();
     backBuffer.TransitionTo(cmdList, D3D12_RESOURCE_STATE_RENDER_TARGET);
 
-    D3D12_CPU_DESCRIPTOR_HANDLE rtvHandle = backBuffer.GetCPUHandle();
-    D3D12_CPU_DESCRIPTOR_HANDLE dsvHandle = depthStencil_->GetCPUHandle();
+    D3D12_CPU_DESCRIPTOR_HANDLE rtvHandle = backBuffer.GetRTVHandle();
+    D3D12_CPU_DESCRIPTOR_HANDLE dsvHandle = depthStencil_->GetDSVHandle();
     cmdList->OMSetRenderTargets(1, &rtvHandle, FALSE, &dsvHandle);
 
     cmdList->ClearRenderTargetView(rtvHandle, DirectX::Colors::LightSteelBlue, 0, nullptr);
@@ -156,6 +156,10 @@ void Renderer::InitRootSignature() {
     configs.emplace_back(RootSignature::CreateDescriptorTableConfig(
         D3D12_DESCRIPTOR_RANGE_TYPE_CBV, 1, 1));
 
+    // Sampler
+    //configs.emplace_back(RootSignature::CreateDescriptorTableConfig(
+    //    D3D12_DESCRIPTOR_RANGE_TYPE_SAMPLER, 1, 0, 0, D3D12_SHADER_VISIBILITY_PIXEL));
+
     // Example) Material (CBV + Textures)
     //{
     //    std::vector<DescriptorRangeConfig> ranges;
@@ -199,4 +203,31 @@ void Renderer::InitPipeline() {
     pipeline_ = std::make_unique<Pipeline>(context_.GetDevice(), *shaderManager_);
     pipeline_->CreatePSO(config, rootSignature_->GetSignature());
 }
+
+void Renderer::InitSamplers() {
+    D3D12_SAMPLER_DESC samplerDesc = {};
+    samplerDesc.Filter = D3D12_FILTER_MIN_MAG_MIP_LINEAR; // Filter 설정
+    // Address Mode 설정 (Wrap, Clamp, Mirror, Border, Mirror_Once)
+    samplerDesc.AddressU = D3D12_TEXTURE_ADDRESS_MODE_WRAP;
+    samplerDesc.AddressV = D3D12_TEXTURE_ADDRESS_MODE_WRAP;
+    samplerDesc.AddressW = D3D12_TEXTURE_ADDRESS_MODE_WRAP;
+    samplerDesc.MipLODBias = 0.0f; // Mipmap LOD의 bias 설정 (기본값 0.0f)
+    samplerDesc.MinLOD = 0.0f; // 선택 가능한 최소 Mipmap Level
+    samplerDesc.MaxLOD = D3D12_FLOAT32_MAX; // 선택 가능한 최대 Mipmap Level
+    samplerDesc.MaxAnisotropy =
+        1; // 최대 Anisotropy 설정 ([1, 16] 범위) - filter가 Anisotropic type일 때만 적용
+    // Border Color 설정 (Address Mode가 Border일 때 사용)
+    samplerDesc.BorderColor[0] = 1.0f;
+    samplerDesc.BorderColor[1] = 1.0f;
+    samplerDesc.BorderColor[2] = 1.0f;
+    samplerDesc.BorderColor[3] = 1.0f;
+    samplerDesc.ComparisonFunc = D3D12_COMPARISON_FUNC_ALWAYS; // Shadow Map 등에 사용된 특화 옵션
+    DescriptorHandle samplerHandle = context_.GetDescriptorPool()->AllocateSampler();
+    context_.GetDevice()->CreateSampler(&samplerDesc, samplerHandle.cpuHandle);
+
+    // TODO: static sampler으로 Root Signature에 추가하는 방법 고려 (성능이 더 좋음) - RootSignature와 연계
+    // https://gemini.google.com/app/d2f444dcda7b30dd
+    D3D12_STATIC_SAMPLER_DESC staticSamplerDesc = {};
+}
+
 } // namespace JEngine

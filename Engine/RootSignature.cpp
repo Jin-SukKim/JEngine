@@ -1,5 +1,6 @@
 #include "pch.h"
 #include "RootSignature.h"
+#include "Sampler.h"
 
 namespace JEngine {
 RootSignature::RootSignature(ID3D12Device* device) : device_(device), rootSignature_(nullptr) {
@@ -38,22 +39,23 @@ void RootSignature::Create(const std::vector<RootSignatureConfig>& rootParamConf
 }
 
 void RootSignature::createRootSignature(const std::vector<D3D12_ROOT_PARAMETER>& rootParameters) {
-    // 위 모든 규칙을 모아 '최종 계약서' 완성 (Root Signature Description) ---
+    // 위 모든 규칙을 모아 '최종 계약서' 완성 (Root Signature Description) 
     D3D12_ROOT_SIGNATURE_DESC rootSignatureDesc = {};
 
     // Pipeline에서 사용할 Root Parameter 개수와 데이터
     rootSignatureDesc.NumParameters = static_cast<UINT>(rootParameters.size());
     rootSignatureDesc.pParameters = rootParameters.data();
 
-    // 고정된 Sampler (현재는 사용 안하는 중)
-    rootSignatureDesc.NumStaticSamplers = 0;
-    rootSignatureDesc.pStaticSamplers = nullptr;
+    // Static Sampler
+    const auto samplers = Sampler::GetStaticSamplers();
+    rootSignatureDesc.NumStaticSamplers = static_cast<UINT>(samplers.size());
+    rootSignatureDesc.pStaticSamplers = samplers.data();
 
     // Root Signature의 다양한 옵션 설정
     // (ALLOW_INPUT_ASSEMBLER_INPUT_LAYOUT : 정점 데이터를 Input Assembler가 읽을 수 있도록 허용)
     rootSignatureDesc.Flags = D3D12_ROOT_SIGNATURE_FLAG_ALLOW_INPUT_ASSEMBLER_INPUT_LAYOUT;
 
-    // --- 4. 계약서를 GPU가 읽을 수 있는 '기계어'로 변환 (Serialize) ---
+    // 계약서를 GPU가 읽을 수 있는 '기계어'로 변환 (Serialize) 
     ComPtr<ID3DBlob> signature; // 변환된 '기계어(바이너리)'가 저장될 곳
     ComPtr<ID3DBlob> error;
 
@@ -61,7 +63,7 @@ void RootSignature::createRootSignature(const std::vector<D3D12_ROOT_PARAMETER>&
     ThrowIfFailed(D3D12SerializeRootSignature(&rootSignatureDesc, D3D_ROOT_SIGNATURE_VERSION_1_0,
                                               signature.GetAddressOf(), error.GetAddressOf()));
 
-    // --- 5. 변환된 '기계어'를 GPU에 제출하여 실제 '객체' 생성 ---
+    // 변환된 '기계어'를 GPU에 제출하여 실제 '객체' 생성 
     ThrowIfFailed(
         device_->CreateRootSignature(0, signature->GetBufferPointer(), signature->GetBufferSize(),
                                      IID_PPV_ARGS(&rootSignature_))); // 만들어진 객체 저장

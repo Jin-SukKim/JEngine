@@ -84,6 +84,7 @@
     <ClInclude Include="Camera.h">
       <Filter>Model</Filter>
     </ClInclude>
+    <ClInclude Include="Sampler.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp" />
@@ -169,6 +170,7 @@
     <ClCompile Include="Camera.cpp">
       <Filter>Model</Filter>
     </ClCompile>
+    <ClCompile Include="Sampler.cpp" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="GPUResource">

@@ -13,10 +13,9 @@ Resource::~Resource() {
 
 // Move constructor
 Resource::Resource(Resource&& other) noexcept
-    : context_(other.context_), resource_(std::move(other.resource_)), format_(other.format_),
+    : context_(other.context_), resource_(std::move(other.resource_)),
       descriptorHandles_(std::move(other.descriptorHandles_)), barrierHelper_(std::move(other.barrierHelper_)) {
     // 이동 후 other는 비어있는 상태로 만듦
-    other.format_ = DXGI_FORMAT_UNKNOWN;
     other.descriptorHandles_.clear();
 }
 
@@ -29,7 +28,6 @@ Resource& Resource::operator=(Resource&& other) noexcept {
         // context_는 참조이므로 재할당 불가 (이미 초기화됨)
         // 다른 멤버들만 이동
         resource_ = std::move(other.resource_);
-        format_ = other.format_;
         descriptorHandles_ = std::move(other.descriptorHandles_);
         barrierHelper_ = std::move(other.barrierHelper_);
 
@@ -49,7 +47,6 @@ void Resource::Reset() {
     resource_.Reset();
     
     // 멤버 변수 초기화
-    format_ = DXGI_FORMAT_UNKNOWN;
     descriptorHandles_.clear();
     
     // BarrierHelper 상태 초기화
@@ -89,7 +86,7 @@ D3D12_RESOURCE_DESC Resource::GetDesc() const {
 }
 
 DXGI_FORMAT Resource::GetFormat() const {
-    return format_;
+    return GetDesc().Format;
 }
 
 D3D12_CPU_DESCRIPTOR_HANDLE Resource::GetCPUHandle(size_t index) const {
@@ -105,16 +102,20 @@ void Resource::SetResource(ComPtr<ID3D12Resource>& res) {
     resource_ = res;
 }
 
-void Resource::SetFormat(DXGI_FORMAT format) {
-    format_ = format;
-}
 
 void Resource::SetDescriptorHandle(const DescriptorHandle& handle) {
     descriptorHandles_.clear();
     descriptorHandles_.emplace_back(handle); // ⭐ CPU + GPU 둘 다 저장됨
 }
 
-void Resource::SetDescriptorHandles(const std::vector<DescriptorHandle>&& handles) {
+void Resource::SetDescriptorHandle(size_t idx, const DescriptorHandle& handle) {
+    if (idx >= descriptorHandles_.size()) {
+        descriptorHandles_.resize(idx + 1);
+    }
+    descriptorHandles_[idx] = handle; // ⭐ CPU + GPU 둘 다 저장됨
+}
+
+void Resource::SetDescriptorHandles(std::vector<DescriptorHandle>&& handles) {
     descriptorHandles_ = handles; // ⭐ CPU + GPU 둘 다 저장됨
 }
 
@@ -134,7 +135,6 @@ D3D12_RESOURCE_DESC
 Resource::CreateResourceDesc(D3D12_RESOURCE_DIMENSION dimension, UINT64 width, UINT height,
                              UINT16 depthOrArraySize, UINT16 mipLevels, DXGI_FORMAT format,
                              D3D12_TEXTURE_LAYOUT layout, D3D12_RESOURCE_FLAGS flags) {
-    SetFormat(format);
 
     // Resource Description 설정
     D3D12_RESOURCE_DESC desc = {};

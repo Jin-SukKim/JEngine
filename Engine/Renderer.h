@@ -33,6 +33,7 @@ class Renderer
     void InitShaders();
     void InitRootSignature();
     void InitPipeline();
+    void InitSamplers();
 
   private:
     Context& context_;

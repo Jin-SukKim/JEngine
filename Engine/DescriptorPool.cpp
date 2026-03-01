@@ -12,6 +12,9 @@ DescriptorPool::DescriptorPool(ID3D12Device* device) : device_(device) {
     heapAllocator_[D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV] =
         std::make_unique<DescriptorHeap>(device_, 1000, D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV,
         D3D12_DESCRIPTOR_HEAP_FLAG_SHADER_VISIBLE); // Shader에서 접근 가능하도록 설정
+    heapAllocator_[D3D12_DESCRIPTOR_HEAP_TYPE_SAMPLER] = std::make_unique<DescriptorHeap>(
+        device_, 5, D3D12_DESCRIPTOR_HEAP_TYPE_SAMPLER,
+        D3D12_DESCRIPTOR_HEAP_FLAG_SHADER_VISIBLE); // Shader에서 접근 가능하도록 설정
     LogInfo("Descriptor Pool created.");
 }
 
@@ -33,6 +36,10 @@ auto DescriptorPool::AllocateSRV() -> DescriptorHandle {
 
 auto DescriptorPool::AllocateUAV() -> DescriptorHandle {
     return heapAllocator_[D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV]->AllocateView();
+}
+
+auto DescriptorPool::AllocateSampler() -> DescriptorHandle {
+    return heapAllocator_[D3D12_DESCRIPTOR_HEAP_TYPE_SAMPLER]->AllocateView();
 }
 
 auto DescriptorPool::AllocateCBVArray(size_t count) -> std::vector<DescriptorHandle> {
@@ -57,6 +64,10 @@ void DescriptorPool::ResetSRV() {
 
 void DescriptorPool::ResetUAV() {
     heapAllocator_[D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV]->Reset();
+}
+
+void DescriptorPool::ResetSampler() {
+    heapAllocator_[D3D12_DESCRIPTOR_HEAP_TYPE_SAMPLER]->Reset();
 }
 
 auto DescriptorPool::Get(D3D12_DESCRIPTOR_HEAP_TYPE type) -> DescriptorHeap* {
