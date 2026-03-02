@@ -1,9 +1,9 @@
-#pragma once
+ï»¿#pragma once
 #include "Buffer.h"
 
 namespace JEngine {
 
-// GPU Àü¿ë ¹öÆÛ Å¬·¡½º
+// GPU ì „ìš© ë²„í¼ í´ë˜ìŠ¤
 class GPUBuffer : public Buffer
 {
   public:

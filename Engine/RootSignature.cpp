@@ -1,4 +1,4 @@
-#include "pch.h"
+ï»¿#include "pch.h"
 #include "RootSignature.h"
 #include "Sampler.h"
 
@@ -10,7 +10,7 @@ RootSignature::~RootSignature() {
 }
 
 void RootSignature::Create(const std::vector<RootSignatureConfig>& rootParamConfigs) {
-    // °¢ Root Parameter¿¡ ´ëÇÑ Descriptor RangeµéÀ» ÀúÀåÇÒ º¤ÅÍ (RootSignature°¡ »ı¼ºµÉ¶§±îÁö À¯È¿ÇØ¾ßµÊ)
+    // ê° Root Parameterì— ëŒ€í•œ Descriptor Rangeë“¤ì„ ì €ì¥í•  ë²¡í„° (RootSignatureê°€ ìƒì„±ë ë•Œê¹Œì§€ ìœ íš¨í•´ì•¼ë¨)
     std::vector<std::vector<D3D12_DESCRIPTOR_RANGE>> descriptorRanges;
     descriptorRanges.reserve(rootParamConfigs.size());
 
@@ -18,17 +18,17 @@ void RootSignature::Create(const std::vector<RootSignatureConfig>& rootParamConf
     rootParameters.reserve(rootParamConfigs.size());
 
     for (const auto& config : rootParamConfigs) {
-        // ÇöÀç ParameterÀÇ Descriptor Range(µ¥ÀÌÅÍ Çü½Ä)µéÀ» ÀúÀå
+        // í˜„ì¬ Parameterì˜ Descriptor Range(ë°ì´í„° í˜•ì‹)ë“¤ì„ ì €ì¥
         std::vector<D3D12_DESCRIPTOR_RANGE> rangesForCurConfig;
 
-        // ÇöÀç Parameter »ı¼º
+        // í˜„ì¬ Parameter ìƒì„±
         D3D12_ROOT_PARAMETER param = createRootParameter(config, rangesForCurConfig);
 
-        // Range°¡ ÀÖ´Ù¸é ÀúÀå (Descriptor TableÀÎ °æ¿ì¸¸ ÇØ´ç)
+        // Rangeê°€ ìˆë‹¤ë©´ ì €ì¥ (Descriptor Tableì¸ ê²½ìš°ë§Œ í•´ë‹¹)
         if (!rangesForCurConfig.empty()) {
             descriptorRanges.emplace_back(std::move(rangesForCurConfig));
 
-            // moveµÈ º¤ÅÍÀÇ µ¥ÀÌÅÍ¸¦ °¡¸®Å°µµ·Ï ¼³Á¤
+            // moveëœ ë²¡í„°ì˜ ë°ì´í„°ë¥¼ ê°€ë¦¬í‚¤ë„ë¡ ì„¤ì •
             param.DescriptorTable.pDescriptorRanges = descriptorRanges.back().data();
         }
 
@@ -39,10 +39,10 @@ void RootSignature::Create(const std::vector<RootSignatureConfig>& rootParamConf
 }
 
 void RootSignature::createRootSignature(const std::vector<D3D12_ROOT_PARAMETER>& rootParameters) {
-    // À§ ¸ğµç ±ÔÄ¢À» ¸ğ¾Æ 'ÃÖÁ¾ °è¾à¼­' ¿Ï¼º (Root Signature Description) 
+    // ìœ„ ëª¨ë“  ê·œì¹™ì„ ëª¨ì•„ 'ìµœì¢… ê³„ì•½ì„œ' ì™„ì„± (Root Signature Description) 
     D3D12_ROOT_SIGNATURE_DESC rootSignatureDesc = {};
 
-    // Pipeline¿¡¼­ »ç¿ëÇÒ Root Parameter °³¼ö¿Í µ¥ÀÌÅÍ
+    // Pipelineì—ì„œ ì‚¬ìš©í•  Root Parameter ê°œìˆ˜ì™€ ë°ì´í„°
     rootSignatureDesc.NumParameters = static_cast<UINT>(rootParameters.size());
     rootSignatureDesc.pParameters = rootParameters.data();
 
@@ -51,22 +51,22 @@ void RootSignature::createRootSignature(const std::vector<D3D12_ROOT_PARAMETER>&
     rootSignatureDesc.NumStaticSamplers = static_cast<UINT>(samplers.size());
     rootSignatureDesc.pStaticSamplers = samplers.data();
 
-    // Root SignatureÀÇ ´Ù¾çÇÑ ¿É¼Ç ¼³Á¤
-    // (ALLOW_INPUT_ASSEMBLER_INPUT_LAYOUT : Á¤Á¡ µ¥ÀÌÅÍ¸¦ Input Assembler°¡ ÀĞÀ» ¼ö ÀÖµµ·Ï Çã¿ë)
+    // Root Signatureì˜ ë‹¤ì–‘í•œ ì˜µì…˜ ì„¤ì •
+    // (ALLOW_INPUT_ASSEMBLER_INPUT_LAYOUT : ì •ì  ë°ì´í„°ë¥¼ Input Assemblerê°€ ì½ì„ ìˆ˜ ìˆë„ë¡ í—ˆìš©)
     rootSignatureDesc.Flags = D3D12_ROOT_SIGNATURE_FLAG_ALLOW_INPUT_ASSEMBLER_INPUT_LAYOUT;
 
-    // °è¾à¼­¸¦ GPU°¡ ÀĞÀ» ¼ö ÀÖ´Â '±â°è¾î'·Î º¯È¯ (Serialize) 
-    ComPtr<ID3DBlob> signature; // º¯È¯µÈ '±â°è¾î(¹ÙÀÌ³Ê¸®)'°¡ ÀúÀåµÉ °÷
+    // ê³„ì•½ì„œë¥¼ GPUê°€ ì½ì„ ìˆ˜ ìˆëŠ” 'ê¸°ê³„ì–´'ë¡œ ë³€í™˜ (Serialize) 
+    ComPtr<ID3DBlob> signature; // ë³€í™˜ëœ 'ê¸°ê³„ì–´(ë°”ì´ë„ˆë¦¬)'ê°€ ì €ì¥ë  ê³³
     ComPtr<ID3DBlob> error;
 
-    // D3D12_ROOT_SIGNATURE_DESC -> ¹ÙÀÌ³Ê¸®(signature)
+    // D3D12_ROOT_SIGNATURE_DESC -> ë°”ì´ë„ˆë¦¬(signature)
     ThrowIfFailed(D3D12SerializeRootSignature(&rootSignatureDesc, D3D_ROOT_SIGNATURE_VERSION_1_0,
                                               signature.GetAddressOf(), error.GetAddressOf()));
 
-    // º¯È¯µÈ '±â°è¾î'¸¦ GPU¿¡ Á¦ÃâÇÏ¿© ½ÇÁ¦ '°´Ã¼' »ı¼º 
+    // ë³€í™˜ëœ 'ê¸°ê³„ì–´'ë¥¼ GPUì— ì œì¶œí•˜ì—¬ ì‹¤ì œ 'ê°ì²´' ìƒì„± 
     ThrowIfFailed(
         device_->CreateRootSignature(0, signature->GetBufferPointer(), signature->GetBufferSize(),
-                                     IID_PPV_ARGS(&rootSignature_))); // ¸¸µé¾îÁø °´Ã¼ ÀúÀå
+                                     IID_PPV_ARGS(&rootSignature_))); // ë§Œë“¤ì–´ì§„ ê°ì²´ ì €ì¥
 
     LogInfo("Root Signature created successfully.");
 }
@@ -112,7 +112,7 @@ RootSignature::CreateDescriptorRangeConfig(D3D12_DESCRIPTOR_RANGE_TYPE rangeType
 D3D12_ROOT_PARAMETER
 RootSignature::createRootParameter(const RootSignatureConfig& config,
                                    std::vector<D3D12_DESCRIPTOR_RANGE>& descriptorRange) {
-    // C++(CPU)°¡ µ¥ÀÌÅÍ¸¦ 'Àü´ŞÇÒ ¹æ½Ä' Á¤ÀÇ(Root Parameter)-- -
+    // C++(CPU)ê°€ ë°ì´í„°ë¥¼ 'ì „ë‹¬í•  ë°©ì‹' ì •ì˜(Root Parameter)-- -
     D3D12_ROOT_PARAMETER rootParameter = {};
     switch (config.type) {
     case RootParameterType::DESCRIPTOR_TABLE:
@@ -126,28 +126,28 @@ RootSignature::createRootParameter(const RootSignatureConfig& config,
         break;
     }
 
-    // Á¢±Ù °¡´ÉÇÑ Shader Á¾·ù ¼³Á¤
+    // ì ‘ê·¼ ê°€ëŠ¥í•œ Shader ì¢…ë¥˜ ì„¤ì •
     rootParameter.ShaderVisibility = config.shaderVisibility;
     return rootParameter;
 }
 
 D3D12_DESCRIPTOR_RANGE RootSignature::createDescriptorRange(const DescriptorRangeConfig& config) {
-    // ¼ÎÀÌ´õ(GPU)°¡ ¹ŞÀ» '½½·Ô' Á¤ÀÇ (Descriptor Range) ---
-    // Shader°¡ µ¥ÀÌÅÍ¸¦ ¹ŞÀ» Register°¡ ¹ºÁö Á¤ÀÇ
+    // ì…°ì´ë”(GPU)ê°€ ë°›ì„ 'ìŠ¬ë¡¯' ì •ì˜ (Descriptor Range) ---
+    // Shaderê°€ ë°ì´í„°ë¥¼ ë°›ì„ Registerê°€ ë­”ì§€ ì •ì˜
     D3D12_DESCRIPTOR_RANGE descriptorRange = {};
 
-    // Register·Î ¹ŞÀ» view Á¾·ù (CBV, SRV, UAV, Sampler µî)
+    // Registerë¡œ ë°›ì„ view ì¢…ë¥˜ (CBV, SRV, UAV, Sampler ë“±)
     descriptorRange.RangeType = config.rangeType;
 
-    // Register ¸î°³¸¦ ¾µÁö (°°Àº Å©±âÀÇ Descriptor¸¦ ¿©·¯°³ ¾µ ¶§)
+    // Register ëª‡ê°œë¥¼ ì“¸ì§€ (ê°™ì€ í¬ê¸°ì˜ Descriptorë¥¼ ì—¬ëŸ¬ê°œ ì“¸ ë•Œ)
     descriptorRange.NumDescriptors = config.numDescriptors;
-    // ¸î ¹ø RegisterºÎÅÍ ½ÃÀÛÇÒÁö (t0, t2 µî)
+    // ëª‡ ë²ˆ Registerë¶€í„° ì‹œì‘í• ì§€ (t0, t2 ë“±)
     descriptorRange.BaseShaderRegister = config.baseShaderRegister;
 
-    // RegisterSpace: Æ¯º°ÇÑ °æ¿ì ¾Æ´Ï¸é 0
+    // RegisterSpace: íŠ¹ë³„í•œ ê²½ìš° ì•„ë‹ˆë©´ 0
     descriptorRange.RegisterSpace = config.registerSpace;
 
-    // OffsetInDescriptorsFromTableStart: Å×ÀÌºí ³»¿¡¼­ÀÇ ¼ø¼­. (APPEND = ¼ø¼­´ë·Î)
+    // OffsetInDescriptorsFromTableStart: í…Œì´ë¸” ë‚´ì—ì„œì˜ ìˆœì„œ. (APPEND = ìˆœì„œëŒ€ë¡œ)
     descriptorRange.OffsetInDescriptorsFromTableStart = D3D12_DESCRIPTOR_RANGE_OFFSET_APPEND;
     return descriptorRange;
 }
@@ -164,7 +164,7 @@ D3D12_ROOT_PARAMETER RootSignature::createDescriptorTableParameter(
     }
 
     param.DescriptorTable.NumDescriptorRanges = static_cast<UINT>(descriptorRanges.size());
-    // ÇöÀç pointer´Â Create()¿¡¼­ ¼³Á¤
+    // í˜„ì¬ pointerëŠ” Create()ì—ì„œ ì„¤ì •
     param.DescriptorTable.pDescriptorRanges = nullptr;
     //param.DescriptorTable.pDescriptorRanges = descriptorRanges.data();
     return param;
@@ -183,10 +183,10 @@ RootSignature::createRootConstantsParameter(const RootSignatureConfig& config) {
 D3D12_ROOT_PARAMETER
 RootSignature::createRootDescriptorParameter(const RootSignatureConfig& config) {
     D3D12_ROOT_PARAMETER param = {};
-    param.ParameterType = D3D12_ROOT_PARAMETER_TYPE_CBV; // (Âü°í: SRV, UAV ºĞ±â ÇÊ¿ä½Ã ¼öÁ¤)
+    param.ParameterType = D3D12_ROOT_PARAMETER_TYPE_CBV; // (ì°¸ê³ : SRV, UAV ë¶„ê¸° í•„ìš”ì‹œ ìˆ˜ì •)
     param.Descriptor.ShaderRegister = config.shaderRegister;
     param.Descriptor.RegisterSpace = config.registerSpace;
-    // param.Descriptor.Flags = config.descriptorFlags; (D3D12_ROOT_DESCRIPTOR1 »ç¿ë½Ã ÇÊ¿ä)
+    // param.Descriptor.Flags = config.descriptorFlags; (D3D12_ROOT_DESCRIPTOR1 ì‚¬ìš©ì‹œ í•„ìš”)
     return param;
 }
 } // namespace JEngine

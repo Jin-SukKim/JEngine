@@ -1,4 +1,4 @@
-#include "pch.h"
+ï»¿#include "pch.h"
 #include "Pipeline.h"
 #include "ShaderManager.h"
 
@@ -27,7 +27,7 @@ void Pipeline::CreatePSO(const PipelineConfig& config, ID3D12RootSignature* root
     psoDesc.PrimitiveTopologyType = config_.topologyType;
     psoDesc.NumRenderTargets = 1;
     psoDesc.RTVFormats[0] = config.rtvFormat;
-    // MSAA ºñÈ°¼ºÈ­ (¹é ¹öÆÛ¿Í ÀÏÄ¡)
+    // MSAA ë¹„í™œì„±í™” (ë°± ë²„í¼ì™€ ì¼ì¹˜)
     psoDesc.SampleDesc.Count = 1;
     psoDesc.SampleDesc.Quality = 0;
     psoDesc.DSVFormat = config.dsvFormat;

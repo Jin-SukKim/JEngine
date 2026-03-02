@@ -1,4 +1,4 @@
-#include "pch.h"
+ï»¿#include "pch.h"
 #include "Mesh.h"
 #include "Context.h"
 #include "GPUBuffer.h"
@@ -36,14 +36,14 @@ Mesh& Mesh::operator=(Mesh&& other) noexcept {
 }
 
 void Mesh::CreateBuffers(Context& ctx, ID3D12GraphicsCommandList* cmdList) {
-    // GPU ¹öÆÛ »ı¼º
+    // GPU ë²„í¼ ìƒì„±
     vertexBuffer_ = std::make_unique<GPUBuffer>(ctx);
     vertexBuffer_->CreateVertexBuffer(vertices_.size(), sizeof(Vertex));
 
     indexBuffer_ = std::make_unique<GPUBuffer>(ctx);
     indexBuffer_->CreateIndexBuffer(indices_.size(), sizeof(std::uint32_t));
 
-    // Staging Buffer¸¦ ÅëÇÑ µ¥ÀÌÅÍ º¹»ç
+    // Staging Bufferë¥¼ í†µí•œ ë°ì´í„° ë³µì‚¬
     vertexUploadBuffer_ = std::make_unique<UploadBuffer>(ctx);
     vertexUploadBuffer_->CreateStagingBuffer(vertices_.size(), sizeof(Vertex));
     vertexUploadBuffer_->CopyDataToBuffer(cmdList, *vertexBuffer_, vertices_.data());
@@ -52,7 +52,7 @@ void Mesh::CreateBuffers(Context& ctx, ID3D12GraphicsCommandList* cmdList) {
     indexUploadBuffer_->CreateStagingBuffer(indices_.size(), sizeof(std::uint32_t));
     indexUploadBuffer_->CopyDataToBuffer(cmdList, *indexBuffer_, indices_.data());
 
-    // View Ä³½Ì
+    // View ìºì‹±
     vertexBufferView_ = vertexBuffer_->CreateVertexBufferView(sizeof(Vertex));
     indexBufferView_ = indexBuffer_->CreateIndexBufferView(indexFormat_);
 }

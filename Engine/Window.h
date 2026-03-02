@@ -1,4 +1,4 @@
-#pragma once
+ï»¿#pragma once
 #include "pch.h"
 
 namespace JEngine {
@@ -43,12 +43,12 @@ class Window
   private:
     static Window* window_;
     HINSTANCE appInst_ = nullptr;
-    HWND mainWnd_ = nullptr;  // À©µµ¿ì ÇÚµé
-    UINT screenWidth_ = 1280; // È­¸é ³Êºñ
-    UINT screenHeight_ = 720; // È­¸é ³ôÀÌ
+    HWND mainWnd_ = nullptr;  // ìœˆë„ìš° í•¸ë“¤
+    UINT screenWidth_ = 1280; // í™”ë©´ ë„ˆë¹„
+    UINT screenHeight_ = 720; // í™”ë©´ ë†’ì´
     std::wstring mainWndCaption_;
 
-    bool appPaused_ = false; // ¾ÖÇÃ¸®ÄÉÀÌ¼Ç ÀÏ½ÃÁ¤Áö »óÅÂ
+    bool appPaused_ = false; // ì• í”Œë¦¬ì¼€ì´ì…˜ ì¼ì‹œì •ì§€ ìƒíƒœ
     bool minimized_ = false;
     bool maximized_ = false;
     bool resizing_ = false;

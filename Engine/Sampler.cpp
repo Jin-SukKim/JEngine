@@ -1,4 +1,4 @@
-#include "pch.h"
+ï»¿#include "pch.h"
 #include "Sampler.h"
 #include "Context.h"
 
@@ -11,22 +11,22 @@ Sampler::~Sampler() {
 
 void Sampler::CreateSampler(const SamplerConfig& config) {
     D3D12_SAMPLER_DESC samplerDesc = {};
-    samplerDesc.Filter = D3D12_FILTER_MIN_MAG_MIP_LINEAR; // Filter ¼³Á¤
-    // Address Mode ¼³Á¤ (Wrap, Clamp, Mirror, Border, Mirror_Once)
+    samplerDesc.Filter = D3D12_FILTER_MIN_MAG_MIP_LINEAR; // Filter ì„¤ì •
+    // Address Mode ì„¤ì • (Wrap, Clamp, Mirror, Border, Mirror_Once)
     samplerDesc.AddressU = D3D12_TEXTURE_ADDRESS_MODE_WRAP;
     samplerDesc.AddressV = D3D12_TEXTURE_ADDRESS_MODE_WRAP;
     samplerDesc.AddressW = D3D12_TEXTURE_ADDRESS_MODE_WRAP;
-    samplerDesc.MipLODBias = 0.0f;          // Mipmap LODÀÇ bias ¼³Á¤ (±âº»°ª 0.0f)
-    samplerDesc.MinLOD = 0.0f;              // ¼±ÅÃ °¡´ÉÇÑ ÃÖ¼Ò Mipmap Level
-    samplerDesc.MaxLOD = D3D12_FLOAT32_MAX; // ¼±ÅÃ °¡´ÉÇÑ ÃÖ´ë Mipmap Level
+    samplerDesc.MipLODBias = 0.0f;          // Mipmap LODì˜ bias ì„¤ì • (ê¸°ë³¸ê°’ 0.0f)
+    samplerDesc.MinLOD = 0.0f;              // ì„ íƒ ê°€ëŠ¥í•œ ìµœì†Œ Mipmap Level
+    samplerDesc.MaxLOD = D3D12_FLOAT32_MAX; // ì„ íƒ ê°€ëŠ¥í•œ ìµœëŒ€ Mipmap Level
     samplerDesc.MaxAnisotropy =
-        1; // ÃÖ´ë Anisotropy ¼³Á¤ ([1, 16] ¹üÀ§) - filter°¡ Anisotropic typeÀÏ ¶§¸¸ Àû¿ë
-    // Border Color ¼³Á¤ (Address Mode°¡ BorderÀÏ ¶§ »ç¿ë)
+        1; // ìµœëŒ€ Anisotropy ì„¤ì • ([1, 16] ë²”ìœ„) - filterê°€ Anisotropic typeì¼ ë•Œë§Œ ì ìš©
+    // Border Color ì„¤ì • (Address Modeê°€ Borderì¼ ë•Œ ì‚¬ìš©)
     samplerDesc.BorderColor[0] = 1.0f;
     samplerDesc.BorderColor[1] = 1.0f;
     samplerDesc.BorderColor[2] = 1.0f;
     samplerDesc.BorderColor[3] = 1.0f;
-    samplerDesc.ComparisonFunc = D3D12_COMPARISON_FUNC_ALWAYS; // Shadow Map µî¿¡ »ç¿ëµÈ Æ¯È­ ¿É¼Ç
+    samplerDesc.ComparisonFunc = D3D12_COMPARISON_FUNC_ALWAYS; // Shadow Map ë“±ì— ì‚¬ìš©ëœ íŠ¹í™” ì˜µì…˜
     DescriptorHandle samplerHandle = context_.GetDescriptorPool()->AllocateSampler();
     context_.GetDevice()->CreateSampler(&samplerDesc, samplerHandle.cpuHandle);
 

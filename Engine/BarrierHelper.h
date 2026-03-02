@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 
 namespace JEngine {
 class BarrierHelper
@@ -7,7 +7,7 @@ class BarrierHelper
     BarrierHelper() = default;
     ~BarrierHelper() = default;
 
-    // �̵� 
+    // 이동 
     BarrierHelper(BarrierHelper&& other) noexcept;
     BarrierHelper& operator=(BarrierHelper&& other) noexcept;
 

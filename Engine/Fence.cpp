@@ -1,12 +1,12 @@
-#include "pch.h"
+ï»¿#include "pch.h"
 #include "Fence.h"
 
 namespace JEngine {
 Fence::Fence(ID3D12Device* device, ID3D12CommandQueue* commandQueue)
     : commandQueue_(commandQueue) {
 
-    // Fence »ı¼º (CPU-GPU µ¿±âÈ­¿ë)
-    // - GPU ÀÛ¾÷ ¿Ï·á¸¦ CPU¿¡¼­ È®ÀÎÇÏ±â À§ÇÑ µ¿±âÈ­ °´Ã¼
+    // Fence ìƒì„± (CPU-GPU ë™ê¸°í™”ìš©)
+    // - GPU ì‘ì—… ì™„ë£Œë¥¼ CPUì—ì„œ í™•ì¸í•˜ê¸° ìœ„í•œ ë™ê¸°í™” ê°ì²´
     ThrowIfFailed(device->CreateFence(0, D3D12_FENCE_FLAG_NONE, IID_PPV_ARGS(&fence_)));
 
     fenceEvent_ = ::CreateEventEx(nullptr, nullptr, false, EVENT_ALL_ACCESS);
@@ -36,13 +36,13 @@ void Fence::Signal() {
 
 void Fence::WaitForGPU() {
     if (fenceValue_ == 0)
-        return; // ¾ÆÁ÷ SignalÀÌ ÇÑ¹øµµ È£ÃâµÇÁö ¾ÊÀ½
+        return; // ì•„ì§ Signalì´ í•œë²ˆë„ í˜¸ì¶œë˜ì§€ ì•ŠìŒ
 
-    // GPU°¡ ÇØ´ç Fence °ª¿¡ µµ´ŞÇÒ ¶§±îÁö ´ë±â
+    // GPUê°€ í•´ë‹¹ Fence ê°’ì— ë„ë‹¬í•  ë•Œê¹Œì§€ ëŒ€ê¸°
     if (fence_->GetCompletedValue() < fenceValue_) {
-        // Fence °ªÀÌ µµ´ŞÇÒ ¶§ ÀÌº¥Æ® ½ÅÈ£ ¹ß»ı
+        // Fence ê°’ì´ ë„ë‹¬í•  ë•Œ ì´ë²¤íŠ¸ ì‹ í˜¸ ë°œìƒ
         ThrowIfFailed(fence_->SetEventOnCompletion(fenceValue_, fenceEvent_));
-        // ÀÌº¥Æ® ´ë±â
+        // ì´ë²¤íŠ¸ ëŒ€ê¸°
         ::WaitForSingleObject(fenceEvent_, INFINITE);
     }
 }

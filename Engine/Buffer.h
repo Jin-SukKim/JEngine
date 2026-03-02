@@ -1,4 +1,4 @@
-#pragma once
+ï»¿#pragma once
 #include "Resource.h"
 #include "Context.h"
 
@@ -6,7 +6,7 @@ namespace JEngine {
 
 enum class BufferType { VERTEX, INDEX, CONSTANT, STAGING };
 
-// Buffer Àü¿ë Å¬·¡½º·Î Vertex, Index, Constant Buffer µîÀ» °ü¸®
+// Buffer ì „ìš© í´ë˜ìŠ¤ë¡œ Vertex, Index, Constant Buffer ë“±ì„ ê´€ë¦¬
 class Buffer : public Resource
 {
   public:

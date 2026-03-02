@@ -1,4 +1,4 @@
-#pragma once
+ï»¿#pragma once
 
 namespace JEngine {
 
@@ -34,17 +34,17 @@ class Model
     const DirectX::XMFLOAT4X4 GetWorldMatrix() const;
 
   private:
-    // TODO: ÇÏ³ªÀÇ ModelÀÇ ¸ğµç MeshÀÇ vertex, index buffer µîÀ» ÇÏ³ª·Î ÇÕÄ¡°í offsetÀ¸·Î
-    //       °ü¸®ÇØ bindingÀ» ÁÙ¿©¼­ buffer ÀüÈ¯ ºñ¿ë ÃÖÀûÈ­
-    // 	     SubMesh °³³äÀ¸·Î IndexCount, StartIndexLocation, BaseVertexLocation µî Á¤º¸¸¦ °¡Áö°í ÀÖÀ¸¸é µÊ
-    //       ex) unique_ptr<Mesh> mesh_; -> ÇÏ³ªÀÇ Mesh¿¡ ¸ğµç µ¥ÀÌÅÍ
-    //           std::vector<SubMesh> subMeshes_; -> °¢ SubMeshÀÇ Offset Á¤º¸µé
+    // TODO: í•˜ë‚˜ì˜ Modelì˜ ëª¨ë“  Meshì˜ vertex, index buffer ë“±ì„ í•˜ë‚˜ë¡œ í•©ì¹˜ê³  offsetìœ¼ë¡œ
+    //       ê´€ë¦¬í•´ bindingì„ ì¤„ì—¬ì„œ buffer ì „í™˜ ë¹„ìš© ìµœì í™”
+    // 	     SubMesh ê°œë…ìœ¼ë¡œ IndexCount, StartIndexLocation, BaseVertexLocation ë“± ì •ë³´ë¥¼ ê°€ì§€ê³  ìˆìœ¼ë©´ ë¨
+    //       ex) unique_ptr<Mesh> mesh_; -> í•˜ë‚˜ì˜ Meshì— ëª¨ë“  ë°ì´í„°
+    //           std::vector<SubMesh> subMeshes_; -> ê° SubMeshì˜ Offset ì •ë³´ë“¤
     std::vector<Mesh> meshes_;
 
-    // Model¿¡ ´ëÇÑ »ó¼ö ¹öÆÛ(world, ³ªÁß¿¡ animationÀº µû·Î skeleton class³ª animation class¸¦ ÅëÇØ boneº° matrix·Î °ü¸®)
+    // Modelì— ëŒ€í•œ ìƒìˆ˜ ë²„í¼(world, ë‚˜ì¤‘ì— animationì€ ë”°ë¡œ skeleton classë‚˜ animation classë¥¼ í†µí•´ boneë³„ matrixë¡œ ê´€ë¦¬)
     MeshConstants meshConst_;
 
-    // Frameº° »ó¼ö ¹öÆÛ
+    // Frameë³„ ìƒìˆ˜ ë²„í¼
     std::vector<UploadBuffer> constantBuffers_;
 };
 } // namespace JEngine

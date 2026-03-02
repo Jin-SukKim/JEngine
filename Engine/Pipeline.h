@@ -1,26 +1,26 @@
-#pragma once
+ï»¿#pragma once
 
 namespace JEngine {
 
 class ShaderManager;
 
-// ÆÄÀÌÇÁ¶óÀÎ ±¸¼º Á¤º¸
+// íŒŒì´í”„ë¼ì¸ êµ¬ì„± ì •ë³´
 // TODO: add parameters as needed
 struct PipelineConfig
 {
     std::string name;
 
-    // ÀÔ·Â ·¹ÀÌ¾Æ¿ô (ÀÓ½Ã °íÁ¤)
+    // ì…ë ¥ ë ˆì´ì•„ì›ƒ (ì„ì‹œ ê³ ì •)
     std::vector<D3D12_INPUT_ELEMENT_DESC> inputLayout = {
-        // À§Ä¡ (Position) ¼Ó¼º
+        // ìœ„ì¹˜ (Position) ì†ì„±
         {"POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0,
          D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0},
-        // »ö»ó (Color) ¼Ó¼º
+        // ìƒ‰ìƒ (Color) ì†ì„±
         {"COLOR", 0, DXGI_FORMAT_R32G32B32A32_FLOAT, 0, 12,
          D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0},
     };
 
-    // ·¡½ºÅÍ¶óÀÌÀú
+    // ë˜ìŠ¤í„°ë¼ì´ì €
     D3D12_FILL_MODE fillMode = D3D12_FILL_MODE_SOLID;
     D3D12_CULL_MODE cullMode = D3D12_CULL_MODE_BACK;
     BOOL frontCounterClockwise = FALSE;
@@ -33,14 +33,14 @@ struct PipelineConfig
     // Stencil
     BOOL stencilEnable = FALSE;
 
-    // ºí·»µù
-    // ... (Ãß°¡ ±¸¼º ¿É¼Ç ÇÊ¿ä ½Ã ¿©±â¿¡ Ãß°¡)
+    // ë¸”ë Œë”©
+    // ... (ì¶”ê°€ êµ¬ì„± ì˜µì…˜ í•„ìš” ì‹œ ì—¬ê¸°ì— ì¶”ê°€)
 
-    // Æ÷¸Ë
+    // í¬ë§·
     DXGI_FORMAT rtvFormat = DXGI_FORMAT_R8G8B8A8_UNORM;
     DXGI_FORMAT dsvFormat = DXGI_FORMAT_D24_UNORM_S8_UINT;
 
-    // ÅäÆú·ÎÁö
+    // í† í´ë¡œì§€
     D3D12_PRIMITIVE_TOPOLOGY_TYPE topologyType = D3D12_PRIMITIVE_TOPOLOGY_TYPE_TRIANGLE;
 };
 

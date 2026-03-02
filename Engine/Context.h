@@ -1,14 +1,14 @@
-#pragma once
+ï»¿#pragma once
 
-#include "pch.h" // ComPtr µîÀÌ Á¤ÀÇµÈ pch.h Æ÷ÇÔ
+#include "pch.h" // ComPtr ë“±ì´ ì •ì˜ëœ pch.h í¬í•¨
 #include "DescriptorPool.h"
 #include "CommandBuffer.h"
 
 namespace JEngine {
 
 class Window;
-/// Direct3D 12 ·»´õ¸µ ÄÁÅØ½ºÆ® °ü¸® Å¬·¡½º
-/// Device, Command Objects, Swap Chain, Descriptor Heaps µîÀ» °ü¸®
+/// Direct3D 12 ë Œë”ë§ ì»¨í…ìŠ¤íŠ¸ ê´€ë¦¬ í´ë˜ìŠ¤
+/// Device, Command Objects, Swap Chain, Descriptor Heaps ë“±ì„ ê´€ë¦¬
 class Context
 {
   public:
@@ -16,12 +16,12 @@ class Context
     ~Context();
     void Initialize();
 
-    void createDevice();              // D3D12 Device ¹× Factory »ı¼º
-    void createCommandObjects();      // Command Queue, Allocator, List »ı¼º
+    void createDevice();              // D3D12 Device ë° Factory ìƒì„±
+    void createCommandObjects();      // Command Queue, Allocator, List ìƒì„±
 
     void ExecuteCommands(ID3D12GraphicsCommandList* cmd);
 
-    //  Getter ÇÔ¼öµé 
+    //  Getter í•¨ìˆ˜ë“¤ 
     IDXGIFactory6* GetDXGIFactory() const;
 
     ID3D12Device* GetDevice() const;
@@ -34,11 +34,11 @@ class Context
   private:
     Window& window_;
     //  Core D3D12 Objects 
-    ComPtr<IDXGIFactory6> dxgiFactory_;         // DXGI Factory (Adapter, Swap Chain »ı¼º¿ë)
-    ComPtr<ID3D12Device> device_;               // D3D12 Device (¸®¼Ò½º »ı¼º ¹× °ü¸®)
+    ComPtr<IDXGIFactory6> dxgiFactory_;         // DXGI Factory (Adapter, Swap Chain ìƒì„±ìš©)
+    ComPtr<ID3D12Device> device_;               // D3D12 Device (ë¦¬ì†ŒìŠ¤ ìƒì„± ë° ê´€ë¦¬)
 
-    //  Command Objects (¸í·É ±â·Ï ¹× ½ÇÇà) 
-    ComPtr<ID3D12CommandQueue> commandQueue_;         // GPU¿¡ ¸í·É Á¦Ãâ¿ë Å¥
+    //  Command Objects (ëª…ë ¹ ê¸°ë¡ ë° ì‹¤í–‰) 
+    ComPtr<ID3D12CommandQueue> commandQueue_;         // GPUì— ëª…ë ¹ ì œì¶œìš© í
 
     std::unique_ptr<DescriptorPool> descriptorPool_;
 };

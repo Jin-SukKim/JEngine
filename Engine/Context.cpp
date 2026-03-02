@@ -1,4 +1,4 @@
-#include "pch.h"
+ï»¿#include "pch.h"
 #include "Context.h"
 #include "Application.h"
 #include "DescriptorPool.h"
@@ -31,14 +31,14 @@ void Context::createDevice() {
 
 #if defined(DEBUG) || defined(_DEBUG)
     {
-        // Debug ºôµå¿¡¼­ D3D12 µğ¹ö±× ·¹ÀÌ¾î È°¼ºÈ­
-        // - ·±Å¸ÀÓ ¿¡·¯ °ËÃâ ¹× °æ°í ¸Ş½ÃÁö Ãâ·Â
-        // - ¼º´É ÀúÇÏ°¡ ÀÖÀ¸¹Ç·Î Release ºôµå¿¡¼­´Â ºñÈ°¼ºÈ­
+        // Debug ë¹Œë“œì—ì„œ D3D12 ë””ë²„ê·¸ ë ˆì´ì–´ í™œì„±í™”
+        // - ëŸ°íƒ€ì„ ì—ëŸ¬ ê²€ì¶œ ë° ê²½ê³  ë©”ì‹œì§€ ì¶œë ¥
+        // - ì„±ëŠ¥ ì €í•˜ê°€ ìˆìœ¼ë¯€ë¡œ Release ë¹Œë“œì—ì„œëŠ” ë¹„í™œì„±í™”
         ComPtr<ID3D12Debug> debugController;
         ThrowIfFailed(::D3D12GetDebugInterface(IID_PPV_ARGS(&debugController)));
         debugController->EnableDebugLayer();
 
-        // DXGI µğ¹ö±× ·¹ÀÌ¾îµµ ÇÔ²² È°¼ºÈ­
+        // DXGI ë””ë²„ê·¸ ë ˆì´ì–´ë„ í•¨ê»˜ í™œì„±í™”
         dxgiFactoryFlags = DXGI_CREATE_FACTORY_DEBUG;
 
         LogInfo("D3D12 Debug Layer enabled for Debug build.");
@@ -47,21 +47,21 @@ void Context::createDevice() {
     LogInfo("Running in Release mode (Debug Layer disabled).");
 #endif
 
-    // DXGI Factory »ı¼º (DirectX 12 Ç¥ÁØ ¹æ½Ä)
-    // - Adapter ¿­°Å, Swap Chain »ı¼º µî¿¡ »ç¿ë
+    // DXGI Factory ìƒì„± (DirectX 12 í‘œì¤€ ë°©ì‹)
+    // - Adapter ì—´ê±°, Swap Chain ìƒì„± ë“±ì— ì‚¬ìš©
     LogInfo("Creating DXGI Factory...");
     ThrowIfFailed(::CreateDXGIFactory2(dxgiFactoryFlags, IID_PPV_ARGS(&dxgiFactory_)));
     LogInfo("DXGI Factory created successfully.");
 
-    // Hardware Device »ı¼º ½Ãµµ (¹°¸® GPU »ç¿ë)
+    // Hardware Device ìƒì„± ì‹œë„ (ë¬¼ë¦¬ GPU ì‚¬ìš©)
     LogInfo("Attempting to create hardware device...");
     HRESULT hr = ::D3D12CreateDevice(
-        nullptr,                    // nullptr = ±âº» Adapter (ÁÖ GPU)
-        D3D_FEATURE_LEVEL_12_2,     // Direct3D 12.0 ±â´É ·¹º§ ¿ä±¸
+        nullptr,                    // nullptr = ê¸°ë³¸ Adapter (ì£¼ GPU)
+        D3D_FEATURE_LEVEL_12_2,     // Direct3D 12.0 ê¸°ëŠ¥ ë ˆë²¨ ìš”êµ¬
         IID_PPV_ARGS(&device_));
 
-    // Hardware Device »ı¼º ½ÇÆĞ ½Ã WARP Device·Î Æú¹é
-    // WARP = Windows Advanced Rasterization Platform (¼ÒÇÁÆ®¿ş¾î ·»´õ·¯)
+    // Hardware Device ìƒì„± ì‹¤íŒ¨ ì‹œ WARP Deviceë¡œ í´ë°±
+    // WARP = Windows Advanced Rasterization Platform (ì†Œí”„íŠ¸ì›¨ì–´ ë Œë”ëŸ¬)
     if (FAILED(hr))
     {
         LogWarning("Hardware device creation failed (HRESULT: 0x{:X}). Falling back to WARP device.", static_cast<unsigned int>(hr));
@@ -70,7 +70,7 @@ void Context::createDevice() {
         ThrowIfFailed(dxgiFactory_->EnumWarpAdapter(IID_PPV_ARGS(&warpAdapter)));
 
         ThrowIfFailed(::D3D12CreateDevice(
-            warpAdapter.Get(),      // WARP Adapter »ç¿ë
+            warpAdapter.Get(),      // WARP Adapter ì‚¬ìš©
             D3D_FEATURE_LEVEL_12_2,
             IID_PPV_ARGS(&device_)));
         
@@ -87,8 +87,8 @@ void Context::createDevice() {
 void Context::createCommandObjects() {
     LogInfo(" Creating Command Objects ");
     
-    // Command Queue »ı¼º (GPU ¸í·É Á¦Ãâ¿ë Å¥)
-    // - Direct Queue = Graphics + Compute ¸í·É ½ÇÇà °¡´É
+    // Command Queue ìƒì„± (GPU ëª…ë ¹ ì œì¶œìš© í)
+    // - Direct Queue = Graphics + Compute ëª…ë ¹ ì‹¤í–‰ ê°€ëŠ¥
     D3D12_COMMAND_QUEUE_DESC queueDesc = {};
     queueDesc.Type = D3D12_COMMAND_LIST_TYPE_DIRECT;
     queueDesc.Flags = D3D12_COMMAND_QUEUE_FLAG_NONE;

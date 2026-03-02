@@ -1,22 +1,22 @@
-#include <Windows.h>
+ï»¿#include <Windows.h>
 #include "Engine/Application.h"
 
 int main() {
     try {
-        // 1. HINSTANCE °¡Á®¿À±â (ÇöÀç ÇÁ·Î¼¼½ºÀÇ ÀÎ½ºÅÏ½º ÇÚµé)
+        // 1. HINSTANCE ê°€ì ¸ì˜¤ê¸° (í˜„ì¬ í”„ë¡œì„¸ìŠ¤ì˜ ì¸ìŠ¤í„´ìŠ¤ í•¸ë“¤)
         HINSTANCE hInstance = GetModuleHandle(nullptr);
 
-        // 2. Context ÀÎ½ºÅÏ½º »ı¼º (Singleton ÆĞÅÏ)
+        // 2. Context ì¸ìŠ¤í„´ìŠ¤ ìƒì„± (Singleton íŒ¨í„´)
         JEngine::Application app(hInstance, L"JEngine");
 
-        // 3. DirectX 12 ¹× À©µµ¿ì ÃÊ±âÈ­
+        // 3. DirectX 12 ë° ìœˆë„ìš° ì´ˆê¸°í™”
         app.Initialize();
 
-        // 4. ¸Ş½ÃÁö ·çÇÁ ½ÇÇà (·»´õ¸µ ·çÇÁ)
+        // 4. ë©”ì‹œì§€ ë£¨í”„ ì‹¤í–‰ (ë Œë”ë§ ë£¨í”„)
         return app.Run();
 
     } catch (const std::exception& e) {
-        // ¿¹¿Ü ¹ß»ı ½Ã ¿¡·¯ ¸Ş½ÃÁö Ãâ·Â
+        // ì˜ˆì™¸ ë°œìƒ ì‹œ ì—ëŸ¬ ë©”ì‹œì§€ ì¶œë ¥
         MessageBoxA(nullptr, e.what(), "Initialization Error", MB_OK | MB_ICONERROR);
         return -1;
     }

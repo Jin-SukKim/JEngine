@@ -1,4 +1,4 @@
-#pragma once
+ï»¿#pragma once
 #include "Resource.h"
 
 namespace JEngine {
@@ -19,9 +19,9 @@ class Texture : public Resource
     Texture(Texture&& other) noexcept;
     Texture& operator=(Texture&& other) noexcept;
 
-    // RenderTarget »ı¼º
+    // RenderTarget ìƒì„±
     void CreateRenderTarget(DXGI_FORMAT format, UINT width, UINT height);
-    // SwapChainÀÇ BackBuffer¸¦ Resource·Î WrappingÇØ GPU¿¡¼­ »ç¿ë
+    // SwapChainì˜ BackBufferë¥¼ Resourceë¡œ Wrappingí•´ GPUì—ì„œ ì‚¬ìš©
     void WrapBackBuffer(DXGI_FORMAT format);
 
     void CreateDepthStencil(UINT width, UINT height);

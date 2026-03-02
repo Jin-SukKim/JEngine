@@ -1,4 +1,4 @@
-#include "pch.h"
+ï»¿#include "pch.h"
 #include "Timer.h"
 
 namespace JEngine {
@@ -19,21 +19,21 @@ Timer::Timer()
 }
 
 float Timer::TotalTime() const {
-    // Å¸ÀÌ¸Ó°¡ Á¤ÁöµÈ °æ¿ì:
+    // íƒ€ì´ë¨¸ê°€ ì •ì§€ëœ ê²½ìš°:
     //                     |<--paused time-->|
     // ----*---------------*-----------------*------------*------------*------> time
-    //  baseTime        stopTime         startTime      stopTime    (ÇöÀç)
+    //  baseTime        stopTime         startTime      stopTime    (í˜„ì¬)
     //
-    // ÃÑ ½Ã°£ = (Á¤Áö ½ÃÁ¡ - ½ÃÀÛ ½ÃÁ¡) - ´©Àû ÀÏ½ÃÁ¤Áö ½Ã°£
+    // ì´ ì‹œê°„ = (ì •ì§€ ì‹œì  - ì‹œì‘ ì‹œì ) - ëˆ„ì  ì¼ì‹œì •ì§€ ì‹œê°„
     if (stopped_) {
         return static_cast<float>(((stopTime_ - baseTime_) - pausedTime_) * secondsPerCount_);
     } 
-    // Å¸ÀÌ¸Ó°¡ ½ÇÇà ÁßÀÎ °æ¿ì:
+    // íƒ€ì´ë¨¸ê°€ ì‹¤í–‰ ì¤‘ì¸ ê²½ìš°:
     //                     |<--paused time-->|
     // ----*---------------*-----------------*------------*------> time
     //  baseTime        stopTime         startTime      curTime
     //
-    // ÃÑ ½Ã°£ = (ÇöÀç ½ÃÁ¡ - ½ÃÀÛ ½ÃÁ¡) - ´©Àû ÀÏ½ÃÁ¤Áö ½Ã°£
+    // ì´ ì‹œê°„ = (í˜„ì¬ ì‹œì  - ì‹œì‘ ì‹œì ) - ëˆ„ì  ì¼ì‹œì •ì§€ ì‹œê°„
     else {
         return static_cast<float>(((curTime_ - baseTime_) - pausedTime_) * secondsPerCount_);
     }
@@ -49,10 +49,10 @@ float Timer::FrameRate() const {
 
 void Timer::Reset() {
     LARGE_INTEGER curTime;
-    // ÇöÀç ¼º´É Ä«¿îÅÍ °ªÀ» °¡Á®¿É´Ï´Ù
+    // í˜„ì¬ ì„±ëŠ¥ ì¹´ìš´í„° ê°’ì„ ê°€ì ¸ì˜µë‹ˆë‹¤
     ::QueryPerformanceCounter(&curTime);
 
-    // ¸ğµç ½Ã°£ °ªÀ» ÇöÀç ½ÃÁ¡À¸·Î ÃÊ±âÈ­
+    // ëª¨ë“  ì‹œê°„ ê°’ì„ í˜„ì¬ ì‹œì ìœ¼ë¡œ ì´ˆê¸°í™”
     baseTime_ = curTime.QuadPart;
     prevTime_ = curTime.QuadPart;
     stopTime_ = 0;
@@ -69,22 +69,22 @@ void Timer::Start() {
     LARGE_INTEGER startTime;
     ::QueryPerformanceCounter(&startTime);
     
-    // ÀÏ½ÃÁ¤Áö »óÅÂ¿¡¼­ Àç°³ °¡´É
-    // Stop()°ú Start() »çÀÌÀÇ ½Ã°£À» ´©ÀûÇÕ´Ï´Ù
+    // ì¼ì‹œì •ì§€ ìƒíƒœì—ì„œ ì¬ê°œ ê°€ëŠ¥
+    // Stop()ê³¼ Start() ì‚¬ì´ì˜ ì‹œê°„ì„ ëˆ„ì í•©ë‹ˆë‹¤
     //
     //                     |<-------d------->|
     // ----*---------------*-----------------*------------> time
     //  baseTime        stopTime          startTime
     //
-    // d = ÀÏ½ÃÁ¤ÁöµÈ ½Ã°£ °£°İ
+    // d = ì¼ì‹œì •ì§€ëœ ì‹œê°„ ê°„ê²©
     if (stopped_) {
-        // ÀÌ¹ø ÀÏ½ÃÁ¤Áö ±¸°£ÀÇ ½Ã°£À» ´©Àû ÀÏ½ÃÁ¤Áö ½Ã°£¿¡ Ãß°¡
+        // ì´ë²ˆ ì¼ì‹œì •ì§€ êµ¬ê°„ì˜ ì‹œê°„ì„ ëˆ„ì  ì¼ì‹œì •ì§€ ì‹œê°„ì— ì¶”ê°€
         pausedTime_ += (startTime.QuadPart - stopTime_);
         
-        // ÀÌÀü ÇÁ·¹ÀÓ ½Ã°£À» Àç°³ ½ÃÁ¡À¸·Î ¼³Á¤ (µ¨Å¸Å¸ÀÓ °è»ê¿ë)
+        // ì´ì „ í”„ë ˆì„ ì‹œê°„ì„ ì¬ê°œ ì‹œì ìœ¼ë¡œ ì„¤ì • (ë¸íƒ€íƒ€ì„ ê³„ì‚°ìš©)
         prevTime_ = startTime.QuadPart;
         
-        // Á¤Áö ½ÃÁ¡ ÃÊ±âÈ­ ¹× ÇÃ·¡±× ÇØÁ¦
+        // ì •ì§€ ì‹œì  ì´ˆê¸°í™” ë° í”Œë˜ê·¸ í•´ì œ
         stopTime_ = 0;
         stopped_ = false;
 
@@ -94,7 +94,7 @@ void Timer::Start() {
 }
 
 void Timer::Stop() {
-    // ÀÌ¹Ì Á¤ÁöµÈ »óÅÂ°¡ ¾Æ´Ò ¶§¸¸ Á¤Áö
+    // ì´ë¯¸ ì •ì§€ëœ ìƒíƒœê°€ ì•„ë‹ ë•Œë§Œ ì •ì§€
     if (!stopped_) {
         LARGE_INTEGER stopTime;
         ::QueryPerformanceCounter(&stopTime);
@@ -115,19 +115,19 @@ void Timer::Tick() {
     ::QueryPerformanceCounter(&curTime);
     curTime_ = curTime.QuadPart;
 
-    // ÀÌÀü ÇÁ·¹ÀÓ°ú ÇöÀç ÇÁ·¹ÀÓ »çÀÌÀÇ ½Ã°£ Â÷ÀÌ¸¦ °è»ê (ÃÊ ´ÜÀ§)
+    // ì´ì „ í”„ë ˆì„ê³¼ í˜„ì¬ í”„ë ˆì„ ì‚¬ì´ì˜ ì‹œê°„ ì°¨ì´ë¥¼ ê³„ì‚° (ì´ˆ ë‹¨ìœ„)
     deltaTime_ = (curTime_ - prevTime_) * secondsPerCount_;
     
-    // ´ÙÀ½ ÇÁ·¹ÀÓÀ» À§ÇØ ÇöÀç ½Ã°£À» ÀúÀå
+    // ë‹¤ìŒ í”„ë ˆì„ì„ ìœ„í•´ í˜„ì¬ ì‹œê°„ì„ ì €ì¥
     prevTime_ = curTime_;
 
-    // ¿¹¿Ü »óÈ² Ã³¸®:
-    // GPU Àü¿ø Àı¾à ¸ğµå·Î ÀÎÇÑ DeltaTime À½¼ö ¹æÁö
+    // ì˜ˆì™¸ ìƒí™© ì²˜ë¦¬:
+    // GPU ì „ì› ì ˆì•½ ëª¨ë“œë¡œ ì¸í•œ DeltaTime ìŒìˆ˜ ë°©ì§€
     if (deltaTime_ < 0.0) {
         deltaTime_ = 0.0;
     }
 
-    // FPS °è»ê
+    // FPS ê³„ì‚°
     ++frameCount_;
     timeElapsed_ += static_cast<float>(deltaTime_);
 

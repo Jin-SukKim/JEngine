@@ -1,20 +1,20 @@
-#include "pch.h"
+Ôªø#include "pch.h"
 #include "DescriptorPool.h"
 
 namespace JEngine {
 
 DescriptorPool::DescriptorPool(ID3D12Device* device) : device_(device) {
-    // TODO: ¿œ¥‹ ∞Ì¡§µ» ∞≥ºˆ∑Œ √ ±‚»≠
+    // TODO: ÏùºÎã® Í≥†Ï†ïÎêú Í∞úÏàòÎ°ú Ï¥àÍ∏∞Ìôî
     heapAllocator_[D3D12_DESCRIPTOR_HEAP_TYPE_RTV] =
         std::make_unique<DescriptorHeap>(device_, 8, D3D12_DESCRIPTOR_HEAP_TYPE_RTV);
     heapAllocator_[D3D12_DESCRIPTOR_HEAP_TYPE_DSV] =
         std::make_unique<DescriptorHeap>(device_, 4, D3D12_DESCRIPTOR_HEAP_TYPE_DSV);
     heapAllocator_[D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV] =
         std::make_unique<DescriptorHeap>(device_, 1000, D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV,
-        D3D12_DESCRIPTOR_HEAP_FLAG_SHADER_VISIBLE); // Shaderø°º≠ ¡¢±Ÿ ∞°¥…«œµµ∑œ º≥¡§
+        D3D12_DESCRIPTOR_HEAP_FLAG_SHADER_VISIBLE); // ShaderÏóêÏÑú Ï†ëÍ∑º Í∞ÄÎä•ÌïòÎèÑÎ°ù ÏÑ§Ï†ï
     heapAllocator_[D3D12_DESCRIPTOR_HEAP_TYPE_SAMPLER] = std::make_unique<DescriptorHeap>(
         device_, 5, D3D12_DESCRIPTOR_HEAP_TYPE_SAMPLER,
-        D3D12_DESCRIPTOR_HEAP_FLAG_SHADER_VISIBLE); // Shaderø°º≠ ¡¢±Ÿ ∞°¥…«œµµ∑œ º≥¡§
+        D3D12_DESCRIPTOR_HEAP_FLAG_SHADER_VISIBLE); // ShaderÏóêÏÑú Ï†ëÍ∑º Í∞ÄÎä•ÌïòÎèÑÎ°ù ÏÑ§Ï†ï
     LogInfo("Descriptor Pool created.");
 }
 

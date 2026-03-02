@@ -1,4 +1,4 @@
-#pragma once
+ï»¿#pragma once
 #include "Context.h"
 
 namespace JEngine {
@@ -13,16 +13,16 @@ class Fence
     Fence& operator=(const Fence&) = delete;
 
     
-    Fence(Fence&& other) noexcept; // C++ ÄÁÅ×ÀÌ³Ê¿¡¼­ Å©±â¸¦ ¹Ù²Ü¶§ copy¸»°í move°¡ »ç¿ëµÇµµ·Ï noexcept ¼³Á¤
-    Fence& operator=(Fence&& other) noexcept = delete; // Referece member º¯¼ö°¡ ÀÖ±â ¶§¹®¿¡ ºñÈ°¼ºÈ­
+    Fence(Fence&& other) noexcept; // C++ ì»¨í…Œì´ë„ˆì—ì„œ í¬ê¸°ë¥¼ ë°”ê¿€ë•Œ copyë§ê³  moveê°€ ì‚¬ìš©ë˜ë„ë¡ noexcept ì„¤ì •
+    Fence& operator=(Fence&& other) noexcept = delete; // Referece member ë³€ìˆ˜ê°€ ìˆê¸° ë•Œë¬¸ì— ë¹„í™œì„±í™”
 
     void Signal();
     void WaitForGPU();
 
   private:
     ID3D12CommandQueue* commandQueue_;
-    ComPtr<ID3D12Fence> fence_ = nullptr; // CPU-GPU µ¿±âÈ­¿ë Fence
-    UINT64 fenceValue_ = 0;               // ÇöÀç Fence °ª ÃßÀû
-    HANDLE fenceEvent_ = nullptr;         // Fence ÀÌº¥Æ® ÇÚµé
+    ComPtr<ID3D12Fence> fence_ = nullptr; // CPU-GPU ë™ê¸°í™”ìš© Fence
+    UINT64 fenceValue_ = 0;               // í˜„ì¬ Fence ê°’ ì¶”ì 
+    HANDLE fenceEvent_ = nullptr;         // Fence ì´ë²¤íŠ¸ í•¸ë“¤
 };
 } // namespace JEngine

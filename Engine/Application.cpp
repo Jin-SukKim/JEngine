@@ -1,4 +1,4 @@
-#include "pch.h"
+ï»¿#include "pch.h"
 #include "Application.h"
 #include "Vertex.h"
 #include "GeometryGenerator.h"
@@ -36,14 +36,14 @@ int Application::Run() {
 
     LogInfo(" Entering Main Message Loop ");
     while (msg.message != WM_QUIT) {
-        // ¸Ş½ÃÁö Ã³¸®
+        // ë©”ì‹œì§€ ì²˜ë¦¬
         if (::PeekMessage(&msg, 0, 0, 0, PM_REMOVE)) {
             ::TranslateMessage(&msg);
             ::DispatchMessage(&msg);
         } else {
             timer_.Tick();
 
-            // ¾ÖÇÃ¸®ÄÉÀÌ¼ÇÀÌ È°¼º »óÅÂÀÏ ¶§¸¸ ¾÷µ¥ÀÌÆ® ¹× ·»´õ¸µ
+            // ì• í”Œë¦¬ì¼€ì´ì…˜ì´ í™œì„± ìƒíƒœì¼ ë•Œë§Œ ì—…ë°ì´íŠ¸ ë° ë Œë”ë§
             if (!window_.IsPaused()) {
                 int frameIdx = swapChain_.GetCurrentBackBufferIndex();
 
@@ -54,7 +54,7 @@ int Application::Run() {
 
                 renderer_.ApplyViewport(cmdList);
 
-                // World Matrix ¾÷µ¥ÀÌÆ® (¾ÖÇÃ¸®ÄÉÀÌ¼Ç ·ÎÁ÷)
+                // World Matrix ì—…ë°ì´íŠ¸ (ì• í”Œë¦¬ì¼€ì´ì…˜ ë¡œì§)
                 using namespace DirectX;
                 float rotationAngle = timer_.TotalTime() * 0.5f;
                 XMMATRIX world = XMMatrixRotationZ(rotationAngle * 0.3f) *
@@ -68,17 +68,17 @@ int Application::Run() {
 
                 cmdBuffer.EndRecording();
 
-                // Command Queue¿¡ Á¦Ãâ
+                // Command Queueì— ì œì¶œ
                 context_.ExecuteCommands(cmdList);
 
-                // È­¸é¿¡ Ç¥½Ã (Swap Chain Present)
+                // í™”ë©´ì— í‘œì‹œ (Swap Chain Present)
                 swapChain_.Present();
 
                 frameFence_[frameIdx].Signal();
 
-                // ´Ù¸¥ CPU ÀÛ¾÷ ¼öÇà °¡´É
+                // ë‹¤ë¥¸ CPU ì‘ì—… ìˆ˜í–‰ ê°€ëŠ¥
             } else {
-                Sleep(100); // ºñÈ°¼º »óÅÂ¿¡¼­´Â CPU »ç¿ë·® °¨¼Ò¸¦ À§ÇØ Àá½Ã ´ë±â
+                Sleep(100); // ë¹„í™œì„± ìƒíƒœì—ì„œëŠ” CPU ì‚¬ìš©ëŸ‰ ê°ì†Œë¥¼ ìœ„í•´ ì ì‹œ ëŒ€ê¸°
             }
         }
     }
@@ -87,14 +87,14 @@ int Application::Run() {
 }
 
 void Application::OnResize() {
-    // Resource¿¡ º¯È­¸¦ ÁÖ±â Àü¿¡ GPU°¡ ¸ğµç ÀÛ¾÷À» ¿Ï·áÇÏµµ·Ï ´ë±â
+    // Resourceì— ë³€í™”ë¥¼ ì£¼ê¸° ì „ì— GPUê°€ ëª¨ë“  ì‘ì—…ì„ ì™„ë£Œí•˜ë„ë¡ ëŒ€ê¸°
     for (Fence& fence : frameFence_)
         fence.WaitForGPU();
 
     swapChain_.Resize();
     renderer_.Resize();
 
-    // Viewport ¹× Scissor Rect Àç¼³Á¤
+    // Viewport ë° Scissor Rect ì¬ì„¤ì •
     renderer_.UpdateViewport();
 
     LogInfo("Resize complete.");
@@ -124,7 +124,7 @@ void Application::InitFences() {
 }
 
 void Application::InitScene() {
-    // Ä«¸Ş¶ó ÃÊ±âÈ­
+    // ì¹´ë©”ë¼ ì´ˆê¸°í™”
     float theta = 1.5f * DirectX::XM_PI;
     float phi = DirectX::XM_PIDIV4;
     float radius = 5.0f;

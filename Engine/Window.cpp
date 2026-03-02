@@ -1,4 +1,4 @@
-#include "pch.h"
+Ôªø#include "pch.h"
 #include "Window.h"
 
 LRESULT CALLBACK MainWndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam) {
@@ -11,7 +11,7 @@ Window* Window::window_ = nullptr;
 
 Window::Window(HINSTANCE hinstance, std::wstring name)
     : appInst_(hinstance), mainWndCaption_(name) {
-    // 1∞≥¿« Window ¿ŒΩ∫≈œΩ∫∏∏ ¡∏¿Á«œµµ∑œ º≥¡§
+    // 1Í∞úÏùò Window Ïù∏Ïä§ÌÑ¥Ïä§Îßå Ï°¥Ïû¨ÌïòÎèÑÎ°ù ÏÑ§Ï†ï
     if (window_ != nullptr) {
         ExitWithMessage("Main Window instance already exists!");
     }
@@ -101,7 +101,7 @@ LRESULT Window::MsgProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam) {
                 // OnResize();
             } else if (resizing_) {
                 // Resizing by the user. Wait until the user is done resizing.
-                // WM_ENTERSIZEMOVEøÕ WM_EXITSIZEMOVEø°º≠ √≥∏Æ.
+                // WM_ENTERSIZEMOVEÏôÄ WM_EXITSIZEMOVEÏóêÏÑú Ï≤òÎ¶¨.
             } else {
                 // OnResize();
             }

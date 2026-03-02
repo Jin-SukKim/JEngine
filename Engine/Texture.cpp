@@ -1,4 +1,4 @@
-#include "pch.h"
+ï»¿#include "pch.h"
 #include "Texture.h"
 #include "Context.h"
 #include "UploadBuffer.h"
@@ -42,7 +42,7 @@ void Texture::CreateRenderTarget(DXGI_FORMAT format, UINT width, UINT height) {
                     1, 1, D3D12_RESOURCE_FLAG_ALLOW_RENDER_TARGET, D3D12_RESOURCE_STATE_RENDER_TARGET,
                     &clearValue);
 
-    // Render Target View »ı¼º
+    // Render Target View ìƒì„±
     DescriptorHandle handle = context_.GetDescriptorPool()->AllocateRTV();
     context_.GetDevice()->CreateRenderTargetView(resource_.Get(), nullptr, handle.cpuHandle);
     SetDescriptorHandle(static_cast<int>(TextureUsage::RTV), handle);
@@ -61,11 +61,11 @@ void Texture::WrapBackBuffer(DXGI_FORMAT format) {
 }
 
 void Texture::CreateDepthStencil(UINT width, UINT height) {
-    // Optimized Clear Value ¼³Á¤ (¼º´É ÃÖÀûÈ­)
-    // - GPU°¡ Clear ÀÛ¾÷À» ºü¸£°Ô ¼öÇàÇÏµµ·Ï ÈùÆ® Á¦°ø
+    // Optimized Clear Value ì„¤ì • (ì„±ëŠ¥ ìµœì í™”)
+    // - GPUê°€ Clear ì‘ì—…ì„ ë¹ ë¥´ê²Œ ìˆ˜í–‰í•˜ë„ë¡ íŒíŠ¸ ì œê³µ
     D3D12_CLEAR_VALUE optClear = {};
-    optClear.Format = DXGI_FORMAT_D24_UNORM_S8_UINT; // Depth(24ºñÆ®) + Stencil(8ºñÆ®)
-    optClear.DepthStencil.Depth = 1.0f;              // ÃÖ´ë ±íÀÌ (¸Õ °Å¸®)
+    optClear.Format = DXGI_FORMAT_D24_UNORM_S8_UINT; // Depth(24ë¹„íŠ¸) + Stencil(8ë¹„íŠ¸)
+    optClear.DepthStencil.Depth = 1.0f;              // ìµœëŒ€ ê¹Šì´ (ë¨¼ ê±°ë¦¬)
     optClear.DepthStencil.Stencil = 0;
 
     CreateTexture2D(TextureType::DEPTH_STENCIL, width, height, D3D12_HEAP_TYPE_DEFAULT,
@@ -73,15 +73,15 @@ void Texture::CreateDepthStencil(UINT width, UINT height) {
                     D3D12_RESOURCE_STATE_DEPTH_WRITE, &optClear);
     LogInfo("Depth Stencil Buffer created.");
 
-    // DSV Description ¼³Á¤
+    // DSV Description ì„¤ì •
     D3D12_DEPTH_STENCIL_VIEW_DESC dsvDesc = {};
     dsvDesc.Flags = D3D12_DSV_FLAG_NONE;
-    dsvDesc.ViewDimension = D3D12_DSV_DIMENSION_TEXTURE2D; // 2D ÅØ½ºÃ³
+    dsvDesc.ViewDimension = D3D12_DSV_DIMENSION_TEXTURE2D; // 2D í…ìŠ¤ì²˜
     dsvDesc.Format = DXGI_FORMAT_D24_UNORM_S8_UINT;        // D24_UNORM_S8_UINT
     dsvDesc.Texture2D.MipSlice = 0;
 
 
-    // HeapÀÇ ½ÃÀÛ À§Ä¡¿¡ DSV »ı¼º
+    // Heapì˜ ì‹œì‘ ìœ„ì¹˜ì— DSV ìƒì„±
     DescriptorHandle handle = context_.GetDescriptorPool()->AllocateDSV();
     context_.GetDevice()->CreateDepthStencilView(resource_.Get(), &dsvDesc, handle.cpuHandle);
     SetDescriptorHandle(static_cast<int>(TextureUsage::DSV), handle);
@@ -98,7 +98,7 @@ void Texture::CreateDDSFromFile(const std::wstring& filename) {
 
     uploadBatch.End(context_.GetCommandQueue());
     
-    // ¸®¼Ò½º Á¤º¸ ¼³Á¤
+    // ë¦¬ì†ŒìŠ¤ ì •ë³´ ì„¤ì •
     auto desc = resource_->GetDesc();
     type_ = TextureType::TEXTURE2D;
     width_ = static_cast<UINT>(desc.Width);
@@ -109,25 +109,25 @@ void Texture::CreateDDSFromFile(const std::wstring& filename) {
 
 void Texture::CreateTextureFromFile(const std::wstring& filename,
                                     ID3D12GraphicsCommandList* cmdList) {
-    // TODO: WIC¸¦ »ç¿ëÇÏ¿© ÀÌ¹ÌÁö ·Îµå
+    // TODO: WICë¥¼ ì‚¬ìš©í•˜ì—¬ ì´ë¯¸ì§€ ë¡œë“œ
 }
 
 void Texture::CreateSRV() {
-    // TODO: Format°ú MipLevelsÀ» Á÷Á¢ ¼³Á¤ÇØ »ç¿ëÇÏ´Â ¹æ½ÄÀ¸·Î ¼öÁ¤ 
-    // (Resource³ª Texture¿¡ Config ±¸Á¶Ã¼¸¦ ¸¸µé¾î¼­ »ç¿ëÇÏ´Â ¹æ½ÄÀ¸·Î Resource¿Í Texture Å¬·¡½º ¼öÁ¤)
+    // TODO: Formatê³¼ MipLevelsì„ ì§ì ‘ ì„¤ì •í•´ ì‚¬ìš©í•˜ëŠ” ë°©ì‹ìœ¼ë¡œ ìˆ˜ì • 
+    // (Resourceë‚˜ Textureì— Config êµ¬ì¡°ì²´ë¥¼ ë§Œë“¤ì–´ì„œ ì‚¬ìš©í•˜ëŠ” ë°©ì‹ìœ¼ë¡œ Resourceì™€ Texture í´ë˜ìŠ¤ ìˆ˜ì •)
 
-    // Resource config structure¸¦ ¸¸µé¾î¼­ »ç¿ëÇÏ´Â ¹æ½ÄÀ¸·Î Resource¿Í Texture Å¬·¡½º ¼öÁ¤
+    // Resource config structureë¥¼ ë§Œë“¤ì–´ì„œ ì‚¬ìš©í•˜ëŠ” ë°©ì‹ìœ¼ë¡œ Resourceì™€ Texture í´ë˜ìŠ¤ ìˆ˜ì •
     D3D12_SHADER_RESOURCE_VIEW_DESC srvDesc = {};
-    srvDesc.Format = GetDesc().Format; // ResourceÀÇ format
+    srvDesc.Format = GetDesc().Format; // Resourceì˜ format
     srvDesc.ViewDimension = D3D12_SRV_DIMENSION_TEXTURE2D;
-    // Shader¿¡¼­ TextureÀÇ °ªÀ» °¡Á®¿Ã¶§ RGBA ¼ø¼­¸¦ ÁöÁ¤
+    // Shaderì—ì„œ Textureì˜ ê°’ì„ ê°€ì ¸ì˜¬ë•Œ RGBA ìˆœì„œë¥¼ ì§€ì •
     srvDesc.Shader4ComponentMapping =
-        D3D12_DEFAULT_SHADER_4_COMPONENT_MAPPING; // RGBA·Î Á¢±ÙÇÏµµ·Ï ¼³Á¤
-    srvDesc.Texture2D.MostDetailedMip = 0;        //  °¡Àå »ó¼¼ÇÑ Mipmap ·¹º§
-    srvDesc.Texture2D.MipLevels = GetDesc().MipLevels; // ¸ğµç Mipmap ·¹º§ »ç¿ë
-    // Æ¯Á¤ ÀÚ¿ø Çü½Ä¿¡¼­´Â ÀÌ¹ÌÁö°¡ ¿©·¯ °³ÀÇ Æò¸éÀ¸·Î ±¸¼ºµÉ ¼ö ÀÖÀ½
-    srvDesc.Texture2D.PlaneSlice = 0; // ±âº»Àº 0
-    srvDesc.Texture2D.ResourceMinLODClamp = 0.0f; // Á¢±Ù °¡´ÉÇÑ ÃÖ¼Ò Mipmap Level
+        D3D12_DEFAULT_SHADER_4_COMPONENT_MAPPING; // RGBAë¡œ ì ‘ê·¼í•˜ë„ë¡ ì„¤ì •
+    srvDesc.Texture2D.MostDetailedMip = 0;        //  ê°€ì¥ ìƒì„¸í•œ Mipmap ë ˆë²¨
+    srvDesc.Texture2D.MipLevels = GetDesc().MipLevels; // ëª¨ë“  Mipmap ë ˆë²¨ ì‚¬ìš©
+    // íŠ¹ì • ìì› í˜•ì‹ì—ì„œëŠ” ì´ë¯¸ì§€ê°€ ì—¬ëŸ¬ ê°œì˜ í‰ë©´ìœ¼ë¡œ êµ¬ì„±ë  ìˆ˜ ìˆìŒ
+    srvDesc.Texture2D.PlaneSlice = 0; // ê¸°ë³¸ì€ 0
+    srvDesc.Texture2D.ResourceMinLODClamp = 0.0f; // ì ‘ê·¼ ê°€ëŠ¥í•œ ìµœì†Œ Mipmap Level
 
     DescriptorHandle handle = context_.GetDescriptorPool()->AllocateSRV();
     context_.GetDevice()->CreateShaderResourceView(resource_.Get(), &srvDesc, handle.cpuHandle);
@@ -173,10 +173,10 @@ void Texture::CreateTexture2D(TextureType type, UINT width, UINT height, D3D12_H
 
     D3D12_HEAP_PROPERTIES heapProps = CreateHeapProperties(heapType);
 
-    // Texture´Â ±âº»ÀûÀ¸·Î 2D·Î »ı¼º
+    // TextureëŠ” ê¸°ë³¸ì ìœ¼ë¡œ 2Dë¡œ ìƒì„±
     D3D12_RESOURCE_DESC desc =
         CreateResourceDesc(D3D12_RESOURCE_DIMENSION_TEXTURE2D, width, height, depthOrArraySize /*depth*/,
-                           mipLevels /*mipLevels*/, // ÇöÀç MipmalÀ» »ç¿ë¾ÈÇÏÁö¸¸ ÃßÈÄ º¯°æ
+                           mipLevels /*mipLevels*/, // í˜„ì¬ Mipmalì„ ì‚¬ìš©ì•ˆí•˜ì§€ë§Œ ì¶”í›„ ë³€ê²½
                            format, D3D12_TEXTURE_LAYOUT_UNKNOWN, flags);
 
     CreateCommittedResource(heapProps, D3D12_HEAP_FLAG_NONE, desc, initialState, clearValue);

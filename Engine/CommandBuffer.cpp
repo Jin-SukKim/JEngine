@@ -1,23 +1,23 @@
-#include "pch.h"
+ï»¿#include "pch.h"
 #include "CommandBuffer.h"
 
 namespace JEngine {
 
 CommandBuffer::CommandBuffer(ID3D12Device* device) {
-    // Command Allocator »ý¼º (Command ListÀÇ ¸Þ¸ð¸® °ü¸®ÀÚ)
+    // Command Allocator ìƒì„± (Command Listì˜ ë©”ëª¨ë¦¬ ê´€ë¦¬ìž)
     ThrowIfFailed(device->CreateCommandAllocator(D3D12_COMMAND_LIST_TYPE_DIRECT,
                                                   IID_PPV_ARGS(commandAllocator_.GetAddressOf())));
     LogInfo("Command Allocator created: {:p}", (void*)commandAllocator_.Get());
 
-    // Command List »ý¼º (·»´õ¸µ ¸í·É ±â·Ï¿ë)
+    // Command List ìƒì„± (ë Œë”ë§ ëª…ë ¹ ê¸°ë¡ìš©)
     ThrowIfFailed(device->CreateCommandList(0, // Single GPU
                                              D3D12_COMMAND_LIST_TYPE_DIRECT,
                                              commandAllocator_.Get(),
-                                             nullptr, // ÃÊ±â Pipeline State ¾øÀ½
+                                             nullptr, // ì´ˆê¸° Pipeline State ì—†ìŒ
                                              IID_PPV_ARGS(commandList_.GetAddressOf())));
     LogInfo("Graphics Command List created: {:p}", (void*)commandList_.Get());
 
-    // Command List¸¦ ´ÝÀº »óÅÂ·Î ÃÊ±âÈ­
+    // Command Listë¥¼ ë‹«ì€ ìƒíƒœë¡œ ì´ˆê¸°í™”
     commandList_->Close();
     LogInfo("Command List closed and ready for recording commands.");
 }

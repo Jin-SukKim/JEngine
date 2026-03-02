@@ -1,16 +1,16 @@
-#include "pch.h"
+ï»¿#include "pch.h"
 #include "Camera.h"
 
 namespace JEngine {
 
 Camera::Camera(CameraType type) : type_(type) {
-    // Identity matrix·Î ÃÊ±âÈ­
+    // Identity matrixë¡œ ì´ˆê¸°í™”
     DirectX::XMStoreFloat4x4(&matrices.view_, DirectX::XMMatrixIdentity());
     DirectX::XMStoreFloat4x4(&matrices.perspective_, DirectX::XMMatrixIdentity());
 
     LogInfo("Camera Created.");
 
-    // ÀÓ½Ã Camera À§Ä¡
+    // ì„ì‹œ Camera ìœ„ì¹˜
     static float theta = 1.5f * DirectX::XM_PI;
     static float phi = DirectX::XM_PIDIV4;
     static float radius = 5.0f;
@@ -30,7 +30,7 @@ void Camera::Update() {
     pos = DirectX::XMVectorSetW(pos, 1.0f);
     DirectX::XMVECTOR up = DirectX::XMLoadFloat3(&up_);
 
-    // TODO: ÀÓ½Ã Target
+    // TODO: ì„ì‹œ Target
     DirectX::XMVECTOR target = DirectX::XMVectorZero();
 
     DirectX::XMMATRIX view = DirectX::XMMatrixLookAtLH(pos, target, up);
@@ -65,7 +65,7 @@ void Camera::SetRotation(const DirectX::XMFLOAT3& rotation) {
 }
 
 void Camera::SetRotation(float pitch, float yaw, float roll) {
-    // ÇÇÄ¡ °¢µµ¸¦ -90µµ¿¡¼­ +90µµ »çÀÌ·Î Á¦ÇÑ
+    // í”¼ì¹˜ ê°ë„ë¥¼ -90ë„ì—ì„œ +90ë„ ì‚¬ì´ë¡œ ì œí•œ
     static float maxPitch = DirectX::XM_PIDIV2 - 0.01f;
     rotation_.x = std::clamp(pitch, -maxPitch, maxPitch);
     rotation_.y = yaw;

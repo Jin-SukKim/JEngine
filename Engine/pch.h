@@ -1,4 +1,4 @@
-#pragma once
+Ôªø#pragma once
 
 #include <memory>
 #include <Windows.h>
@@ -9,7 +9,7 @@
 #include <array>
 #include <algorithm>
 
-// DirectX 12 «Ï¥ı
+// DirectX 12 Ìó§Îçî
 #include <d3d12.h>
 #include <dxgi1_6.h>
 #include <d3dcompiler.h>

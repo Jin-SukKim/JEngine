@@ -1,4 +1,4 @@
-#pragma once
+ï»¿#pragma once
 
 namespace JEngine {
 
@@ -40,11 +40,11 @@ class Mesh
     std::unique_ptr<GPUBuffer> vertexBuffer_;
     std::unique_ptr<GPUBuffer> indexBuffer_;
 
-    // View Ä³½Ì¿ë ¸â¹ö º¯¼ö
+    // View ìºì‹±ìš© ë©¤ë²„ ë³€ìˆ˜
     D3D12_VERTEX_BUFFER_VIEW vertexBufferView_{};
     D3D12_INDEX_BUFFER_VIEW indexBufferView_{};
 
-    // ÃÊ±âÈ­ Áß¿¡¸¸ »ç¿ëµÇ´Â ¾÷·Îµå ¹öÆÛ (GPU ÀÛ¾÷ ¿Ï·á ÈÄ ÇØÁ¦) - TODO: Mesh¿¡¼­ ÀÓ½Ã·Î »ı¼ºÇØ¼­ »ç¿ëÇÏ´Â°Å Å×½ºÆ® ÇØº¸±â
+    // ì´ˆê¸°í™” ì¤‘ì—ë§Œ ì‚¬ìš©ë˜ëŠ” ì—…ë¡œë“œ ë²„í¼ (GPU ì‘ì—… ì™„ë£Œ í›„ í•´ì œ) - TODO: Meshì—ì„œ ì„ì‹œë¡œ ìƒì„±í•´ì„œ ì‚¬ìš©í•˜ëŠ”ê±° í…ŒìŠ¤íŠ¸ í•´ë³´ê¸°
     std::unique_ptr<UploadBuffer> vertexUploadBuffer_;
     std::unique_ptr<UploadBuffer> indexUploadBuffer_;
 

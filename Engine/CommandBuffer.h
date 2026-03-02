@@ -1,20 +1,20 @@
-#pragma once
+ï»¿#pragma once
 
 namespace JEngine {
 
-// TODO: Command°¡ Multi-Thread¸¦ Áö¿øÇÒ ¼ö ÀÖµµ·Ï ³ªÁß¿¡ º¯°æ
-// TODO: Factory PatternÀ¸·Î CommandListÀÇ Á¾·ù°¡ ´Ş¶óÁö¸é Æí¸®ÇÏ°Ô È®Àå °¡´ÉÇÏµµ·Ï º¯°æ
+// TODO: Commandê°€ Multi-Threadë¥¼ ì§€ì›í•  ìˆ˜ ìˆë„ë¡ ë‚˜ì¤‘ì— ë³€ê²½
+// TODO: Factory Patternìœ¼ë¡œ CommandListì˜ ì¢…ë¥˜ê°€ ë‹¬ë¼ì§€ë©´ í¸ë¦¬í•˜ê²Œ í™•ì¥ ê°€ëŠ¥í•˜ë„ë¡ ë³€ê²½
 class CommandBuffer
 {
   public:
     CommandBuffer(ID3D12Device* device);
     ~CommandBuffer();
 
-    // º¹»ç ¹æÁö
+    // ë³µì‚¬ ë°©ì§€
     CommandBuffer(const CommandBuffer&) = delete;
     CommandBuffer& operator=(const CommandBuffer&) = delete;
 
-    // ÀÌµ¿ »ı¼ºÀÚ ¹× ´ëÀÔ ¿¬»êÀÚ Ãß°¡
+    // ì´ë™ ìƒì„±ì ë° ëŒ€ì… ì—°ì‚°ì ì¶”ê°€
     CommandBuffer(CommandBuffer&& other) noexcept 
         : commandAllocator_(std::move(other.commandAllocator_)),
           commandList_(std::move(other.commandList_)) {}
@@ -30,8 +30,8 @@ class CommandBuffer
     ID3D12GraphicsCommandList* BeginRecording(ID3D12PipelineState* pso = nullptr);
     void EndRecording();
   private:
-    ComPtr<ID3D12CommandAllocator> commandAllocator_; // Command BufferÀÇ ¸Ş¸ğ¸®
-    ComPtr<ID3D12GraphicsCommandList> commandList_;   // ·»´õ¸µ ¸í·É ±â·Ï¿ë List
+    ComPtr<ID3D12CommandAllocator> commandAllocator_; // Command Bufferì˜ ë©”ëª¨ë¦¬
+    ComPtr<ID3D12GraphicsCommandList> commandList_;   // ë Œë”ë§ ëª…ë ¹ ê¸°ë¡ìš© List
 };
 
 } // namespace JEngine

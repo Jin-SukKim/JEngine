@@ -1,4 +1,4 @@
-#pragma once
+ï»¿#pragma once
 
 namespace JEngine {
     using namespace DirectX;
@@ -9,15 +9,15 @@ struct MeshConstants
     XMFLOAT4X4 invWorld= XMFLOAT4X4();
 };
 
-// TODO: ¿©·¯ TypeÀÇ light Áö¿ø
-// ÇöÀç´Â Directional light ¸¸ Áö¿ø
+// TODO: ì—¬ëŸ¬ Typeì˜ light ì§€ì›
+// í˜„ì¬ëŠ” Directional light ë§Œ ì§€ì›
 struct LightConstants
 {
     XMFLOAT3 directionalLightDirection = XMFLOAT3();
     float padding1 = 0.f;
     XMFLOAT3 directionalLightColor = XMFLOAT3();
     float padding2 = 0.f;
-    XMFLOAT4X4 lightViewProj = XMFLOAT4X4(); // Shadow mapping ¿ë
+    XMFLOAT4X4 lightViewProj = XMFLOAT4X4(); // Shadow mapping ìš©
 };
 
 struct SceneConstants
@@ -28,7 +28,7 @@ struct SceneConstants
     XMFLOAT4X4 invProj = XMFLOAT4X4();
     XMFLOAT4X4 viewProj = XMFLOAT4X4();
     XMFLOAT4X4 invViewProj = XMFLOAT4X4();
-    XMFLOAT3 eyeWorld = XMFLOAT3(); // Cameara À§Ä¡
+    XMFLOAT3 eyeWorld = XMFLOAT3(); // Cameara ìœ„ì¹˜
     float padding1 = 0.f;
 
     //LightConstants light = LightConstants();
