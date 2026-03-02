@@ -13,17 +13,17 @@ Buffer::~Buffer() {
 Buffer::Buffer(Buffer&& other) noexcept
     : Resource(std::move(other)), 
       elementByteSize_(other.elementByteSize_), 
-      elementCount_(other.elementCount_),  // ⭐ 추가
+      elementCount_(other.elementCount_),  //  추가
       type_(other.type_) {
     other.elementByteSize_ = 0;
-    other.elementCount_ = 0;  // ⭐ 추가
+    other.elementCount_ = 0;  //  추가
 }
 
 Buffer& Buffer::operator=(Buffer&& other) noexcept {
     if (this != &other) {
         Resource::operator=(std::move(other));
         elementByteSize_ = other.elementByteSize_;
-        elementCount_ = other.elementCount_;  // ⭐ 추가
+        elementCount_ = other.elementCount_;  //  추가
         type_ = other.type_;
 
         other.Reset();

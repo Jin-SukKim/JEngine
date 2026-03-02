@@ -2,6 +2,7 @@
 
 namespace JEngine {
 
+// TODO: Command가 Multi-Thread를 지원할 수 있도록 나중에 변경
 // TODO: Factory Pattern으로 CommandList의 종류가 달라지면 편리하게 확장 가능하도록 변경
 class CommandBuffer
 {

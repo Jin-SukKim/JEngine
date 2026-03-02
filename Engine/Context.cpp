@@ -15,11 +15,11 @@ Context::~Context() {
 }
 
 void Context::Initialize() {
-    LogInfo("=== Initializing Context ===");
+    LogInfo(" Initializing Context ");
     createDevice();
     createCommandObjects();
     descriptorPool_ = std::make_unique<DescriptorPool>(device_.Get());
-    LogInfo("=== Context Initialization Complete ===\n");
+    LogInfo(" Context Initialization Complete \n");
 }
 
 
@@ -27,7 +27,7 @@ void Context::Initialize() {
 void Context::createDevice() {
     UINT dxgiFactoryFlags = 0;
     
-    LogInfo("=== Initializing Direct3D 12 Device ===");
+    LogInfo(" Initializing Direct3D 12 Device ");
 
 #if defined(DEBUG) || defined(_DEBUG)
     {
@@ -57,7 +57,7 @@ void Context::createDevice() {
     LogInfo("Attempting to create hardware device...");
     HRESULT hr = ::D3D12CreateDevice(
         nullptr,                    // nullptr = 기본 Adapter (주 GPU)
-        D3D_FEATURE_LEVEL_12_0,     // Direct3D 12.0 기능 레벨 요구
+        D3D_FEATURE_LEVEL_12_2,     // Direct3D 12.0 기능 레벨 요구
         IID_PPV_ARGS(&device_));
 
     // Hardware Device 생성 실패 시 WARP Device로 폴백
@@ -71,7 +71,7 @@ void Context::createDevice() {
 
         ThrowIfFailed(::D3D12CreateDevice(
             warpAdapter.Get(),      // WARP Adapter 사용
-            D3D_FEATURE_LEVEL_12_0,
+            D3D_FEATURE_LEVEL_12_2,
             IID_PPV_ARGS(&device_)));
         
         LogInfo("WARP device created successfully.");
@@ -81,11 +81,11 @@ void Context::createDevice() {
         LogInfo("Hardware device created successfully.");
     }
 
-    LogInfo("=== Direct3D 12 Device Initialization Complete ===\n");
+    LogInfo(" Direct3D 12 Device Initialization Complete \n");
 }
 
 void Context::createCommandObjects() {
-    LogInfo("=== Creating Command Objects ===");
+    LogInfo(" Creating Command Objects ");
     
     // Command Queue 생성 (GPU 명령 제출용 큐)
     // - Direct Queue = Graphics + Compute 명령 실행 가능
@@ -95,7 +95,7 @@ void Context::createCommandObjects() {
     ThrowIfFailed(device_->CreateCommandQueue(&queueDesc, IID_PPV_ARGS(&commandQueue_)));
     LogInfo("Command Queue created.");
     
-    LogInfo("=== Command Objects Creation Complete ===\n");
+    LogInfo(" Command Objects Creation Complete \n");
 }
 
 void Context::ExecuteCommands(ID3D12GraphicsCommandList* cmd) {

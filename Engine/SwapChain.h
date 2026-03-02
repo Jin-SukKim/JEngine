@@ -27,6 +27,6 @@ class SwapChain
     ComPtr<IDXGISwapChain4> swapChain_ = nullptr;
 
     DXGI_FORMAT backBufferFormat_ = DXGI_FORMAT_R8G8B8A8_UNORM;
-    std::vector<Texture> backBuffers_;  // ⭐ Resource → Texture
+    std::vector<Texture> backBuffers_;  //  Resource → Texture
 };
 } // namespace JEngine

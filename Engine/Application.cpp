@@ -6,6 +6,7 @@
 #include "Model.h"
 
 namespace JEngine {
+
 Application::Application(HINSTANCE hinstance, std::wstring name)
     : window_(hinstance, name), context_(window_), swapChain_(context_), renderer_(context_, swapChain_) {
 }
@@ -33,7 +34,7 @@ int Application::Run() {
 
     timer_.Reset();
 
-    LogInfo("=== Entering Main Message Loop ===");
+    LogInfo(" Entering Main Message Loop ");
     while (msg.message != WM_QUIT) {
         // 메시지 처리
         if (::PeekMessage(&msg, 0, 0, 0, PM_REMOVE)) {
@@ -73,7 +74,6 @@ int Application::Run() {
                 // 다른 CPU 작업 수행 가능
             } else {
                 Sleep(100); // 비활성 상태에서는 CPU 사용량 감소를 위해 잠시 대기
-                // TODO: GUI 추가되면 GUI 사용
             }
         }
     }

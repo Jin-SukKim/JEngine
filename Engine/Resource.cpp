@@ -56,7 +56,7 @@ void Resource::Reset() {
 }
 
 void Resource::TransitionTo(ID3D12GraphicsCommandList* cmdList, D3D12_RESOURCE_STATES newState) {
-    // === Resource State Transition (리소스 상태 전환) ===
+    //  Resource State Transition (리소스 상태 전환) 
     barrierHelper_.Transition(cmdList, resource_.Get(), newState);
 }
 
@@ -105,18 +105,18 @@ void Resource::SetResource(ComPtr<ID3D12Resource>& res) {
 
 void Resource::SetDescriptorHandle(const DescriptorHandle& handle) {
     descriptorHandles_.clear();
-    descriptorHandles_.emplace_back(handle); // ⭐ CPU + GPU 둘 다 저장됨
+    descriptorHandles_.emplace_back(handle); //  CPU + GPU 둘 다 저장됨
 }
 
 void Resource::SetDescriptorHandle(size_t idx, const DescriptorHandle& handle) {
     if (idx >= descriptorHandles_.size()) {
         descriptorHandles_.resize(idx + 1);
     }
-    descriptorHandles_[idx] = handle; // ⭐ CPU + GPU 둘 다 저장됨
+    descriptorHandles_[idx] = handle; //  CPU + GPU 둘 다 저장됨
 }
 
 void Resource::SetDescriptorHandles(std::vector<DescriptorHandle>&& handles) {
-    descriptorHandles_ = handles; // ⭐ CPU + GPU 둘 다 저장됨
+    descriptorHandles_ = handles; //  CPU + GPU 둘 다 저장됨
 }
 
 // 리소스 생성 헬퍼 함수들

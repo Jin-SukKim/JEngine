@@ -34,7 +34,7 @@ int SwapChain::GetCurrentBackBufferIndex() const {
 }
 
 void SwapChain::createSwapChain() {
-    LogInfo("=== Creating Swap Chain ===");
+    LogInfo(" Creating Swap Chain ");
 
     swapChain_.Reset();
 
@@ -58,8 +58,8 @@ void SwapChain::createSwapChain() {
 
     // Fullscreen/Windowed 설정
     DXGI_SWAP_CHAIN_FULLSCREEN_DESC fsDesc = {};
-    fsDesc.RefreshRate.Numerator = 60;
-    fsDesc.RefreshRate.Denominator = 1; // 60 Hz
+    fsDesc.RefreshRate.Numerator = 0; // 0으로 설정 시 기본값/최대값 사용
+    fsDesc.RefreshRate.Denominator = 0; // Numerator = 60, Denominator = 1 → 60Hz
     fsDesc.ScanlineOrdering = DXGI_MODE_SCANLINE_ORDER_UNSPECIFIED;
     fsDesc.Scaling = DXGI_MODE_SCALING_UNSPECIFIED;
     fsDesc.Windowed = TRUE;
@@ -77,11 +77,11 @@ void SwapChain::createSwapChain() {
     ThrowIfFailed(tempSwapChain.As(&swapChain_));
     LogInfo("Swap Chain created successfully.");
 
-    LogInfo("=== Swap Chain Creation Complete ===\n");
+    LogInfo(" Swap Chain Creation Complete \n");
 }
 
 void SwapChain::createRTV() {
-    LogInfo("=== Creating Render Target Views ===");
+    LogInfo(" Creating Render Target Views ");
 
     // 각 Back Buffer에 대한 RTV 생성
     for (UINT i = 0; i < MAX_FRAME_COUNT; ++i) {
@@ -89,13 +89,13 @@ void SwapChain::createRTV() {
         // Swap Chain으로부터 Back Buffer 리소스 가져오기
         ThrowIfFailed(swapChain_->GetBuffer(i, IID_PPV_ARGS(&buffer)));
         
-        // ⭐ SetResource → WrapBackBuffer 사용
+        //  SetResource → WrapBackBuffer 사용
         backBuffers_[i].SetResource(buffer);
         backBuffers_[i].WrapBackBuffer(backBufferFormat_);
     }
     LogInfo("Render Target Views created for all back buffers.");
 
-    LogInfo("=== Render Target Views Creation Complete ===\n");
+    LogInfo(" Render Target Views Creation Complete \n");
 }
 
 void SwapChain::BufferReset() {
@@ -104,7 +104,7 @@ void SwapChain::BufferReset() {
 }
 
 void SwapChain::Resize() {
-    LogInfo("=== Resizing Swap Chain Buffers ===");
+    LogInfo(" Resizing Swap Chain Buffers ");
     // 기존 Resource 해제
     BufferReset();
 

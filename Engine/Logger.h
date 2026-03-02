@@ -113,7 +113,7 @@ class Logger
     ~Logger() {
         if (logFile.is_open()) {
             // Write final statistics
-            logFile << "\n=== Logging Session Ended ===" << std::endl;
+            logFile << "\n Logging Session Ended " << std::endl;
             logFile << "Total messages processed: " << messagesProcessed << std::endl;
             logFile.flush();
             logFile.close();

@@ -54,7 +54,7 @@ void Renderer::Update(const Timer& timer, Model& model, size_t frameIdx) {
     camera_.UpdateSceneConstants(sceneConstants_);
     sceneConstantBuffer_[frameIdx].Update(sceneConstants_);
 
-    // ⭐ World Matrix - 박스를 제자리에서 회전시킴
+    //  World Matrix - 박스를 제자리에서 회전시킴
     // 경과 시간에 따라 회전 각도 계산 (라디안 단위)
     float rotationAngle = timer.TotalTime() * 0.5f; // 0.5는 회전 속도 (조절 가능)
     XMMATRIX world = XMMatrixRotationZ(rotationAngle * 0.3f) *
