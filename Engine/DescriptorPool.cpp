@@ -6,9 +6,9 @@ namespace JEngine {
 DescriptorPool::DescriptorPool(ID3D12Device* device) : device_(device) {
     // TODO: 일단 고정된 개수로 초기화
     heapAllocator_[D3D12_DESCRIPTOR_HEAP_TYPE_RTV] =
-        std::make_unique<DescriptorHeap>(device_, 2, D3D12_DESCRIPTOR_HEAP_TYPE_RTV);
+        std::make_unique<DescriptorHeap>(device_, 8, D3D12_DESCRIPTOR_HEAP_TYPE_RTV);
     heapAllocator_[D3D12_DESCRIPTOR_HEAP_TYPE_DSV] =
-        std::make_unique<DescriptorHeap>(device_, 1, D3D12_DESCRIPTOR_HEAP_TYPE_DSV);
+        std::make_unique<DescriptorHeap>(device_, 4, D3D12_DESCRIPTOR_HEAP_TYPE_DSV);
     heapAllocator_[D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV] =
         std::make_unique<DescriptorHeap>(device_, 1000, D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV,
         D3D12_DESCRIPTOR_HEAP_FLAG_SHADER_VISIBLE); // Shader에서 접근 가능하도록 설정

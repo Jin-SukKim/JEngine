@@ -24,7 +24,7 @@ void Pipeline::CreatePSO(const PipelineConfig& config, ID3D12RootSignature* root
     psoDesc.BlendState = CreateBlendDesc();
     psoDesc.DepthStencilState = CreateDepthStencilDesc();
     psoDesc.SampleMask = UINT_MAX;
-    psoDesc.PrimitiveTopologyType = D3D12_PRIMITIVE_TOPOLOGY_TYPE_TRIANGLE;
+    psoDesc.PrimitiveTopologyType = config_.topologyType;
     psoDesc.NumRenderTargets = 1;
     psoDesc.RTVFormats[0] = config.rtvFormat;
     // MSAA 비활성화 (백 버퍼와 일치)

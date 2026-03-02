@@ -52,12 +52,17 @@ int Application::Run() {
                 auto& cmdBuffer = commandBuffers_[frameIdx];
                 auto* cmdList = cmdBuffer.BeginRecording();
 
-                context_.SetViewport(cmdList);
+                renderer_.ApplyViewport(cmdList);
 
-                // TODO: Constant Buffer를 업데이트 단위로 분리하면 Application의 update와
-                // renderer의 Update의 순서가 바뀔 예정
-                renderer_.Update(timer_, *model_, frameIdx); // World/View/Proj Matrix 업데이트
-                Update(frameIdx);                  // Constant Buffer에 데이터 복사
+                // World Matrix 업데이트 (애플리케이션 로직)
+                using namespace DirectX;
+                float rotationAngle = timer_.TotalTime() * 0.5f;
+                XMMATRIX world = XMMatrixRotationZ(rotationAngle * 0.3f) *
+                                 XMMatrixRotationY(rotationAngle);
+                model_->UpdateWorldMatrix(world);
+                Update(frameIdx);
+
+                renderer_.Update(frameIdx);
 
                 renderer_.Draw(cmdList, *model_, frameIdx);
 
@@ -90,7 +95,7 @@ void Application::OnResize() {
     renderer_.Resize();
 
     // Viewport 및 Scissor Rect 재설정
-    context_.SetViewportConfig();
+    renderer_.UpdateViewport();
 
     LogInfo("Resize complete.");
 }
@@ -119,6 +124,19 @@ void Application::InitFences() {
 }
 
 void Application::InitScene() {
+    // 카메라 초기화
+    float theta = 1.5f * DirectX::XM_PI;
+    float phi = DirectX::XM_PIDIV4;
+    float radius = 5.0f;
+
+    float x = radius * std::sinf(phi) * std::cosf(theta);
+    float y = radius * std::sinf(phi) * std::sinf(theta);
+    float z = radius * std::cosf(phi);
+
+    Camera& camera = renderer_.GetCamera();
+    camera.SetPosition(DirectX::XMFLOAT3(x, y, z));
+    camera.SetPerspective(45.f, window_.GetAspectRatio(), 0.1f, 100.0f);
+
     int frameIdx = swapChain_.GetCurrentBackBufferIndex();
     auto& cmdBuffer = commandBuffers_[frameIdx];
     auto* cmdList = cmdBuffer.BeginRecording();

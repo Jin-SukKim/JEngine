@@ -6,7 +6,7 @@
 namespace JEngine {
 
 Context::Context(Window& window)
-    : window_(window), screenViewport_{}, scissorRect_{} {
+    : window_(window) {
 }
 
 Context::~Context() {
@@ -115,48 +115,12 @@ ID3D12CommandQueue* Context::GetCommandQueue() const {
     return commandQueue_.Get();
 }
 
-ID3D12Device* Context::GetDevice() {
-    return device_.Get();
-}
-
-ID3D12CommandQueue* Context::GetCommandQueue() {
-    return commandQueue_.Get();
-}
-
 Window& Context::GetWindow() {
     return window_;
 }
 
 DescriptorPool* Context::GetDescriptorPool() {
     return descriptorPool_.get();
-}
-
-ID3D12DescriptorHeap* Context::GetDescriptorHeap(D3D12_DESCRIPTOR_HEAP_TYPE type) {
-    return GetDescriptorPool()->Get(type)->GetHeap();
-}
-
-void Context::SetViewportConfig() {
-    LogInfo("Setting Viewport and Scissor Rect ({}x{})...", window_.GetWidth(), window_.GetHeight());
-
-    // Viewport 설정 (렌더링 영역)
-    // - NDC (Normalized Device Coordinates) → 화면 픽셀로 변환
-    screenViewport_.TopLeftX = 0.0f;
-    screenViewport_.TopLeftY = 0.0f;
-    screenViewport_.Width = static_cast<float>(window_.GetWidth());
-    screenViewport_.Height = static_cast<float>(window_.GetHeight());
-    screenViewport_.MinDepth = 0.0f; // Near plane (가까운 면)
-    screenViewport_.MaxDepth = 1.0f; // Far plane (먼 면)
-
-    // Scissor Rect 설정 (잘라낼 영역)
-    // - Viewport 밖의 픽셀은 폐기
-    scissorRect_ = {0, 0, static_cast<LONG>(window_.GetWidth()), static_cast<LONG>(window_.GetHeight())};
-
-    LogInfo("Viewport and Scissor Rect configured successfully.");
-}
-
-void Context::SetViewport(ID3D12GraphicsCommandList* cmd) {
-    cmd->RSSetViewports(1, &screenViewport_);
-    cmd->RSSetScissorRects(1, &scissorRect_);
 }
 
 std::vector<CommandBuffer> Context::CreateGraphicsCommandBuffers(uint32_t numBuffers) {

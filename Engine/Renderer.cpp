@@ -5,7 +5,6 @@
 #include "Window.h"
 #include "DescriptorHeap.h"
 #include "Vertex.h"
-#include "Timer.h"
 #include "UploadBuffer.h"
 #include "GPUBuffer.h"
 #include "Texture.h"
@@ -26,44 +25,28 @@ Renderer::Renderer(Context& ctx, SwapChain& swapChain)
 Renderer::~Renderer() = default;
 
 void Renderer::Initialize() {
-
     InitResources();
     InitShaders();
     InitRootSignature();
     InitPipeline();
-
-    // 카메라 초기화
-    static float theta = 1.5f * DirectX::XM_PI;
-    static float phi = DirectX::XM_PIDIV4;
-    static float radius = 5.0f;
-
-    float x = radius * std::sinf(phi) * std::cosf(theta);
-    float y = radius * std::sinf(phi) * std::sinf(theta);
-    float z = radius * std::cosf(phi);
-
-    camera_.SetPosition(DirectX::XMFLOAT3(x, y, z));
-    camera_.SetPerspective(45.f, context_.GetWindow().GetAspectRatio(), 0.1f, 100.0f);
 }
 
-void Renderer::Update(const Timer& timer, Model& model, size_t frameIdx) {
-    using namespace DirectX;
-
+void Renderer::Update(size_t frameIdx) {
     camera_.Update();
 
     // Scene Constant Buffer 업데이트
     camera_.UpdateSceneConstants(sceneConstants_);
     sceneConstantBuffer_[frameIdx].Update(sceneConstants_);
-
-    //  World Matrix - 박스를 제자리에서 회전시킴
-    // 경과 시간에 따라 회전 각도 계산 (라디안 단위)
-    float rotationAngle = timer.TotalTime() * 0.5f; // 0.5는 회전 속도 (조절 가능)
-    XMMATRIX world = XMMatrixRotationZ(rotationAngle * 0.3f) *
-                             XMMatrixRotationY(rotationAngle);
-
-    model.UpdateWorldMatrix(world);
 }
 
 void Renderer::Draw(ID3D12GraphicsCommandList* cmdList, Model& model, size_t frameIdx) {
+    BeginRenderPass(cmdList);
+    BindPipeline(cmdList, frameIdx);
+    DrawModel(cmdList, model, frameIdx);
+    EndRenderPass(cmdList);
+}
+
+void Renderer::BeginRenderPass(ID3D12GraphicsCommandList* cmdList) {
     Texture& backBuffer = swapChain_.GetCurrentBackBuffer();
     backBuffer.TransitionTo(cmdList, D3D12_RESOURCE_STATE_RENDER_TARGET);
 
@@ -74,9 +57,11 @@ void Renderer::Draw(ID3D12GraphicsCommandList* cmdList, Model& model, size_t fra
     cmdList->ClearRenderTargetView(rtvHandle, DirectX::Colors::LightSteelBlue, 0, nullptr);
     cmdList->ClearDepthStencilView(dsvHandle, D3D12_CLEAR_FLAG_DEPTH | D3D12_CLEAR_FLAG_STENCIL,
                                    1.0f, 0, 0, nullptr);
+}
 
+void Renderer::BindPipeline(ID3D12GraphicsCommandList* cmdList, size_t frameIdx) {
     ID3D12DescriptorHeap* cbvHeap =
-        context_.GetDescriptorHeap(D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV);
+        context_.GetDescriptorPool()->Get(D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV)->GetHeap();
     ID3D12DescriptorHeap* descriptorHeaps[] = {cbvHeap};
     cmdList->SetDescriptorHeaps(_countof(descriptorHeaps), descriptorHeaps);
 
@@ -85,19 +70,23 @@ void Renderer::Draw(ID3D12GraphicsCommandList* cmdList, Model& model, size_t fra
 
     // Scene Constant Buffer Binding (Root Parameter 1)
     cmdList->SetGraphicsRootDescriptorTable(1, sceneConstantBuffer_[frameIdx].GetGPUHandle());
+}
 
-    // Model Rendering
+void Renderer::DrawModel(ID3D12GraphicsCommandList* cmdList, Model& model, size_t frameIdx) {
     std::vector<Mesh>& meshes = model.GetMeshes();
     for (size_t i = 0; i < meshes.size(); ++i) {
         Mesh& mesh = meshes[i];
         cmdList->IASetVertexBuffers(0, 1, mesh.GetVertexBufferView());
         cmdList->IASetIndexBuffer(mesh.GetIndexBufferView());
         cmdList->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
-        cmdList->SetGraphicsRootDescriptorTable(0, model.GetConstantGPUHandle(frameIdx, i)); // Constant Buffer Binding
+        cmdList->SetGraphicsRootDescriptorTable(0,
+                                                model.GetConstantGPUHandle(frameIdx, i));
         cmdList->DrawIndexedInstanced(mesh.GetIndexCount(), 1, 0, 0, 0);
     }
+}
 
-    // Back Buffer를 RENDER_TARGET → PRESENT 상태로 전환
+void Renderer::EndRenderPass(ID3D12GraphicsCommandList* cmdList) {
+    Texture& backBuffer = swapChain_.GetCurrentBackBuffer();
     backBuffer.TransitionTo(cmdList, D3D12_RESOURCE_STATE_PRESENT);
 }
 
@@ -115,6 +104,32 @@ void Renderer::Resize() {
 
 ID3D12PipelineState* Renderer::GetPSO() const {
     return pipeline_->GetPSO();
+}
+
+Camera& Renderer::GetCamera() {
+    return camera_;
+}
+
+void Renderer::UpdateViewport() {
+    Window& window = context_.GetWindow();
+    LogInfo("Setting Viewport and Scissor Rect ({}x{})...", window.GetWidth(), window.GetHeight());
+
+    screenViewport_.TopLeftX = 0.0f;
+    screenViewport_.TopLeftY = 0.0f;
+    screenViewport_.Width = static_cast<float>(window.GetWidth());
+    screenViewport_.Height = static_cast<float>(window.GetHeight());
+    screenViewport_.MinDepth = 0.0f;
+    screenViewport_.MaxDepth = 1.0f;
+
+    scissorRect_ = {0, 0, static_cast<LONG>(window.GetWidth()),
+                    static_cast<LONG>(window.GetHeight())};
+
+    LogInfo("Viewport and Scissor Rect configured successfully.");
+}
+
+void Renderer::ApplyViewport(ID3D12GraphicsCommandList* cmdList) {
+    cmdList->RSSetViewports(1, &screenViewport_);
+    cmdList->RSSetScissorRects(1, &scissorRect_);
 }
 
 void Renderer::InitResources() {

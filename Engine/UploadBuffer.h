@@ -8,6 +8,8 @@ namespace JEngine {
 class UploadBuffer : public Buffer
 {
   public:
+    using Resource::GetGPUHandle;
+
     UploadBuffer(Context& ctx);
     ~UploadBuffer() override;
 

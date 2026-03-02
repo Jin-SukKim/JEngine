@@ -26,15 +26,8 @@ class Context
 
     ID3D12Device* GetDevice() const;
     ID3D12CommandQueue* GetCommandQueue() const;
-    ID3D12Device* GetDevice();
-    ID3D12CommandQueue* GetCommandQueue();
     Window& GetWindow();
     DescriptorPool* GetDescriptorPool();
-    ID3D12DescriptorHeap* GetDescriptorHeap(D3D12_DESCRIPTOR_HEAP_TYPE type);
-
-    //  렌더링 설정 
-    void SetViewportConfig();  // Viewport 및 Scissor Rect 설정
-    void SetViewport(ID3D12GraphicsCommandList* cmd);
 
     std::vector<CommandBuffer> CreateGraphicsCommandBuffers(uint32_t numBuffers);
     CommandBuffer CreateGraphicsCommandBuffer();
@@ -46,10 +39,6 @@ class Context
 
     //  Command Objects (명령 기록 및 실행) 
     ComPtr<ID3D12CommandQueue> commandQueue_;         // GPU에 명령 제출용 큐
-
-    //  Viewport and Scissor Rect 
-    D3D12_VIEWPORT screenViewport_;             // 렌더링 영역 (화면 전체)
-    D3D12_RECT scissorRect_;                    // 잘라낼 영역 (일반적으로 화면 전체)
 
     std::unique_ptr<DescriptorPool> descriptorPool_;
 };

@@ -32,9 +32,6 @@ class Texture : public Resource
 
     void Reset() override;
 
-    // Resource Class의 GetCPUHandle, GetGPUHandle 함수 삭제
-    D3D12_CPU_DESCRIPTOR_HANDLE GetCPUHandle(size_t index) const = delete;
-    D3D12_GPU_DESCRIPTOR_HANDLE GetGPUHandle(size_t index) const = delete;
 
     D3D12_CPU_DESCRIPTOR_HANDLE GetRTVHandle() const;
     D3D12_CPU_DESCRIPTOR_HANDLE GetDSVHandle() const;

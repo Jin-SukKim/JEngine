@@ -17,8 +17,8 @@ DescriptorHeap::DescriptorHeap(ID3D12Device* device, UINT maxDescriptorNum,
 
 DescriptorHandle DescriptorHeap::AllocateView() {
     if (viewIdx_ >= maxHeapSize_) {
-        LogError("Descriptor Heap allocation failed: Exceeded maximum descriptors ({})",
-                 maxHeapSize_);
+        ExitWithMessage("Descriptor Heap allocation failed: Exceeded maximum descriptors ({})",
+                        maxHeapSize_);
     }
 
     DescriptorHandle handle;
@@ -44,9 +44,10 @@ DescriptorHandle DescriptorHeap::AllocateView() {
 }
 
 auto DescriptorHeap::AllocateViewArray(size_t count) -> std::vector<DescriptorHandle> {
-    if (viewIdx_ >= maxHeapSize_) {
-        LogError("Descriptor Heap allocation failed: Exceeded maximum descriptors ({})",
-                 maxHeapSize_);
+    if (viewIdx_ + count > maxHeapSize_) {
+        ExitWithMessage(
+            "Descriptor Heap allocation failed: Requested {} descriptors, but only {} remain (max {})",
+            count, maxHeapSize_ - viewIdx_, maxHeapSize_);
     }
 
     std::vector<DescriptorHandle> handles;

@@ -29,17 +29,15 @@ class Resource
     D3D12_RESOURCE_STATES GetCurrentState() const;
     D3D12_RESOURCE_DESC GetDesc() const;
     DXGI_FORMAT GetFormat() const;
-    
-    // CPU Handle 반환
-    D3D12_CPU_DESCRIPTOR_HANDLE GetCPUHandle(size_t index = 0) const;
-    
-    // GPU Handle 반환 (새로 추가)
-    D3D12_GPU_DESCRIPTOR_HANDLE GetGPUHandle(size_t index = 0) const;
 
     // Setter
     void SetResource(ComPtr<ID3D12Resource>& res);
 
   protected:
+    // CPU/GPU Handle — protected로 하위 클래스에서 의미에 맞는 접근자로 재노출
+    D3D12_CPU_DESCRIPTOR_HANDLE GetCPUHandle(size_t index = 0) const;
+    D3D12_GPU_DESCRIPTOR_HANDLE GetGPUHandle(size_t index = 0) const;
+
     // 하위 클래스에서 사용 가능한 Setter 함수
     void SetDescriptorHandle(const DescriptorHandle& handle);
     void SetDescriptorHandle(size_t idx, const DescriptorHandle& handle);

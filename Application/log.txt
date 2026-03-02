@@ -14,8 +14,8 @@
 [INFO] Command Queue created.
 [INFO]  Command Objects Creation Complete 
 
-[INFO] Descriptor Heap created - Type: 2, NumDescriptors: 2, DescriptorSize: 32, ShaderVisible: false
-[INFO] Descriptor Heap created - Type: 3, NumDescriptors: 1, DescriptorSize: 8, ShaderVisible: false
+[INFO] Descriptor Heap created - Type: 2, NumDescriptors: 8, DescriptorSize: 32, ShaderVisible: false
+[INFO] Descriptor Heap created - Type: 3, NumDescriptors: 4, DescriptorSize: 8, ShaderVisible: false
 [INFO] Descriptor Heap created - Type: 0, NumDescriptors: 1000, DescriptorSize: 32, ShaderVisible: true
 [INFO] Descriptor Heap created - Type: 1, NumDescriptors: 5, DescriptorSize: 32, ShaderVisible: true
 [INFO] Descriptor Pool created.
@@ -27,23 +27,23 @@
 [INFO]  Swap Chain Creation Complete 
 
 [INFO]  Creating Render Target Views 
-[INFO] Allocated Descriptor Handle - Index: 1, Max Size: 2
+[INFO] Allocated Descriptor Handle - Index: 1, Max Size: 8
 [INFO] Wrapped BackBuffer with format 28
-[INFO] Allocated Descriptor Handle - Index: 2, Max Size: 2
+[INFO] Allocated Descriptor Handle - Index: 2, Max Size: 8
 [INFO] Wrapped BackBuffer with format 28
 [INFO] Render Target Views created for all back buffers.
 [INFO]  Render Target Views Creation Complete 
 
 [INFO] D3D12 resource created: GPU Address=0x0
 [INFO] Depth Stencil Buffer created.
-[INFO] Allocated Descriptor Handle - Index: 1, Max Size: 1
+[INFO] Allocated Descriptor Handle - Index: 1, Max Size: 4
 [INFO] Depth Stencil View created.
 [INFO] Resource has been reset successfully.
 [INFO] Resource has been reset successfully.
 [INFO] Resource has been reset successfully.
 [INFO] D3D12 resource created: GPU Address=0x8862000
 [INFO] Buffer created: type=2, count=1, sizeOf=512, total=512 bytes
-[INFO] Buffer mapped: address=0x15FFC9C0000
+[INFO] Buffer mapped: address=0x24ECD9C0000
 [INFO] Allocated Descriptor Handle - Index: 1, Max Size: 1000
 [INFO] Constant buffer created: 1 elements x 512 bytes (aligned)
 [INFO] Resource has been reset successfully.
@@ -51,18 +51,18 @@
 [INFO] Resource has been reset successfully.
 [INFO] D3D12 resource created: GPU Address=0x8863000
 [INFO] Buffer created: type=2, count=1, sizeOf=512, total=512 bytes
-[INFO] Buffer mapped: address=0x15FFC9C1000
+[INFO] Buffer mapped: address=0x24ECD9C1000
 [INFO] Allocated Descriptor Handle - Index: 2, Max Size: 1000
 [INFO] Constant buffer created: 1 elements x 512 bytes (aligned)
 [INFO] Shaders compiled successfully.
 [INFO] Root Signature created successfully.
 [INFO] BasicPipeline is created.
 [INFO] Creating 2 command buffers...
-[INFO] Command Allocator created: 0x15fff6ebfe0
-[INFO] Graphics Command List created: 0x15fff73abc0
+[INFO] Command Allocator created: 0x24ed2881d60
+[INFO] Graphics Command List created: 0x24ed28c09a0
 [INFO] Command List closed and ready for recording commands.
-[INFO] Command Allocator created: 0x15fff6b3da0
-[INFO] Graphics Command List created: 0x15fff7b5550
+[INFO] Command Allocator created: 0x24ed289dde0
+[INFO] Graphics Command List created: 0x24ed292fbf0
 [INFO] Command List closed and ready for recording commands.
 [INFO] Fence created for CPU-GPU synchronization.
 [INFO] Fence destroyed.
@@ -75,9 +75,9 @@
 [INFO] Resource has been reset successfully.
 [INFO] Descriptor Heap reset - Current Index set to 0
 [INFO]  Creating Render Target Views 
-[INFO] Allocated Descriptor Handle - Index: 1, Max Size: 2
+[INFO] Allocated Descriptor Handle - Index: 1, Max Size: 8
 [INFO] Wrapped BackBuffer with format 28
-[INFO] Allocated Descriptor Handle - Index: 2, Max Size: 2
+[INFO] Allocated Descriptor Handle - Index: 2, Max Size: 8
 [INFO] Wrapped BackBuffer with format 28
 [INFO] Render Target Views created for all back buffers.
 [INFO]  Render Target Views Creation Complete 
@@ -87,7 +87,7 @@
 [INFO] Descriptor Heap reset - Current Index set to 0
 [INFO] D3D12 resource created: GPU Address=0x0
 [INFO] Depth Stencil Buffer created.
-[INFO] Allocated Descriptor Handle - Index: 1, Max Size: 1
+[INFO] Allocated Descriptor Handle - Index: 1, Max Size: 4
 [INFO] Depth Stencil View created.
 [INFO] Setting Viewport and Scissor Rect (1280x720)...
 [INFO] Viewport and Scissor Rect configured successfully.
@@ -104,14 +104,14 @@
 [INFO] Buffer created: type=3, count=8, sizeOf=28, total=224 bytes
 [INFO] Staging buffer created and mapped: 8 elements x 28 bytes = 224 total bytes
 [INFO] Starting buffer copy: 224 bytes
-[INFO] Buffer mapped: address=0x15FFCAC4000
+[INFO] Buffer mapped: address=0x24ECDAC4000
 [INFO] Buffer unmapped
 [INFO] Buffer copy completed: 224 bytes to state 1
 [INFO] D3D12 resource created: GPU Address=0x8867000
 [INFO] Buffer created: type=3, count=36, sizeOf=4, total=144 bytes
 [INFO] Staging buffer created and mapped: 36 elements x 4 bytes = 144 total bytes
 [INFO] Starting buffer copy: 144 bytes
-[INFO] Buffer mapped: address=0x15FFCAC5000
+[INFO] Buffer mapped: address=0x24ECDAC5000
 [INFO] Buffer unmapped
 [INFO] Buffer copy completed: 144 bytes to state 2
 [INFO] Created VBV: Location=0x8864000, Stride=28, Size=224
@@ -121,7 +121,7 @@
 [INFO] Resource has been reset successfully.
 [INFO] D3D12 resource created: GPU Address=0x8868000
 [INFO] Buffer created: type=2, count=1, sizeOf=256, total=256 bytes
-[INFO] Buffer mapped: address=0x15FFCAC6000
+[INFO] Buffer mapped: address=0x24ECDAC6000
 [INFO] Allocated Descriptor Handle - Index: 3, Max Size: 1000
 [INFO] Constant buffer created: 1 elements x 256 bytes (aligned)
 [INFO] Resource has been reset successfully.
@@ -129,7 +129,7 @@
 [INFO] Resource has been reset successfully.
 [INFO] D3D12 resource created: GPU Address=0x8869000
 [INFO] Buffer created: type=2, count=1, sizeOf=256, total=256 bytes
-[INFO] Buffer mapped: address=0x15FFCAC7000
+[INFO] Buffer mapped: address=0x24ECDAC7000
 [INFO] Allocated Descriptor Handle - Index: 4, Max Size: 1000
 [INFO] Constant buffer created: 1 elements x 256 bytes (aligned)
 [INFO] Resetting Resource: GPU Address=0x8866000
@@ -165,10 +165,10 @@
 [INFO] Resource has been reset successfully.
 [INFO] Fence destroyed.
 [INFO] Fence destroyed.
-[INFO] CommandBuffer destructor - releasing CommandList: 0x15fff73abc0
-[INFO] CommandBuffer destructor - releasing CommandAllocator: 0x15fff6ebfe0
-[INFO] CommandBuffer destructor - releasing CommandList: 0x15fff7b5550
-[INFO] CommandBuffer destructor - releasing CommandAllocator: 0x15fff6b3da0
+[INFO] CommandBuffer destructor - releasing CommandList: 0x24ed28c09a0
+[INFO] CommandBuffer destructor - releasing CommandAllocator: 0x24ed2881d60
+[INFO] CommandBuffer destructor - releasing CommandList: 0x24ed292fbf0
+[INFO] CommandBuffer destructor - releasing CommandAllocator: 0x24ed289dde0
 [INFO] Buffer unmapped
 [INFO] Resetting Resource: GPU Address=0x8862000
 [INFO] Resource has been reset successfully.
